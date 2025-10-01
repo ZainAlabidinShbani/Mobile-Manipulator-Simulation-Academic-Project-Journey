@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+    <param name="robot_description" command="$(find xacro)/xacro '$(find kuka_youbot)/xacro/arm.xacro'"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find kuka_youbot)/rviz/arm.rviz"/>
+    <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui"/>
+    <node pkg="kuka_youbot" type="end_effector_pose.py" name="end_effector_pose_Node" output="screen"/>
+    <node pkg="kuka_youbot" type="marker.py" name="marker_Node"/>
+    <node pkg="kuka_youbot" type="path.py" name="path_Node"/>
+    <node pkg="rqt_graph" name="rqt_graph" type="rqt_graph"/>
+    
+</launch>

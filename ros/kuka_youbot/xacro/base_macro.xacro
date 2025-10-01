@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="youbot_base_with_wheels" params="base_name base_scale base_clearance">
+
+    <material name="gray">
+      <color rgba="0.7 0.7 0.7 1.0"/>
+    </material>
+
+    <!-- dummy root -->
+    <link name="world_base"/>
+
+    <joint name="world_to_base" type="fixed">
+      <parent link="world_base"/>
+      <child link="base"/>
+      <origin xyz="0 0 ${base_clearance}"/>
+    </joint>
+
+    <link name="${base_name}">
+      <visual>
+        <geometry>
+          <mesh filename="package://kuka_youbot/meshes/base_stl.stl" scale="${base_scale} ${base_scale} ${base_scale}"/>
+        </geometry>
+        <origin xyz="0 0 ${base_clearance}" rpy="0 -1.57 0"/>
+        <material name="gray"/>
+      </visual>
+<!-- 
+      <collision>
+        <geometry>
+          <box size="0.58 0.376 0.11"/>
+        </geometry>
+        <origin xyz="0 0 ${base_clearance}" rpy="0 0 0"/>
+        <material name="gray"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial>
+
+      <gazebo reference="colored_box">
+        <material>Gazebo/Gray</material>
+      </gazebo> -->
+
+    </link>
+
+    
+  </xacro:macro>
+
+</robot>

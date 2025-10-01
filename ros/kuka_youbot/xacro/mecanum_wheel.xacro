@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+
+    <xacro:macro name="wheel_with_rollers" params="wheel_name parent_link side x y z scale_factor">
+
+
+      <link name="${wheel_name}_wheel_link">
+
+        <visual>
+          <geometry>
+            <mesh filename="package://kuka_youbot/meshes/visual/wheel.dae"
+                  scale="${scale_factor * side} ${scale_factor} ${scale_factor}" />
+          </geometry>
+        </visual>
+  <!-- 
+        <collision>
+          <geometry>
+            <cylinder radius="0.05" length="0.01"/>
+          </geometry>
+        </collision>
+
+        <inertial>
+          <mass value="${default_mass}"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+        </inertial> -->
+
+        <xacro:roller_visuals name="${wheel_name}" side="${side}" num="15" scale_factor="${scale_factor}" />
+      </link>
+
+      <joint name="${wheel_name}_rotation_joint" type="continuous">
+        <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+        <parent link="${parent_link }"/>
+        <child link="${wheel_name}_wheel_link"/>
+        <axis xyz="1 0 0"/>
+      </joint>
+
+    </xacro:macro>
+
+    <!-- Recursive macro to add roller visuals with 45-degree tilt -->
+  <xacro:macro name="roller_visuals" params="name side num scale_factor">
+    <xacro:if value="${num > 0}">
+
+      <!-- theta for each roller -->
+      <xacro:property name="th" value="${radians(360.0 / 15.0 * (num - 1))}"/>
+
+      <xacro:if value="${side == 1}">
+        <visual>
+          <origin
+            xyz="0 ${0.0895 * scale_factor * cos(th)} ${0.0895 * scale_factor * sin(th)}"
+            rpy="${atan(-tan(th)*sqrt(2.0))} ${asin(cos(th)/sqrt(2.0))} ${atan(sin(th))}" />
+          <geometry>
+            <mesh filename="package://kuka_youbot/meshes/visual/roller.dae"
+                  scale="${scale_factor} ${scale_factor} ${scale_factor}"/>
+          </geometry>
+        </visual>
+      </xacro:if>
+
+      <xacro:if value="${side == -1}">
+        <visual>
+          <origin
+            xyz="0 ${0.0895 * scale_factor * cos(th)} ${0.0895 * scale_factor * sin(th)}"
+            rpy="${atan(-tan(th)*sqrt(2.0))} ${asin(-cos(th)/sqrt(2.0))} ${atan(-sin(th))}" />
+          <geometry>
+            <mesh filename="package://kuka_youbot/meshes/visual/roller.dae"
+                  scale="${scale_factor} ${scale_factor} ${scale_factor}"/>
+          </geometry>
+        </visual>
+      </xacro:if>
+
+      <xacro:roller_visuals name="${name}" side="${side}" num="${num - 1}" scale_factor="${scale_factor}" />
+    </xacro:if>
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="youbot">
+
+    <xacro:include filename="$(find kuka_youbot)/xacro/variables.xacro"/>
+    <xacro:include filename="$(find kuka_youbot)/xacro/base_macro.xacro"/>
+    <xacro:include filename="$(find kuka_youbot)/xacro/mecanum_wheel.xacro"/>
+    <!-- <xacro:include filename="$(find kuka_youbot)/xacro/arm_macro.xacro"/> -->
+
+
+
+    <xacro:youbot_base_with_wheels 
+        base_name="base"
+        base_scale="${base_scale}"
+        base_clearance="${base_clearance}"/>
+
+        <link name="lidar">
+            <visual>
+                <origin xyz="0 0.2 0" rpy="0 0 0"/>
+                <geometry>
+                    <cylinder radius="0.04" length="0.08"/>
+                </geometry>
+                <material name="red">
+                    <color rgba="1 0 0 1"/>
+                </material>
+            </visual>
+        </link>
+        
+        <joint name="base_to_lidar" type="fixed">
+            <origin xyz="0 0 ${base_box_height + 0.04}" rpy="0 0 0"/>
+            <parent link="base"/>
+            <child link="lidar"/>
+        </joint>
+        
+
+        
+
+
+
+    <xacro:wheel_with_rollers wheel_name="front_right" parent_link="base" side="1"  x="0.136"  y="0.245"  z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="front_left"  parent_link="base"  side="-1" x="-0.136" y="0.245"  z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="back_right"  parent_link="base"  side="1"  x="0.136"  y="-0.245" z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="back_left"   parent_link="base"  side="-1" x="-0.136" y="-0.245" z="0.05" scale_factor="${scale_factor}"/>
+
+
+</robot>

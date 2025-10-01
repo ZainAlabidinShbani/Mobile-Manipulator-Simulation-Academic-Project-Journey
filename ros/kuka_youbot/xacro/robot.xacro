@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="youbot">
+
+    <xacro:include filename="$(find kuka_youbot)/xacro/variables.xacro"/>
+    <xacro:include filename="$(find kuka_youbot)/xacro/base_macro.xacro"/>
+    <xacro:include filename="$(find kuka_youbot)/xacro/mecanum_wheel.xacro"/>
+    <xacro:include filename="$(find kuka_youbot)/xacro/arm_macro.xacro"/>
+
+
+
+    <xacro:youbot_base_with_wheels 
+        base_name="base"
+        base_scale="${base_scale}"
+        base_clearance="${base_clearance}"/>
+
+        
+    <xacro:arm name="manipulator" parent_link="base" xyz="0 ${shifted_base_to_arm} ${base_box_height + base_clearance}"/>
+
+
+    <xacro:wheel_with_rollers wheel_name="front_right" parent_link="base" side="1"  x="0.136"  y="0.245"  z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="front_left"  parent_link="base"  side="-1" x="-0.136" y="0.245"  z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="back_right"  parent_link="base"  side="1"  x="0.136"  y="-0.245" z="0.05" scale_factor="${scale_factor}"/>
+    <xacro:wheel_with_rollers wheel_name="back_left"   parent_link="base"  side="-1" x="-0.136" y="-0.245" z="0.05" scale_factor="${scale_factor}"/>
+
+
+</robot>

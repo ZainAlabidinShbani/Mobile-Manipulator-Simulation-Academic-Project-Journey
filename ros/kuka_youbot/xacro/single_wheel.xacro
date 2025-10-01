@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="single_mecanum_wheel">
+
+  <link name="wheel_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://kuka_youbot/meshes/visual/wheel.dae" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </visual>
+  </link>
+
+</robot>

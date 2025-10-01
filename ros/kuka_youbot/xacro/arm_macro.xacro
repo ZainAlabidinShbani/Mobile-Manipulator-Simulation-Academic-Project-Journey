@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="arm" params="name parent_link xyz">
+
+    <xacro:property name="x" value="${xyz.split()[0]}"/>
+    <xacro:property name="y" value="${xyz.split()[1]}"/>
+    <xacro:property name="z" value="${xyz.split()[2]}"/>
+
+    <!-- Arm on base point-->
+    <joint name="${name}_base_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${name}_base"/>
+      <origin xyz="${x} ${y} ${z}"/>
+    </joint>
+
+    <!-- Arm-->
+    <link name="${name}_base">
+      <visual>
+        <geometry>
+          <cylinder radius="${base_radius}" length="${base_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${base_length/2}"/>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <cylinder radius="${base_radius}" length="${base_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${base_length/2}"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+
+    </link>
+
+    <joint name="${name}_j1" type="revolute">
+      <parent link="${name}_base"/>
+      <child link="${name}_link1"/>
+      <origin xyz="0 0 ${base_length}"/>
+      <limit effort="100" velocity="${joint1_velocity}" lower="${joint1_min_limit}" upper="${joint1_max_limit}"/>
+      <axis xyz="0 0 1"/>
+<!-- 
+      <transmission name="transmission_j1">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="manipulator_j1">
+          <hardwareInterface>PositionJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_j1">
+          <hardwareInterface>PositionJointInterface</hardwareInterface>
+          <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+      </transmission> -->
+      
+
+    </joint>
+
+    <link name="${name}_link1">
+      <visual>
+        <geometry>
+          <cylinder radius="${link1_radius}" length="${link1_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${link1_length/2}"/>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <cylinder radius="${link1_radius}" length="${link1_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${link1_length/2}"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+    </link>
+
+    <joint name="${name}_j2" type="revolute">
+      <parent link="${name}_link1"/>
+      <child link="${name}_link2"/>
+      <origin xyz="0 0 ${link1_length}" rpy="-1.5702 -1.5702 0"/>
+      <limit effort="100" velocity="${joint2_velocity}" lower="${joint2_min_limit}" upper="${joint2_max_limit}"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="${name}_link2">
+      <visual>
+        <geometry>
+          <cylinder radius="${link2_radius}" length="${link2_length}"/>
+        </geometry>
+        <origin xyz="${link2_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="green">
+          <color rgba="0 1 0 1"/>
+        </material>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <cylinder radius="${link2_radius}" length="${link2_length}"/>
+        </geometry>
+        <origin xyz="${link2_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="green">
+          <color rgba="0 1 0 1"/>
+        </material>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+
+    </link>
+
+    <joint name="${name}_j3" type="revolute">
+      <parent link="${name}_link2"/>
+      <child link="${name}_link3"/>
+      <origin xyz="${link2_length} 0 0" rpy="0 0 0"/>
+      <limit effort="100" velocity="${joint3_velocity}" lower="${joint3_min_limit}" upper="${joint3_max_limit}"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="${name}_link3">
+      <visual>
+        <geometry>
+          <cylinder radius="${link3_radius}" length="${link3_length}"/>
+        </geometry>
+        <origin xyz="${link3_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <cylinder radius="${link3_radius}" length="${link3_length}"/>
+        </geometry>
+        <origin xyz="${link3_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="red">
+          <color rgba="1 0 0 1"/>
+        </material>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+    </link>
+
+    <joint name="${name}_j4" type="revolute">
+      <parent link="${name}_link3"/>
+      <child link="${name}_link4"/>
+      <origin xyz="${link3_length} 0 0"/>
+      <limit effort="100" velocity="${joint4_velocity}" lower="${joint4_min_limit}" upper="${joint4_max_limit}"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="${name}_link4">
+      <visual>
+        <geometry>
+          <cylinder radius="${link4_radius}" length="${link4_length}"/>
+        </geometry>
+        <origin xyz="${link4_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="blue"/>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <cylinder radius="${link4_radius}" length="${link4_length}"/>
+        </geometry>
+        <origin xyz="${link4_length/2} 0 0" rpy="0 1.5702 0"/>
+        <material name="blue"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+    </link>
+
+    <joint name="${name}_j5" type="revolute">
+      <parent link="${name}_link4"/>
+      <child link="${name}_link5"/>
+      <origin xyz="${link4_length} 0 0" rpy="0 1.5702 0"/>
+      <limit effort="100" velocity="${joint5_velocity}" lower="${joint5_min_limit}" upper="${joint5_max_limit}"/>
+      <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="${name}_link5">
+      <visual>
+        <geometry>
+          <cylinder radius="${link5_radius}" length="${link5_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${link5_length/2}"/>
+        <material name="green"/>
+      </visual>
+<!-- 
+      <collision>
+        <geometry>
+          <cylinder radius="${link5_radius}" length="${link5_length}"/>
+        </geometry>
+        <origin xyz="0 0 ${link5_length/2}"/>
+        <material name="green"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+
+    </link>
+
+    <!-- Gripper Base -->
+    <joint name="${name}_gripper_joint" type="fixed">
+      <parent link="${name}_link5"/>
+      <child link="gripper_base"/>
+      <origin xyz="0 0 ${link5_length}" rpy="0 0 1.57"/>
+    </joint>
+
+    <link name="gripper_base">
+      <visual>
+        <geometry>
+          <box size="${gripper_base_length} ${gripper_base_width} ${gripper_base_height}"/>
+        </geometry>
+        <origin xyz="0 0 ${gripper_base_height/2}"/>
+        <material name="gray">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <box size="${gripper_base_length} ${gripper_base_width} ${gripper_base_height}"/>
+        </geometry>
+        <origin xyz="0 0 ${gripper_base_height/2}"/>
+        <material name="gray">
+          <color rgba="0.6 0.6 0.6 1.0"/>
+        </material>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+
+    </link>
+
+    <!-- Left Finger -->
+    <joint name="${name}_left_finger_joint" type="prismatic">
+      <parent link="gripper_base"/>
+      <child link="${name}_left_finger"/>
+      <origin xyz="${-gripper_base_length/2} 0 ${gripper_base_height/2}"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10" velocity="0.01" lower="${Finger_min_limit}" upper="${Finger_max_limit}"/>
+    </joint>
+
+    <link name="${name}_left_finger">
+      <visual>
+        <geometry>
+          <box size="${Finger_length} ${Finger_width} ${Finger_height}"/>
+        </geometry>
+        <origin xyz="${Finger_length/2} 0 ${Finger_height/2}"/>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <box size="${Finger_length} ${Finger_width} ${Finger_height}"/>
+        </geometry>
+        <origin xyz="${Finger_length/2} 0 ${Finger_height/2}"/>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+    </link>
+
+    <!-- Right Finger -->
+    <joint name="${name}_right_finger_joint" type="prismatic">
+      <parent link="gripper_base"/>
+      <child link="${name}_right_finger"/>
+      <origin xyz="${gripper_base_length/2} 0 ${gripper_base_height/2}"/>
+      <axis xyz="-1 0 0"/>
+      <limit effort="10" velocity="0.01" lower="${Finger_min_limit}" upper="${Finger_max_limit}"/>
+      <mimic joint="${name}_left_finger_joint" multiplier="1.0" offset="0"/>
+    </joint>
+
+    <link name="${name}_right_finger">
+      <visual>
+        <geometry>
+          <box size="${Finger_length} ${Finger_width} ${Finger_height}"/>
+        </geometry>
+        <origin xyz="${-Finger_length/2} 0 ${Finger_height/2}"/>
+        <material name="black"/>
+      </visual>
+
+      <!-- <collision>
+        <geometry>
+          <box size="${Finger_length} ${Finger_width} ${Finger_height}"/>
+        </geometry>
+        <origin xyz="${-Finger_length/2} 0 ${Finger_height/2}"/>
+        <material name="black"/>
+      </collision>
+
+      <inertial>
+        <mass value="${default_mass}"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="${default_ixx}" ixy="0.0" ixz="0.0" iyy="${default_iyy}" iyz="0.0" izz="${default_izz}"/>
+      </inertial> -->
+
+    </link>
+
+
+<!-- 
+    <transmission name="transmission_j1">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_j1">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_j1">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+    <transmission name="transmission_j2">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_j2">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_j2">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+    <transmission name="transmission_j3">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_j3">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_j3">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+
+    <transmission name="transmission_j4">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_j4">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_j4">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+    <transmission name="transmission_j5">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}_j5">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="motor_j5">
+        <hardwareInterface>PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+  </xacro:macro>
+</robot>

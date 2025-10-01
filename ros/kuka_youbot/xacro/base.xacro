@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find kuka_youbot)/xacro/mecanum_wheel.xacro"/>
+  <xacro:include filename="$(find kuka_youbot)/xacro/variables.xacro"/>
+
+
+
+  <material name="gray">
+    <color rgba="0.7 0.7 0.7 1.0"/>
+  </material>
+
+  
+  <link name="base">
+    <visual>
+      <geometry>
+        <mesh filename="package://kuka_youbot/meshes/base_stl.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <origin xyz="0 0 ${base_clearance}" rpy="0 -1.57 0"/>
+      <material name="gray"/>
+    </visual>
+  </link>
+
+
+  <xacro:wheel_with_rollers parent_link="base" wheel_name="front_right" side="1" x="0.136" y="0.245" z="0.05" scale_factor="0.6"/>
+  <xacro:wheel_with_rollers parent_link="base" wheel_name="front_left" side="-1" x="-0.136" y="0.245" z="0.05" scale_factor="0.6"/>
+  <xacro:wheel_with_rollers parent_link="base" wheel_name="back_right" side="1" x="0.136" y="-0.245" z="0.05" scale_factor="0.6"/>
+  <xacro:wheel_with_rollers parent_link="base" wheel_name="back_left" side="-1" x="-0.136" y="-0.245" z="0.05" scale_factor="0.6"/>
+  
+
+
+</robot>
