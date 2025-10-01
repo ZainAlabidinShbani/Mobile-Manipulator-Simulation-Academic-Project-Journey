@@ -119,4 +119,4 @@ roslaunch kuka_youbot full_robot.launch
 
 ## 🔗 Hashtags
 
-# Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
+#Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
