@@ -79,9 +79,6 @@ All images are stored in `media/`. Below is a description and usage of each:
 ```bash
 cd ros/kuka_youbot
 ```
-
-````
-
 #### 4.2. Build your ROS workspace (if not built yet):
 
 ```bash
@@ -122,5 +119,4 @@ roslaunch kuka_youbot full_robot.launch
 
 ## 🔗 Hashtags
 
-#Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
-````
+# Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
