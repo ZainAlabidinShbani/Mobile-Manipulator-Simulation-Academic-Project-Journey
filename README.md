@@ -36,20 +36,59 @@ This project provides a full simulation environment for a mobile manipulator sys
 
 ## 📷 Media
 
+## 📷 Media
+
 All images are stored in `media/`. Below is a description and usage of each:
 
-| Image                                                                                                 | Description                                             |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `Denavit–Hartenberg Coordinate Frame Assignment for the KUKA youBot Arm.png`                          | DH frame assignment for all robotic arm joints.         |
-| `Individual Wheel Angles.png`                                                                         | Steering angles of each mecanum wheel during motion.    |
-| `Individual Wheel Velocities.png`                                                                     | Wheel velocities plotted over time.                     |
-| `Manipulability Index over Time for the Combined System Jacobian.png`                                 | Manipulability analysis for full mobile manipulator.    |
-| `Mobile Base Path.png`                                                                                | Path trajectory of the mobile base.                     |
-| `Mobile Base State Trajectories.png`                                                                  | State variables of mobile base over time.               |
-| `The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png` | Full robot visualization combining arm and mobile base. |
-| `Time Evolution of the End-Effector Twist in the body Frame.png`                                      | End-effector twist over time in body frame.             |
-| `rosgraph.png`                                                                                        | ROS rqt_graph showing node and topic connections.       |
-| `full robot assembled.png`                                                                            | Fully assembled robot visualization in ROS.             |
+### DH Frame Assignment
+
+![DH Frame Assignment](media/Denavit–Hartenberg Coordinate Frame Assignment for the KUKA youBot Arm.png)  
+_DH frame assignment for all robotic arm joints._
+
+### Individual Wheel Angles
+
+![Individual Wheel Angles](media/Individual Wheel Angles.png)  
+_Steering angles of each mecanum wheel during motion._
+
+### Individual Wheel Velocities
+
+![Individual Wheel Velocities](media/Individual Wheel Velocities.png)  
+_Wheel velocities plotted over time._
+
+### Manipulability Index
+
+![Manipulability Index](media/Manipulability Index over Time for the Combined System Jacobian.png)  
+_Manipulability analysis for full mobile manipulator._
+
+### Mobile Base Path
+
+![Mobile Base Path](media/Mobile Base Path.png)  
+_Path trajectory of the mobile base._
+
+### Mobile Base State Trajectories
+
+![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)  
+_State variables of mobile base over time._
+
+### Full Robot Image
+
+![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)  
+_Full robot visualization combining arm and mobile base._
+
+### End-Effector Twist Evolution
+
+![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)  
+_End-effector twist over time in body frame._
+
+### ROS Graph
+
+![ROS Graph](media/rosgraph.png)  
+_ROS rqt_graph showing node and topic connections._
+
+### Fully Assembled Robot
+
+![Fully Assembled Robot](media/full robot assembled.png)  
+_Fully assembled robot visualization in ROS._
 
 ---
 
@@ -79,6 +118,7 @@ All images are stored in `media/`. Below is a description and usage of each:
 ```bash
 cd ros/kuka_youbot
 ```
+
 #### 4.2. Build your ROS workspace (if not built yet):
 
 ```bash
