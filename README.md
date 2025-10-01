@@ -51,11 +51,6 @@ All images are stored in `media/`. Below is a description and usage of each:
 | `rosgraph.png`                                                                                        | ROS rqt_graph showing node and topic connections.       |
 | `full robot assembled.png`                                                                            | Fully assembled robot visualization in ROS.             |
 
-> To include images in your Markdown, you can reference them like:
-
-````markdown
-![Description](media/Denavit–Hartenberg Coordinate Frame Assignment for the KUKA youBot Arm.png)
-
 ---
 
 ## 🚦 Usage Instructions
@@ -84,6 +79,7 @@ All images are stored in `media/`. Below is a description and usage of each:
 ```bash
 cd ros/kuka_youbot
 ```
+
 ````
 
 #### 4.2. Build your ROS workspace (if not built yet):
@@ -127,3 +123,4 @@ roslaunch kuka_youbot full_robot.launch
 ## 🔗 Hashtags
 
 #Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
+````
