@@ -123,8 +123,8 @@ _State variables of mobile base over time._ -->
 ### Individual Wheel Angles vs Velocities
 
 <p float="left">
-  <img src="media/Individual_Wheel_Angles.png" width="45%" height="250" />
-  <img src="media/Individual_Wheel_Velocities.png" width="45%" height="250" />
+  <img src="media/Individual_Wheel_Angles.png" width="45%" />
+  <img src="media/Individual_Wheel_Velocities.png" width="45%"/>
 </p>
 
 ### Full Robot Image
