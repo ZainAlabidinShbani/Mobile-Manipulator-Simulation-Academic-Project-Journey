@@ -104,9 +104,9 @@ _Manipulability analysis for full mobile manipulator._
 
 <!-- ### Mobile Base Path
 
-![Mobile Base Path](media/Mobile Base Path.png)  
+![Mobile Base Path](media/Mobile Base Path.png)
 _Path trajectory of the mobile base._ -->
-<!-- 
+<!--
 ### Individual Wheel Angles
 ![Individual Wheel Angles](media/Individual Wheel Angles.png)
 _Steering angles of each mecanum wheel during motion._
@@ -117,16 +117,15 @@ _Wheel velocities plotted over time._
 
 ### Mobile Base State Trajectories
 
-![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)  
+![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)
 _State variables of mobile base over time._ -->
 
 ### Individual Wheel Angles vs Velocities
 
 <p float="left">
-  <img src="media/Individual_Wheel_Angles.png" width="45%" />
-  <img src="media/Individual_Wheel_Velocities.png" width="45%" />
+  <img src="media/Individual_Wheel_Angles.png" width="45%" height="250" />
+  <img src="media/Individual_Wheel_Velocities.png" width="45%" height="250" />
 </p>
-
 
 ### Full Robot Image
 
@@ -149,5 +148,3 @@ _Fully assembled robot visualization in ROS._
 _ROS rqt_graph showing node and topic connections._
 
 ---
-
-
