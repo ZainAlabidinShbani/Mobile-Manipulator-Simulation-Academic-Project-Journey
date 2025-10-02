@@ -40,7 +40,7 @@ All images and videos are stored in `media/`. Below is a description and usage o
 
 ### DH Frame Assignment
 
-![DH Frame Assignment](media/Denavit–Hartenberg Coordinate Frame Assignment for the KUKA youBot Arm.png)  
+![DH Frame Assignment](media/Denavit_Hartenberg_Coordinate.png)  
 _DH frame assignment for all robotic arm joints._
 
 ### Individual Wheel Angles
