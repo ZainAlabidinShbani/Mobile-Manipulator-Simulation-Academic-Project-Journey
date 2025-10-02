@@ -1,7 +1,23 @@
 # KUKA youBot Mobile Manipulator Simulation Framework
 
-🚀 A complete simulation framework for the **KUKA youBot mobile manipulator**, featuring an omnidirectional mecanum base, 5-DOF robotic arm, observer-based state feedback control, and multi-environment integration using ROS Noetic, MATLAB, and CoppeliaSim.
 
+🚀 This repository provides a **complete simulation framework** for the **KUKA youBot mobile manipulator**, integrating its **omnidirectional mecanum base** and **5-DOF robotic arm** into a unified system. The project combines **ROS Noetic**, **MATLAB**, and **CoppeliaSim** to deliver an end-to-end solution for modeling, control, and visualization of mobile manipulation tasks.
+
+The framework is structured to support:
+
+- **ROS Noetic package** (`kuka_youbot`) for robot description (URDF/Xacro), simulation, and visualization in RViz.  
+- **MATLAB environment** (`matlab/`) for control design, kinematics/dynamics, observer-based feedback, and data analysis.  
+- **CoppeliaSim 3D simulator** (`Coppeliasim Scenes/`) for realistic visualization of the robot, workspace, and trajectories.  
+- **CSV datasets** (`csv files/`) for recording and replaying robot states, control inputs, and analysis results.  
+- **Documentation and media** (`docs/`, `media/`) including the project report, plots, and CAD-based visualizations.  
+
+By bridging multiple environments, this repository serves as a **research-grade simulation platform** for mobile manipulation, enabling tasks such as:  
+- Path planning and trajectory tracking  
+- Arm manipulability analysis  
+- End-effector pose estimation  
+- Full-system ROS integration with TF frames, RViz markers, and live trajectory visualization  
+
+Whether you are a **student, researcher, or developer**, this project provides a ready-to-use and extensible setup to explore **robotics, control systems, and mobile manipulation** in both academic and industrial contexts.
 ---
 
 ## 📌 Project Overview
@@ -17,7 +33,7 @@ This project provides a full simulation environment for a mobile manipulator sys
 - `csv files/` : Example motion and control data for analysis and replay.
 - `docs/` : Project documentation and final report (PDF).
 - `media/` : Images and videos for documentation and demonstration.
-- `ros/kuka_youbot` : ROS Noetic package (URDF/Xacro, launch, nodes).
+- `kuka_youbot` : ROS Noetic package (URDF/Xacro, launch, nodes).
 
 ---
 
@@ -58,7 +74,7 @@ This project provides a full simulation environment for a mobile manipulator sys
 #### 4.1. Navigate to the ROS package:
 
 ```bash
-cd ros/kuka_youbot
+cd kuka_youbot
 ```
 
 #### 4.2. Build your ROS workspace (if not built yet):
@@ -92,6 +108,11 @@ roslaunch kuka_youbot full_robot.launch
 
 All images and videos are stored in `media/`. Below is a description and usage of each:
 
+### Fully Assembled Robot
+
+![Fully Assembled Robot](media/full_robot_assembled.png)  
+_Fully assembled robot visualization in ROS._
+
 ### DH Frame Assignment
 
 ![DH Frame Assignment](media/Denavit_Hartenberg_Coordinate.png)  
@@ -101,6 +122,13 @@ _DH frame assignment for all robotic arm joints._
 
 ![Manipulability Index](media/Manipulability_Index.png)  
 _Manipulability analysis for full mobile manipulator._
+
+### Individual Wheel Angles vs Velocities
+
+<p float="left">
+  <img src="media/Individual_Wheel_Angles.png" width="45%" height="250" />
+  <img src="media/Individual_Wheel_Velocities.png" width="45%" height="250"/>
+</p>
 
 <!-- ### Mobile Base Path
 
@@ -120,12 +148,7 @@ _Wheel velocities plotted over time._
 ![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)
 _State variables of mobile base over time._ -->
 
-### Individual Wheel Angles vs Velocities
 
-<p float="left">
-  <img src="media/Individual_Wheel_Angles.png" width="45%" />
-  <img src="media/Individual_Wheel_Velocities.png" width="45%"/>
-</p>
 
 <!-- ### Full Robot Image
 
@@ -137,14 +160,11 @@ _Full robot visualization combining arm and mobile base._
 ![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)
 _End-effector twist over time in body frame._ -->
 
-### Fully Assembled Robot
 
-![Fully Assembled Robot](media/full_robot_assembled.png)  
-_Fully assembled robot visualization in ROS._
 
-### ROS Graph
+<!-- ### ROS Graph
 
 ![ROS Graph](media/rqt_graph_for_full_system.png)  
 _ROS rqt_graph showing node and topic connections._
 
----
+--- -->
