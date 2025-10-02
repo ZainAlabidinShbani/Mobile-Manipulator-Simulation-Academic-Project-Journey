@@ -17,7 +17,7 @@ By bridging multiple environments, this repository serves as a **research-grade 
 - End-effector pose estimation
 - Full-system ROS integration with TF frames, RViz markers, and live trajectory visualization
 
-## Whether you are a **student, researcher, or developer**, this project provides a ready-to-use and extensible setup to explore **robotics, control systems, and mobile manipulation** in both academic and industrial contexts.
+Whether you are a **student, researcher, or developer**, this project provides a ready-to-use and extensible setup to explore **robotics, control systems, and mobile manipulation** in both academic and industrial contexts.
 
 ## 📌 Project Overview
 
@@ -28,7 +28,7 @@ This project provides a full simulation environment for a mobile manipulator sys
 ## 📦 Project Structure
 
 - `matlab/` : Core control, kinematics, and dynamics scripts. Entry point: `MobileManipulatorMain.m`.
-- `Coppeliasim Scenes/` : `.ttt` scene files for 3D simulation in CoppeliaSim.
+- `Coppeliasim_Scenes/` : `.ttt` scene files for 3D simulation in CoppeliaSim.
 - `csv files/` : Example motion and control data for analysis and replay.
 - `docs/` : Project documentation and final report (PDF).
 - `media/` : Images and videos for documentation and demonstration.
