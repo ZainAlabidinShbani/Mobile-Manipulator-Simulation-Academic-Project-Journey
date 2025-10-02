@@ -36,9 +36,7 @@ This project provides a full simulation environment for a mobile manipulator sys
 
 ## 📷 Media
 
-## 📷 Media
-
-All images are stored in `media/`. Below is a description and usage of each:
+All images and videos are stored in `media/`. Below is a description and usage of each:
 
 ### DH Frame Assignment
 
@@ -80,15 +78,15 @@ _Full robot visualization combining arm and mobile base._
 ![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)  
 _End-effector twist over time in body frame._
 
-### ROS Graph
-
-![ROS Graph](media/rosgraph.png)  
-_ROS rqt_graph showing node and topic connections._
-
 ### Fully Assembled Robot
 
 ![Fully Assembled Robot](media/full robot assembled.png)  
 _Fully assembled robot visualization in ROS._
+
+### ROS Graph
+
+![ROS Graph](media/rosgraph.png)  
+_ROS rqt_graph showing node and topic connections._
 
 ---
 
@@ -144,19 +142,4 @@ roslaunch kuka_youbot full_robot.launch
 - **path.py**: Updates end-effector trajectory in RViz.
 - **rqt_graph**: Shows live node-topic communication.
 
-## 👨‍👩‍👧‍👦 Team
-
-- Beilassan Hdewa
-- Lana Al Wazzeh
-- Zain Alabidin Shbani
-
-### 🧑‍🏫 Supervisors
-
-- Dr. Mohamad Kheir Abdullah Mohamad
-- Dr. Essa Alghannam
-
 ---
-
-## 🔗 Hashtags
-
-#Robotics #Simulation #ROS #CoppeliaSim #MATLAB #KUKAyouBot #MobileManipulation #Engineering #AI #ManaraUniversity #Teamwork #Research
