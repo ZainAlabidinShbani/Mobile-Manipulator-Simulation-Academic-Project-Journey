@@ -127,24 +127,24 @@ _State variables of mobile base over time._ -->
   <img src="media/Individual_Wheel_Velocities.png" width="45%"/>
 </p>
 
-### Full Robot Image
+<!-- ### Full Robot Image
 
-![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)  
+![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)
 _Full robot visualization combining arm and mobile base._
 
 ### End-Effector Twist Evolution
 
-![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)  
-_End-effector twist over time in body frame._
+![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)
+_End-effector twist over time in body frame._ -->
 
 ### Fully Assembled Robot
 
-![Fully Assembled Robot](media/full robot assembled.png)  
+![Fully Assembled Robot](media/full_robot_assembled.png)  
 _Fully assembled robot visualization in ROS._
 
 ### ROS Graph
 
-![ROS Graph](media/rosgraph.png)  
+![ROS Graph](media/rqt_graph_for_full_system.png)  
 _ROS rqt_graph showing node and topic connections._
 
 ---
