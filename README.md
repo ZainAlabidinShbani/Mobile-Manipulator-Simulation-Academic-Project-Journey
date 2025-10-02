@@ -1,6 +1,6 @@
 # KUKA youBot Mobile Manipulator Simulation Framework
 
-🚀 A complete simulation framework for the **KUKA youBot mobile manipulator**, featuring an omnidirectional mecanum base, 5-DOF robotic arm, observer-based state feedback control, and multi-environment integration using ROS Noetic, MATLAB, and CoppeliaSim. Developed as part of our Bachelor's studies in **Robotics and Intelligent Systems Engineering** at **Manara University**.
+🚀 A complete simulation framework for the **KUKA youBot mobile manipulator**, featuring an omnidirectional mecanum base, 5-DOF robotic arm, observer-based state feedback control, and multi-environment integration using ROS Noetic, MATLAB, and CoppeliaSim.
 
 ---
 
@@ -17,7 +17,7 @@ This project provides a full simulation environment for a mobile manipulator sys
 - `csv files/` : Example motion and control data for analysis and replay.
 - `docs/` : Project documentation and final report (PDF).
 - `media/` : Images and videos for documentation and demonstration.
-<!-- - `ros/` : ROS Noetic robot description and integration files (URDF/Xacro, launch, nodes). -->
+- `ros/kuka_youbot` : ROS Noetic package (URDF/Xacro, launch, nodes).
 
 ---
 
@@ -27,9 +27,9 @@ This project provides a full simulation environment for a mobile manipulator sys
 - 🟡 **5-DOF robotic arm** for accurate end-effector control
 - 🟡 **Observer-Based State Feedback Control** for trajectory tracking
 - 🟡 **Simulation & Visualization** in:
-  - [CoppeliaSim](https://www.coppeliarobotics.com/)
-  - [MATLAB](https://www.mathworks.com/products/matlab.html)
   - [ROS Noetic (RViz)](http://wiki.ros.org/noetic)
+  - [MATLAB](https://www.mathworks.com/products/matlab.html)
+  - [CoppeliaSim](https://www.coppeliarobotics.com/)
 - 🟡 **Accurate CAD modeling** in CATIA V5 → translated into URDF/Xacro for ROS
 
 ---
