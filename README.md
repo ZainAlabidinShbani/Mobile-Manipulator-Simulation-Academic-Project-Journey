@@ -1,24 +1,23 @@
 # KUKA youBot Mobile Manipulator Simulation Framework
 
-
 🚀 This repository provides a **complete simulation framework** for the **KUKA youBot mobile manipulator**, integrating its **omnidirectional mecanum base** and **5-DOF robotic arm** into a unified system. The project combines **ROS Noetic**, **MATLAB**, and **CoppeliaSim** to deliver an end-to-end solution for modeling, control, and visualization of mobile manipulation tasks.
 
 The framework is structured to support:
 
-- **ROS Noetic package** (`kuka_youbot`) for robot description (URDF/Xacro), simulation, and visualization in RViz.  
-- **MATLAB environment** (`matlab/`) for control design, kinematics/dynamics, observer-based feedback, and data analysis.  
-- **CoppeliaSim 3D simulator** (`Coppeliasim Scenes/`) for realistic visualization of the robot, workspace, and trajectories.  
-- **CSV datasets** (`csv files/`) for recording and replaying robot states, control inputs, and analysis results.  
-- **Documentation and media** (`docs/`, `media/`) including the project report, plots, and CAD-based visualizations.  
+- **ROS Noetic package** (`kuka_youbot`) for robot description (URDF/Xacro), simulation, and visualization in RViz.
+- **MATLAB environment** (`matlab/`) for control design, kinematics/dynamics, observer-based feedback, and data analysis.
+- **CoppeliaSim 3D simulator** (`Coppeliasim_Scenes/`) for realistic visualization of the robot, workspace, and trajectories.
+- **CSV datasets** (`csv files/`) for recording and replaying robot states, control inputs, and analysis results.
+- **Documentation and media** (`docs/`, `media/`) including the project report, plots, and CAD-based visualizations.
 
-By bridging multiple environments, this repository serves as a **research-grade simulation platform** for mobile manipulation, enabling tasks such as:  
-- Path planning and trajectory tracking  
-- Arm manipulability analysis  
-- End-effector pose estimation  
-- Full-system ROS integration with TF frames, RViz markers, and live trajectory visualization  
+By bridging multiple environments, this repository serves as a **research-grade simulation platform** for mobile manipulation, enabling tasks such as:
 
-Whether you are a **student, researcher, or developer**, this project provides a ready-to-use and extensible setup to explore **robotics, control systems, and mobile manipulation** in both academic and industrial contexts.
----
+- Path planning and trajectory tracking
+- Arm manipulability analysis
+- End-effector pose estimation
+- Full-system ROS integration with TF frames, RViz markers, and live trajectory visualization
+
+## Whether you are a **student, researcher, or developer**, this project provides a ready-to-use and extensible setup to explore **robotics, control systems, and mobile manipulation** in both academic and industrial contexts.
 
 ## 📌 Project Overview
 
@@ -148,8 +147,6 @@ _Wheel velocities plotted over time._
 ![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)
 _State variables of mobile base over time._ -->
 
-
-
 <!-- ### Full Robot Image
 
 ![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)
@@ -160,11 +157,9 @@ _Full robot visualization combining arm and mobile base._
 ![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)
 _End-effector twist over time in body frame._ -->
 
-
-
 <!-- ### ROS Graph
 
-![ROS Graph](media/rqt_graph_for_full_system.png)  
+![ROS Graph](media/rqt_graph_for_full_system.png)
 _ROS rqt_graph showing node and topic connections._
 
 --- -->
