@@ -34,79 +34,23 @@ This project provides a full simulation environment for a mobile manipulator sys
 
 ---
 
-## 📷 Media
-
-All images and videos are stored in `media/`. Below is a description and usage of each:
-
-### DH Frame Assignment
-
-![DH Frame Assignment](media/Denavit_Hartenberg_Coordinate.png)  
-_DH frame assignment for all robotic arm joints._
-
-### Individual Wheel Angles
-
-![Individual Wheel Angles](media/Individual Wheel Angles.png)  
-_Steering angles of each mecanum wheel during motion._
-
-### Individual Wheel Velocities
-
-![Individual Wheel Velocities](media/Individual Wheel Velocities.png)  
-_Wheel velocities plotted over time._
-
-### Manipulability Index
-
-![Manipulability Index](media/Manipulability Index over Time for the Combined System Jacobian.png)  
-_Manipulability analysis for full mobile manipulator._
-
-### Mobile Base Path
-
-![Mobile Base Path](media/Mobile Base Path.png)  
-_Path trajectory of the mobile base._
-
-### Mobile Base State Trajectories
-
-![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)  
-_State variables of mobile base over time._
-
-### Full Robot Image
-
-![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)  
-_Full robot visualization combining arm and mobile base._
-
-### End-Effector Twist Evolution
-
-![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)  
-_End-effector twist over time in body frame._
-
-### Fully Assembled Robot
-
-![Fully Assembled Robot](media/full robot assembled.png)  
-_Fully assembled robot visualization in ROS._
-
-### ROS Graph
-
-![ROS Graph](media/rosgraph.png)  
-_ROS rqt_graph showing node and topic connections._
-
----
-
 ## 🚦 Usage Instructions
 
 ### 1. MATLAB Simulation
 
-- Open MATLAB and navigate to the **matlab/** folder.
-- Run **MobileManipulatorMain.m** to start the full simulation.
-- Optional: Run additional scripts such as **ArmPolePlacementandObserver.m** to simulate only the arm control.
+- Open MATLAB and navigate to the `matlab/` folder.
+- Run `MobileManipulatorMain.m` to start the full simulation.
+- Optional: Run additional scripts such as `ArmPolePlacementandObserver.m` to simulate only the arm control.
 
 ### 2. CoppeliaSim Visualization
 
 - Open CoppeliaSim.
-- Load the scene file **Coppeliasim_Scenes/Scene6_youBot_cube.ttt**.
+- Load the scene file `Coppeliasim_Scenes/Scene6_youBot_cube.ttt`.
 - Ensure the robot parameters match MATLAB for consistent simulation.
 
 ### 3. Data Analysis
 
-- CSV files in **csv_files/** contain motion and control data.
+- CSV files in `csv_files/` contain motion and control data.
 - MATLAB scripts can read and process these files for analysis or replay.
 
 ### 4. ROS Noetic Integration
@@ -133,13 +77,77 @@ roslaunch kuka_youbot full_robot.launch
 
 #### Key Launch Components
 
-- **robot_description**: Loads full URDF/Xacro model combining arm + mobile base.
-- **robot_state_publisher**: Publishes all TF transforms.
-- **joint_state_publisher_gui**: GUI for manual joint testing.
-- **rviz**: Visualization using robot2.rviz config (shows robot, TF frames, markers, trajectory).
-- **end_effector_pose.py**: Publishes 3D end-effector position using TF.
-- **marker.py**: Visualizes gripper position in RViz.
-- **path.py**: Updates end-effector trajectory in RViz.
-- **rqt_graph**: Shows live node-topic communication.
+- `robot_description`: Loads full URDF/Xacro model combining arm + mobile base.
+- `robot_state_publisher`: Publishes all TF transforms.
+- `joint_state_publisher_gui`: GUI for manual joint testing.
+- `rviz`: Visualization using robot2.rviz config (shows robot, TF frames, markers, trajectory).
+- `end_effector_pose.py`: Publishes 3D end-effector position using TF.
+- `marker.py`: Visualizes gripper position in RViz.
+- `path.py`: Updates end-effector trajectory in RViz.
+- `rqt_graph`: Shows live node-topic communication.
 
 ---
+
+## 📷 Media
+
+All images and videos are stored in `media/`. Below is a description and usage of each:
+
+### DH Frame Assignment
+
+![DH Frame Assignment](media/Denavit_Hartenberg_Coordinate.png)  
+_DH frame assignment for all robotic arm joints._
+
+### Manipulability Index
+
+![Manipulability Index](media/Manipulability_Index.png)  
+_Manipulability analysis for full mobile manipulator._
+
+<!-- ### Mobile Base Path
+
+![Mobile Base Path](media/Mobile Base Path.png)  
+_Path trajectory of the mobile base._ -->
+<!-- 
+### Individual Wheel Angles
+![Individual Wheel Angles](media/Individual Wheel Angles.png)
+_Steering angles of each mecanum wheel during motion._
+
+### Individual Wheel Velocities
+![Individual Wheel Velocities](media/Individual Wheel Velocities.png)
+_Wheel velocities plotted over time._
+
+### Mobile Base State Trajectories
+
+![Mobile Base State Trajectories](media/Mobile Base State Trajectories.png)  
+_State variables of mobile base over time._ -->
+
+### Individual Wheel Angles vs Velocities
+
+<p float="left">
+  <img src="media/Individual_Wheel_Angles.png" width="45%" />
+  <img src="media/Individual_Wheel_Velocities.png" width="45%" />
+</p>
+
+
+### Full Robot Image
+
+![Full Robot Image](media/The entire image of the KUKA youBot shows both the mobile base and the 5-DOF arm with a gripper.png)  
+_Full robot visualization combining arm and mobile base._
+
+### End-Effector Twist Evolution
+
+![End-Effector Twist](media/Time Evolution of the End-Effector Twist in the body Frame.png)  
+_End-effector twist over time in body frame._
+
+### Fully Assembled Robot
+
+![Fully Assembled Robot](media/full robot assembled.png)  
+_Fully assembled robot visualization in ROS._
+
+### ROS Graph
+
+![ROS Graph](media/rosgraph.png)  
+_ROS rqt_graph showing node and topic connections._
+
+---
+
+
