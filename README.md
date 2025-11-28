@@ -1,4 +1,4 @@
-# KUKA youBot Mobile Manipulator Simulation Framework
+# KUKA youBot Mobile Manipulator Simulation Framework.
 
 🚀 This repository provides a **complete simulation framework** for the **KUKA youBot mobile manipulator**, integrating its **omnidirectional mecanum base** and **5-DOF robotic arm** into a unified system. The project combines **ROS Noetic**, **MATLAB**, and **CoppeliaSim** to deliver an end-to-end solution for modeling, control, and visualization of mobile manipulation tasks.
 
