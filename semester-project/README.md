@@ -1,4 +1,4 @@
-# KUKA youBot Mobile Manipulator Simulation Framework.
+# KUKA youBot Mobile Manipulator Simulation Framework
 
 🚀 This repository provides a **complete simulation framework** for the **KUKA youBot mobile manipulator**, integrating its **omnidirectional mecanum base** and **5-DOF robotic arm** into a unified system. The project combines **ROS Noetic**, **MATLAB**, and **CoppeliaSim** to deliver an end-to-end solution for modeling, control, and visualization of mobile manipulation tasks.
 
@@ -51,6 +51,12 @@ This project provides a full simulation environment for a mobile manipulator sys
 
 ## 🚦 Usage Instructions
 
+### Requirements
+
+- MATLAB (for control and simulation).
+- CoppeliaSim (for 3D visualization).
+- ROS Noetic (optional, Linux environment recommended).
+
 ### 1. MATLAB Simulation
 
 - Open MATLAB and navigate to the `matlab/` folder.
@@ -65,10 +71,12 @@ This project provides a full simulation environment for a mobile manipulator sys
 
 ### 3. Data Analysis
 
-- CSV files in `csv_files/` contain motion and control data.
+- CSV files in `csv files/` contain motion and control data.
 - MATLAB scripts can read and process these files for analysis or replay.
 
 ### 4. ROS Noetic Integration
+
+> Note: ROS setup assumes a Linux workspace with a configured catkin environment.
 
 #### 4.1. Navigate to the ROS package:
 
