@@ -13,9 +13,7 @@ This project is a **3-DOF robotic arm** mounted on a mobile base, developed as a
 | Folder | Description |
 |---|---|
 | `matlab/` | Control, kinematics, and dynamics scripts |
-| `Coppeliasim_Scenes/` | `.ttt` scene files for 3D simulation (if applicable) |
 | `cad/` | CAD design files for the custom 3-DOF arm |
-| `csv files/` | Motion and control data for analysis and replay |
 | `docs/` | Project report and documentation |
 | `media/` | Images and videos for documentation |
 
@@ -27,15 +25,15 @@ This project is a **3-DOF robotic arm** mounted on a mobile base, developed as a
 |---|---|---|
 | Robot | KUKA youBot | Custom-designed |
 | DOF | 5 | 3 |
-| Base | Mecanum-wheel omnidirectional | Mobile base |
+| Base | Mecanum-wheel omnidirectional | Mecanum-wheel omnidirectional |
 | CAD source | CATIA V5 → URDF | Custom CAD files |
 | Simulator | CoppeliaSim + ROS + MATLAB | MATLAB + CoppeliaSim |
 
 ---
 
-## 🚦 Usage Instructions
+<!-- ## 🚦 Usage Instructions
 
-> ⚠️ Instructions will be updated once files are added.
+> ⚠️ Instructions will be updated once files are added. -->
 
 ### MATLAB Simulation
 
@@ -50,4 +48,4 @@ This project is a **3-DOF robotic arm** mounted on a mobile base, developed as a
 
 ## 📷 Media
 
-> Images and videos will be added to `media/` once available.
+<!-- > Images and videos will be added to `media/` once available. -->
