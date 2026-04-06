@@ -41,7 +41,7 @@ A custom-designed **3-DOF robotic arm** on a mobile base, developed as a senior 
 | Robot | KUKA youBot | Custom Design |
 | Arm DOF | 5 | 3 |
 | Base | Mecanum-wheel (omnidirectional) | Mobile base |
-| Tools | ROS + MATLAB + CoppeliaSim | MATLAB + CoppeliaSim |
+| Tools | ROS + MATLAB + CoppeliaSim | MATLAB |
 | CAD | CATIA V5 → URDF | Custom CAD files |
 
 ---
@@ -63,10 +63,10 @@ cd senior-project/
 ## 👤 Author
 
 **Zain Alabidin Shbani**  
-Robotics & Mechatronics Engineering
+Robotics & Intelligent Systems Engineering
 
----
+<!-- ---
 
 ## 📄 License
 
-See [`semester-project/LICENSE`](./semester-project/LICENSE).
+See [`semester-project/LICENSE`](./semester-project/LICENSE). -->
