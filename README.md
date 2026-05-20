@@ -70,3 +70,10 @@ Robotics & Intelligent Systems Engineering
 ## 📄 License
 
 See [`semester-project/LICENSE`](./semester-project/LICENSE). -->
+
+
+---
+
+## New ROS 2 workspace
+
+See [`ros2_mobile_manipulator_ws/README.md`](./ros2_mobile_manipulator_ws/README.md) for the simulation-first ROS 2 Humble implementation.
