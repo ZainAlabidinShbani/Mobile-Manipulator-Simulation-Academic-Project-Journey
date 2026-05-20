@@ -1,0 +1,7 @@
+/**:
+  ros__parameters:
+    base_height: 0.32
+    link_1: 0.28
+    link_2: 0.24
+    link_3: 0.14
+    joint_names: [arm_joint_1, arm_joint_2, arm_joint_3, arm_joint_4]
