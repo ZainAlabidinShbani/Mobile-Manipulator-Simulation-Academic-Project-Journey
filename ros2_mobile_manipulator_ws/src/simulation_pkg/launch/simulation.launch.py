@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from tempfile import NamedTemporaryFile, gettempdir
+from tempfile import gettempdir, mkstemp
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -39,10 +39,9 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        with NamedTemporaryFile(mode='w', suffix='.urdf', dir=gettempdir(), delete=False) as urdf_file:
+        urdf_fd, robot_urdf_path = mkstemp(suffix='.urdf', dir=gettempdir(), text=True)
+        with os.fdopen(urdf_fd, 'w') as urdf_file:
             urdf_file.write(robot_description)
-            robot_urdf_path = urdf_file.name
-        os.chmod(robot_urdf_path, 0o600)
 
         def cleanup_robot_urdf(context, *args, **kwargs):
             try:
