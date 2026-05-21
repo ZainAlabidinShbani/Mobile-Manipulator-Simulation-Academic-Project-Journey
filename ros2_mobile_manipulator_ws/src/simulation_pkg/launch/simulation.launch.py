@@ -5,7 +5,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -16,7 +16,11 @@ def generate_launch_description():
     rviz_config = LaunchConfiguration('rviz_config')
     use_rviz = LaunchConfiguration('use_rviz')
 
-    robot_description = Command(['xacro', os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro')])
+    robot_description = Command([
+        FindExecutable(name='xacro'),
+        ' ',
+        os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
+    ])
 
     declare_world = DeclareLaunchArgument('world', default_value=os.path.join(pkg_share, 'worlds', 'pick_and_place.world'))
     declare_rviz = DeclareLaunchArgument('rviz_config', default_value=os.path.join(pkg_share, 'rviz', 'mobile_manipulator.rviz'))
