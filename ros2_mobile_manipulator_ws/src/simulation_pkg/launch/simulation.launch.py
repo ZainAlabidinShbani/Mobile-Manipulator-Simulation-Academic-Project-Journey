@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from tempfile import gettempdir, mkstemp
+from tempfile import mkstemp
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -39,15 +39,13 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        urdf_fd, robot_urdf_path = mkstemp(prefix='robot_urdf_', suffix='.urdf', dir=gettempdir(), text=True)
+        urdf_fd, robot_urdf_path = mkstemp(prefix='robot_urdf_', suffix='.urdf', text=True)
         with os.fdopen(urdf_fd, 'w') as urdf_file:
             urdf_file.write(robot_description)
 
         def cleanup_robot_urdf(context, *args, **kwargs):
             try:
-                Path(robot_urdf_path).unlink()
-            except FileNotFoundError:
-                LOGGER.info(f'Temporary URDF file not found during cleanup; skipping: {robot_urdf_path}')
+                Path(robot_urdf_path).unlink(missing_ok=True)
             except OSError as exc:
                 LOGGER.warning(f'Failed to remove temporary URDF file {robot_urdf_path}: {exc}')
             return []
