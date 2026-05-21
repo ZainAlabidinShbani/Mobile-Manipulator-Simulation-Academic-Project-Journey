@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 from ament_index_python.packages import get_package_share_directory
@@ -40,41 +39,40 @@ def generate_launch_description():
         ]).perform(context)
 
         robot_urdf_resources = {'tempdir': TemporaryDirectory(prefix='robot_urdf_')}
-        with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_resources['tempdir'].name, delete=False) as urdf_file:
-            urdf_file.write(robot_description)
-            robot_urdf_resources['path'] = urdf_file.name
+        try:
+            with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_resources['tempdir'].name, delete=False) as urdf_file:
+                urdf_file.write(robot_description)
+                robot_urdf_resources['path'] = urdf_file.name
 
-        def cleanup_robot_urdf(context, *args, **kwargs):
-            try:
-                Path(robot_urdf_resources['path']).unlink(missing_ok=True)
-            except OSError as exc:
-                LOGGER.warning('Failed to remove temporary URDF file: %s. If the file persists, please manually remove: %s', exc, robot_urdf_resources['path'])
-            finally:
+            def cleanup_robot_urdf(context, *args, **kwargs):
                 robot_urdf_resources['tempdir'].cleanup()
-            return []
+                return []
 
-        state_publisher = Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            parameters=[{'robot_description': robot_description, 'use_sim_time': True}],
-            output='screen',
-        )
-        spawn_entity = Node(
-            package='gazebo_ros',
-            executable='spawn_entity.py',
-            arguments=['-file', robot_urdf_resources['path'], '-entity', 'mobile_manipulator'],
-            output='screen',
-        )
-        rviz = Node(
-            package='rviz2',
-            executable='rviz2',
-            arguments=['-d', rviz_config],
-            condition=IfCondition(use_rviz),
-            output='screen',
-        )
-        gazebo_bridge = Node(package='simulation_pkg', executable='gazebo_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
-        rviz_bridge = Node(package='simulation_pkg', executable='rviz_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
-        cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
-        return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
+            state_publisher = Node(
+                package='robot_state_publisher',
+                executable='robot_state_publisher',
+                parameters=[{'robot_description': robot_description, 'use_sim_time': True}],
+                output='screen',
+            )
+            spawn_entity = Node(
+                package='gazebo_ros',
+                executable='spawn_entity.py',
+                arguments=['-file', robot_urdf_resources['path'], '-entity', 'mobile_manipulator'],
+                output='screen',
+            )
+            rviz = Node(
+                package='rviz2',
+                executable='rviz2',
+                arguments=['-d', rviz_config],
+                condition=IfCondition(use_rviz),
+                output='screen',
+            )
+            gazebo_bridge = Node(package='simulation_pkg', executable='gazebo_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
+            rviz_bridge = Node(package='simulation_pkg', executable='rviz_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
+            cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
+            return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
+        except Exception:
+            robot_urdf_resources['tempdir'].cleanup()
+            raise
 
     return LaunchDescription([declare_world, declare_rviz, declare_use_rviz, OpaqueFunction(function=launch_setup)])
