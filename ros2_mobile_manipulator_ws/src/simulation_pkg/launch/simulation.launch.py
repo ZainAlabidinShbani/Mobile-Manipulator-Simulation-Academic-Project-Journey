@@ -1,11 +1,13 @@
 import os
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, RegisterEventHandler
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.event_handlers import OnShutdown
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch_ros.actions import Node
 
@@ -37,6 +39,10 @@ def generate_launch_description():
             urdf_file.write(robot_description)
             robot_urdf_path = urdf_file.name
 
+        def cleanup_robot_urdf(context, *args, **kwargs):
+            Path(robot_urdf_path).unlink(missing_ok=True)
+            return []
+
         state_publisher = Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
@@ -58,6 +64,7 @@ def generate_launch_description():
         )
         gazebo_bridge = Node(package='simulation_pkg', executable='gazebo_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
         rviz_bridge = Node(package='simulation_pkg', executable='rviz_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
-        return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz]
+        cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
+        return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
 
     return LaunchDescription([declare_world, declare_rviz, declare_use_rviz, OpaqueFunction(function=launch_setup)])
