@@ -45,7 +45,16 @@ def generate_launch_description():
                 robot_urdf_resources['path'] = urdf_file.name
 
             def cleanup_robot_urdf(context, *args, **kwargs):
-                robot_urdf_resources['tempdir'].cleanup()
+                try:
+                    os.unlink(robot_urdf_resources['path'])
+                    LOGGER.debug('Removed temporary URDF file: %s', robot_urdf_resources['path'])
+                except OSError as exc:
+                    LOGGER.warning('Failed to remove temporary URDF file %s: %s', robot_urdf_resources['path'], exc)
+                try:
+                    robot_urdf_resources['tempdir'].cleanup()
+                    LOGGER.debug('Removed temporary URDF directory: %s', robot_urdf_resources['tempdir'].name)
+                except OSError as exc:
+                    LOGGER.warning('Failed to remove temporary URDF directory %s: %s', robot_urdf_resources['tempdir'].name, exc)
                 return []
 
             state_publisher = Node(
@@ -72,6 +81,7 @@ def generate_launch_description():
             cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
             return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
         except Exception:
+            LOGGER.error('Failed to prepare temporary URDF for spawning the robot')
             robot_urdf_resources['tempdir'].cleanup()
             raise
 
