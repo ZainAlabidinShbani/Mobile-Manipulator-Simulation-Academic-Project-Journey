@@ -42,12 +42,13 @@ def generate_launch_description():
         urdf_fd, robot_urdf_path = mkstemp(prefix='robot_urdf_', suffix='.urdf', text=True)
         with os.fdopen(urdf_fd, 'w') as urdf_file:
             urdf_file.write(robot_description)
+        os.chmod(robot_urdf_path, 0o600)
 
         def cleanup_robot_urdf(context, *args, **kwargs):
             try:
                 Path(robot_urdf_path).unlink(missing_ok=True)
             except OSError as exc:
-                LOGGER.warning(f'Failed to remove temporary URDF file {robot_urdf_path}: {exc}')
+                LOGGER.warning(f'Failed to remove temporary URDF file {robot_urdf_path}: {exc}. Please remove it manually if it persists.')
             return []
 
         state_publisher = Node(
