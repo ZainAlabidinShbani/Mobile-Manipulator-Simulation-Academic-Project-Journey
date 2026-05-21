@@ -39,7 +39,7 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        urdf_fd, robot_urdf_path = mkstemp(suffix='.urdf', dir=gettempdir(), text=True)
+        urdf_fd, robot_urdf_path = mkstemp(prefix='robot_urdf_', suffix='.urdf', dir=gettempdir(), text=True)
         with os.fdopen(urdf_fd, 'w') as urdf_file:
             urdf_file.write(robot_description)
 
@@ -47,7 +47,7 @@ def generate_launch_description():
             try:
                 Path(robot_urdf_path).unlink()
             except FileNotFoundError:
-                LOGGER.warning(f'Temporary URDF file not found during cleanup: {robot_urdf_path}')
+                LOGGER.info(f'Temporary URDF file not found during cleanup; skipping: {robot_urdf_path}')
             except OSError as exc:
                 LOGGER.warning(f'Failed to remove temporary URDF file {robot_urdf_path}: {exc}')
             return []
