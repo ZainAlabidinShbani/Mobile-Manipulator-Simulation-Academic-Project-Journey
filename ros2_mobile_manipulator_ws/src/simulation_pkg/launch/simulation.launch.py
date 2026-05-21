@@ -8,8 +8,12 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Opaq
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.event_handlers import OnShutdown
+from launch.logging import get_logger
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch_ros.actions import Node
+
+
+LOGGER = get_logger('simulation_launch')
 
 
 def generate_launch_description():
@@ -35,12 +39,18 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        with NamedTemporaryFile(mode='w', suffix='.urdf', delete=False) as urdf_file:
+        with NamedTemporaryFile(mode='w', suffix='.urdf', dir='/tmp', delete=False) as urdf_file:
             urdf_file.write(robot_description)
             robot_urdf_path = urdf_file.name
+        os.chmod(robot_urdf_path, 0o600)
 
         def cleanup_robot_urdf(context, *args, **kwargs):
-            Path(robot_urdf_path).unlink(missing_ok=True)
+            try:
+                Path(robot_urdf_path).unlink()
+            except FileNotFoundError:
+                LOGGER.warning(f'Temporary URDF file was already removed: {robot_urdf_path}')
+            except OSError as exc:
+                LOGGER.warning(f'Failed to remove temporary URDF file {robot_urdf_path}: {exc}')
             return []
 
         state_publisher = Node(
