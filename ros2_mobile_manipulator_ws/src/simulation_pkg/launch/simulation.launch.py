@@ -47,7 +47,7 @@ def generate_launch_description():
             try:
                 Path(robot_urdf_path).unlink(missing_ok=True)
             except OSError as exc:
-                LOGGER.warning(f'Failed to remove temporary URDF file "{robot_urdf_path}": {exc}. Please remove that exact file manually if it persists.')
+                LOGGER.warning(f'Failed to remove temporary URDF file: {exc}. If the file persists, please manually remove: {robot_urdf_path}')
             return []
 
         state_publisher = Node(
