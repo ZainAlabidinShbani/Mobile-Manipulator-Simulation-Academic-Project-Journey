@@ -1,4 +1,6 @@
+import atexit
 import os
+from types import SimpleNamespace
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 from ament_index_python.packages import get_package_share_directory
@@ -38,23 +40,24 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        robot_urdf_resources = {'tempdir': TemporaryDirectory(prefix='robot_urdf_')}
+        robot_urdf_resources = SimpleNamespace(tempdir=TemporaryDirectory(prefix='robot_urdf_'), path=None)
         try:
-            with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_resources['tempdir'].name, delete=False) as urdf_file:
+            with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_resources.tempdir.name, delete=False) as urdf_file:
                 urdf_file.write(robot_description)
-                robot_urdf_resources['path'] = urdf_file.name
+                robot_urdf_resources.path = urdf_file.name
+            atexit.register(robot_urdf_resources.tempdir.cleanup)
 
             def cleanup_robot_urdf(context, *args, **kwargs):
                 try:
-                    os.unlink(robot_urdf_resources['path'])
-                    LOGGER.debug('Removed temporary URDF file: %s', robot_urdf_resources['path'])
+                    os.unlink(robot_urdf_resources.path)
+                    LOGGER.debug('Removed temporary URDF file: %s', robot_urdf_resources.path)
                 except OSError as exc:
-                    LOGGER.warning('Failed to remove temporary URDF file %s: %s', robot_urdf_resources['path'], exc)
+                    LOGGER.warning('Failed to remove temporary URDF file %s: %s', robot_urdf_resources.path, exc)
                 try:
-                    robot_urdf_resources['tempdir'].cleanup()
-                    LOGGER.debug('Removed temporary URDF directory: %s', robot_urdf_resources['tempdir'].name)
+                    robot_urdf_resources.tempdir.cleanup()
+                    LOGGER.debug('Removed temporary URDF directory: %s', robot_urdf_resources.tempdir.name)
                 except OSError as exc:
-                    LOGGER.warning('Failed to remove temporary URDF directory %s: %s', robot_urdf_resources['tempdir'].name, exc)
+                    LOGGER.warning('Failed to remove temporary URDF directory %s: %s', robot_urdf_resources.tempdir.name, exc)
                 return []
 
             state_publisher = Node(
@@ -66,7 +69,7 @@ def generate_launch_description():
             spawn_entity = Node(
                 package='gazebo_ros',
                 executable='spawn_entity.py',
-                arguments=['-file', robot_urdf_resources['path'], '-entity', 'mobile_manipulator'],
+                arguments=['-file', robot_urdf_resources.path, '-entity', 'mobile_manipulator'],
                 output='screen',
             )
             rviz = Node(
@@ -81,8 +84,8 @@ def generate_launch_description():
             cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
             return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
         except Exception:
-            LOGGER.error('Failed to prepare temporary URDF for spawning the robot')
-            robot_urdf_resources['tempdir'].cleanup()
+            LOGGER.exception('Failed to prepare temporary URDF for spawning the robot')
+            robot_urdf_resources.tempdir.cleanup()
             raise
 
     return LaunchDescription([declare_world, declare_rviz, declare_use_rviz, OpaqueFunction(function=launch_setup)])
