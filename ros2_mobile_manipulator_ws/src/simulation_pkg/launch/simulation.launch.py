@@ -39,18 +39,18 @@ def generate_launch_description():
             os.path.join(pkg_share, 'urdf', 'mobile_manipulator.urdf.xacro'),
         ]).perform(context)
 
-        robot_urdf_dir = TemporaryDirectory(prefix='robot_urdf_')
-        with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_dir.name, delete=False) as urdf_file:
+        robot_urdf_resources = {'tempdir': TemporaryDirectory(prefix='robot_urdf_')}
+        with NamedTemporaryFile(mode='w', suffix='.urdf', dir=robot_urdf_resources['tempdir'].name, delete=False) as urdf_file:
             urdf_file.write(robot_description)
-            robot_urdf_path = urdf_file.name
+            robot_urdf_resources['path'] = urdf_file.name
 
         def cleanup_robot_urdf(context, *args, **kwargs):
             try:
-                Path(robot_urdf_path).unlink(missing_ok=True)
+                Path(robot_urdf_resources['path']).unlink(missing_ok=True)
             except OSError as exc:
-                LOGGER.warning(f'Failed to remove temporary URDF file: {exc}. If the file persists, please manually remove: {robot_urdf_path}')
+                LOGGER.warning('Failed to remove temporary URDF file: %s. If the file persists, please manually remove: %s', exc, robot_urdf_resources['path'])
             finally:
-                robot_urdf_dir.cleanup()
+                robot_urdf_resources['tempdir'].cleanup()
             return []
 
         state_publisher = Node(
@@ -62,7 +62,7 @@ def generate_launch_description():
         spawn_entity = Node(
             package='gazebo_ros',
             executable='spawn_entity.py',
-            arguments=['-file', robot_urdf_path, '-entity', 'mobile_manipulator'],
+            arguments=['-file', robot_urdf_resources['path'], '-entity', 'mobile_manipulator'],
             output='screen',
         )
         rviz = Node(
