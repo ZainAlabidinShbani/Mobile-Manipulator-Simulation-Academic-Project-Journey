@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(mobile_manipulator_msgs)
 
 find_package(ament_cmake REQUIRED)
+find_package(action_msgs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -18,7 +19,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SolveIK.srv"
   "srv/SolveFK.srv"
   "action/ExecutePickPlace.action"
-  DEPENDENCIES builtin_interfaces geometry_msgs std_msgs
+  DEPENDENCIES builtin_interfaces geometry_msgs std_msgs action_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)
