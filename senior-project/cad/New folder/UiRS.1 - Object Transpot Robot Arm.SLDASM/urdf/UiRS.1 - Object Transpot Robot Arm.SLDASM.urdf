@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="UiRS.1 - Object Transpot Robot Arm.SLDASM">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0293315562190862 0.094969509489505 -0.000210777700230468"
+        rpy="0 0 0" />
+      <mass
+        value="0.589788647197602" />
+      <inertia
+        ixx="0.000857384689929872"
+        ixy="-5.76364539440715E-08"
+        ixz="2.10258185028542E-07"
+        iyy="0.00203887056965017"
+        iyz="3.44835587656762E-07"
+        izz="0.00124222656222317" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="linnk1">
+    <inertial>
+      <origin
+        xyz="-0.0625201936088106 0.0302619197991424 0.0891215724157588"
+        rpy="0 0 0" />
+      <mass
+        value="0.0442264098289709" />
+      <inertia
+        ixx="5.17316724087004E-06"
+        ixy="-1.47468209014136E-08"
+        ixz="1.05539524185654E-09"
+        iyy="5.16260749137017E-06"
+        iyz="-2.04430239636885E-09"
+        izz="7.99429447666619E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/linnk1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/linnk1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="linnk1" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="0.0624798056835113 0.0302619115561582 0.0891215755350853"
+        rpy="0 0 0" />
+      <mass
+        value="0.0442264220442005" />
+      <inertia
+        ixx="5.17316916368769E-06"
+        ixy="-1.47472207319849E-08"
+        ixz="1.05524390218674E-09"
+        iyy="5.16261098812225E-06"
+        iyz="-2.04496811895379E-09"
+        izz="7.99429989910793E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="-0.0625923325312005 0.0302514924005309 -0.089410448125923"
+        rpy="0 0 0" />
+      <mass
+        value="0.0442264207947984" />
+      <inertia
+        ixx="5.16431474919998E-06"
+        ixy="1.52496784687136E-08"
+        ixz="4.33208378061226E-10"
+        iyy="5.17146403065207E-06"
+        iyz="2.25972928411295E-09"
+        izz="7.99429828677473E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="0.0624076669644467 0.030251497542317 -0.0894104477152602"
+        rpy="0 0 0" />
+      <mass
+        value="0.0442264202553307" />
+      <inertia
+        ixx="5.16431496983582E-06"
+        ixy="1.5250364955057E-08"
+        ixz="4.33278276433825E-10"
+        iyy="5.17146367860326E-06"
+        iyz="2.25971504468733E-09"
+        izz="7.99429810781775E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://UiRS.1 - Object Transpot Robot Arm.SLDASM/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+</robot>
