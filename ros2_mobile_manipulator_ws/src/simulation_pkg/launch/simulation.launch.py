@@ -10,14 +10,12 @@ Usage:
 """
 
 import os
-from pathlib import Path
 
-from ament_python_package import get_package_share_directory  # type: ignore
+from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
-    ExecuteProcess,
     IncludeLaunchDescription,
     TimerAction,
 )
@@ -27,28 +25,22 @@ from launch.substitutions import (
     Command,
     FindExecutable,
     LaunchConfiguration,
-    PathJoinSubstitution,
 )
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description() -> LaunchDescription:
 
     # ------------------------------------------------------------------
-    # Package paths
+    # Package share directory (resolved eagerly at import time via
+    # ament_index — avoids substitution concatenation bugs)
     # ------------------------------------------------------------------
-    pkg_share = FindPackageShare("simulation_pkg")
+    pkg_share  = get_package_share_directory("simulation_pkg")
+    gazebo_share = get_package_share_directory("gazebo_ros")
 
-    urdf_file = PathJoinSubstitution(
-        [pkg_share, "urdf", "mobile_manipulator.urdf.xacro"]
-    )
-    world_file = PathJoinSubstitution(
-        [pkg_share, "worlds", "pick_and_place.world"]
-    )
-    rviz_config = PathJoinSubstitution(
-        [pkg_share, "rviz", "default.rviz"]
-    )
+    urdf_file   = os.path.join(pkg_share, "urdf",   "mobile_manipulator.urdf.xacro")
+    world_file  = os.path.join(pkg_share, "worlds",  "pick_and_place.world")
+    rviz_config = os.path.join(pkg_share, "rviz",   "default.rviz")
 
     # ------------------------------------------------------------------
     # Launch arguments
@@ -69,18 +61,20 @@ def generate_launch_description() -> LaunchDescription:
         description="Launch RViz2 visualisation",
     )
 
-    gui            = LaunchConfiguration("gui")
-    use_sim_time   = LaunchConfiguration("use_sim_time")
-    launch_rviz    = LaunchConfiguration("rviz")
+    gui          = LaunchConfiguration("gui")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    launch_rviz  = LaunchConfiguration("rviz")
 
     # ------------------------------------------------------------------
-    # Robot description (xacro → URDF string)
+    # Robot description — xacro → URDF string
+    # Command list is concatenated with NO automatic separator.
+    # The space " " between executable and file path is mandatory.
     # ------------------------------------------------------------------
     robot_description_content = Command(
         [
             FindExecutable(name="xacro"),
-            " ",
-            urdf_file,
+            " ",          # <-- explicit space between 'xacro' and the path
+            urdf_file,    # plain string from os.path.join (no substitution)
         ]
     )
     robot_description = {"robot_description": robot_description_content}
@@ -89,7 +83,7 @@ def generate_launch_description() -> LaunchDescription:
     # Nodes
     # ------------------------------------------------------------------
 
-    # 1. robot_state_publisher — broadcasts TF from URDF joint states
+    # 1. robot_state_publisher
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -104,15 +98,7 @@ def generate_launch_description() -> LaunchDescription:
     # 2. Gazebo server
     gazebo_server = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("gazebo_ros"),
-                        "launch",
-                        "gzserver.launch.py",
-                    ]
-                )
-            ]
+            os.path.join(gazebo_share, "launch", "gzserver.launch.py")
         ),
         launch_arguments={
             "world": world_file,
@@ -120,23 +106,15 @@ def generate_launch_description() -> LaunchDescription:
         }.items(),
     )
 
-    # 3. Gazebo client (GUI) — conditional on gui:=true
+    # 3. Gazebo client (GUI) — only when gui:=true
     gazebo_client = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare("gazebo_ros"),
-                        "launch",
-                        "gzclient.launch.py",
-                    ]
-                )
-            ]
+            os.path.join(gazebo_share, "launch", "gzclient.launch.py")
         ),
         condition=IfCondition(gui),
     )
 
-    # 4. Spawn the robot into Gazebo (delayed 2 s to let Gazebo start)
+    # 4. Spawn robot (2 s delay to let gzserver initialise)
     spawn_robot = TimerAction(
         period=2.0,
         actions=[
@@ -157,7 +135,7 @@ def generate_launch_description() -> LaunchDescription:
         ],
     )
 
-    # 5. RViz2 — conditional on rviz:=true
+    # 5. RViz2 — only when rviz:=true
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -169,7 +147,7 @@ def generate_launch_description() -> LaunchDescription:
     )
 
     # ------------------------------------------------------------------
-    # Assemble LaunchDescription
+    # Assemble
     # ------------------------------------------------------------------
     return LaunchDescription(
         [
