@@ -1,49 +1,408 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mobile_manipulator">
-  <xacro:property name="pi" value="3.141592653589793"/>
-  <xacro:property name="base_length" value="0.46"/>
-  <xacro:property name="base_width" value="0.38"/>
+
+  <!-- ================================================================ -->
+  <!--  PROPERTIES                                                        -->
+  <!-- ================================================================ -->
+
+  <!-- Base -->
+  <xacro:property name="base_length" value="0.50"/>
+  <xacro:property name="base_width"  value="0.35"/>
   <xacro:property name="base_height" value="0.12"/>
-  <xacro:property name="arm_link1" value="0.28"/>
-  <xacro:property name="arm_link2" value="0.24"/>
-  <xacro:property name="arm_link3" value="0.14"/>
+  <xacro:property name="base_mass"   value="8.0"/>
+
+  <!-- Wheel -->
+  <xacro:property name="wheel_radius" value="0.06"/>
+  <xacro:property name="wheel_width"  value="0.04"/>
+  <xacro:property name="wheel_mass"   value="0.5"/>
+  <xacro:property name="wheel_x_off"  value="0.18"/>
+  <xacro:property name="wheel_y_off"  value="0.195"/>
+
+  <!-- Arm links (DH-compatible lengths) -->
+  <xacro:property name="link1_length" value="0.10"/>  <!-- shoulder rise   -->
+  <xacro:property name="link2_length" value="0.20"/>  <!-- upper arm       -->
+  <xacro:property name="link3_length" value="0.16"/>  <!-- forearm         -->
+  <xacro:property name="link4_length" value="0.10"/>  <!-- wrist           -->
+  <xacro:property name="arm_mass"     value="0.4"/>
+
+  <!-- Gripper -->
+  <xacro:property name="finger_length" value="0.06"/>
+  <xacro:property name="finger_mass"   value="0.05"/>
+
+  <!-- Sensors -->
+  <xacro:property name="camera_mass"  value="0.1"/>
+  <xacro:property name="lidar_mass"   value="0.2"/>
+
+  <!-- ================================================================ -->
+  <!--  MATERIAL DEFINITIONS                                             -->
+  <!-- ================================================================ -->
+  <material name="dark_grey"><color rgba="0.2 0.2 0.2 1.0"/></material>
+  <material name="light_grey"><color rgba="0.7 0.7 0.7 1.0"/></material>
+  <material name="blue"><color rgba="0.1 0.4 0.8 1.0"/></material>
+  <material name="orange"><color rgba="0.9 0.4 0.0 1.0"/></material>
+  <material name="black"><color rgba="0.05 0.05 0.05 1.0"/></material>
+  <material name="white"><color rgba="0.95 0.95 0.95 1.0"/></material>
+
+  <!-- ================================================================ -->
+  <!--  MACROS                                                           -->
+  <!-- ================================================================ -->
+
+  <!-- Inertia helpers -->
+  <xacro:macro name="box_inertia" params="m l w h">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(w*w+h*h)/12}" ixy="0" ixz="0"
+               iyy="${m*(l*l+h*h)/12}" iyz="0"
+               izz="${m*(l*l+w*w)/12}"/>
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertial>
+      <mass value="${m}"/>
+      <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
+               iyy="${m*(3*r*r+h*h)/12}" iyz="0"
+               izz="${m*r*r/2}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Wheel macro (reused for all 4 wheels) -->
+  <xacro:macro name="wheel" params="name x_sign y_sign">
+    <link name="${name}_wheel_link">
+      <visual>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      </collision>
+      <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+    </link>
+
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child  link="${name}_wheel_link"/>
+      <origin xyz="${x_sign*wheel_x_off} ${y_sign*wheel_y_off} 0"
+              rpy="${pi/2} 0 0"/>
+      <axis xyz="0 0 1"/>
+      <dynamics damping="0.01" friction="0.1"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Arm link macro -->
+  <xacro:macro name="arm_link" params="name length material">
+    <link name="${name}">
+      <visual>
+        <origin xyz="0 0 ${length/2}" rpy="0 0 0"/>
+        <geometry><box size="0.04 0.04 ${length}"/></geometry>
+        <material name="${material}"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${length/2}" rpy="0 0 0"/>
+        <geometry><box size="0.04 0.04 ${length}"/></geometry>
+      </collision>
+      <xacro:box_inertia m="${arm_mass}" l="0.04" w="0.04" h="${length}"/>
+    </link>
+  </xacro:macro>
+
+  <!-- ================================================================ -->
+  <!--  BASE FOOTPRINT & BASE LINK                                       -->
+  <!-- ================================================================ -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child  link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+  </joint>
 
   <link name="base_link">
-    <inertial><origin xyz="0 0 0"/><mass value="18.0"/><inertia ixx="0.6" ixy="0.0" ixz="0.0" iyy="0.6" iyz="0.0" izz="0.8"/></inertial>
-    <visual><origin xyz="0 0 ${base_height/2.0}"/><geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry><material name="Gray"><color rgba="0.6 0.6 0.65 1.0"/></material></visual>
-    <collision><origin xyz="0 0 ${base_height/2.0}"/><geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry></collision>
+    <visual>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="${base_length} ${base_width} ${base_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertia m="${base_mass}" l="${base_length}" w="${base_width}" h="${base_height}"/>
   </link>
-  <link name="base_laser"/>
-  <joint name="base_laser_joint" type="fixed"><parent link="base_link"/><child link="base_laser"/><origin xyz="0.18 0 0.22" rpy="0 0 0"/></joint>
+
+  <!-- ================================================================ -->
+  <!--  WHEELS (4x differential drive)                                   -->
+  <!-- ================================================================ -->
+  <xacro:wheel name="front_left"  x_sign="1"  y_sign="1"/>
+  <xacro:wheel name="front_right" x_sign="1"  y_sign="-1"/>
+  <xacro:wheel name="rear_left"   x_sign="-1" y_sign="1"/>
+  <xacro:wheel name="rear_right"  x_sign="-1" y_sign="-1"/>
+
+  <!-- ================================================================ -->
+  <!--  ARM BASE MOUNT                                                   -->
+  <!-- ================================================================ -->
   <link name="arm_base_link">
-    <visual><origin xyz="0 0 0.05"/><geometry><cylinder length="0.1" radius="0.08"/></geometry><material name="Blue"><color rgba="0.2 0.4 0.8 1.0"/></material></visual>
-    <collision><origin xyz="0 0 0.05"/><geometry><cylinder length="0.1" radius="0.08"/></geometry></collision>
+    <visual>
+      <geometry><cylinder radius="0.04" length="0.05"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <geometry><cylinder radius="0.04" length="0.05"/></geometry>
+    </collision>
+    <xacro:cylinder_inertia m="0.3" r="0.04" h="0.05"/>
   </link>
-  <joint name="arm_base_joint" type="fixed"><parent link="base_link"/><child link="arm_base_link"/><origin xyz="0 0 0.18" rpy="0 0 0"/></joint>
+
+  <joint name="arm_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="arm_base_link"/>
+    <origin xyz="0.15 0 ${base_height/2 + 0.025}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================================================================ -->
+  <!--  4-DOF ARM                                                        -->
+  <!-- ================================================================ -->
+
+  <!-- Joint 1 — Waist (Z rotation) -->
+  <xacro:arm_link name="link1" length="${link1_length}" material="light_grey"/>
+  <joint name="joint1" type="revolute">
+    <parent link="arm_base_link"/>
+    <child  link="link1"/>
+    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="10" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.05"/>
+  </joint>
+
+  <!-- Joint 2 — Shoulder (Y rotation) -->
+  <xacro:arm_link name="link2" length="${link2_length}" material="light_grey"/>
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child  link="link2"/>
+    <origin xyz="0 0 ${link1_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="10" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.05"/>
+  </joint>
+
+  <!-- Joint 3 — Elbow (Y rotation) -->
+  <xacro:arm_link name="link3" length="${link3_length}" material="light_grey"/>
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child  link="link3"/>
+    <origin xyz="0 0 ${link2_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="8" velocity="1.0"/>
+    <dynamics damping="0.1" friction="0.05"/>
+  </joint>
+
+  <!-- Joint 4 — Wrist (Y rotation) -->
+  <xacro:arm_link name="link4" length="${link4_length}" material="orange"/>
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child  link="link4"/>
+    <origin xyz="0 0 ${link3_length}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="5" velocity="1.5"/>
+    <dynamics damping="0.05" friction="0.02"/>
+  </joint>
+
+  <!-- ================================================================ -->
+  <!--  END EFFECTOR & GRIPPER                                           -->
+  <!-- ================================================================ -->
+  <link name="end_effector_link">
+    <visual>
+      <geometry><sphere radius="0.015"/></geometry>
+      <material name="orange"/>
+    </visual>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" ixy="0" ixz="0" iyy="1e-5" iyz="0" izz="1e-5"/>
+    </inertial>
+  </link>
+  <joint name="end_effector_joint" type="fixed">
+    <parent link="link4"/>
+    <child  link="end_effector_link"/>
+    <origin xyz="0 0 ${link4_length}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Left finger -->
+  <link name="left_finger_link">
+    <visual>
+      <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+      <geometry><box size="0.015 0.008 ${finger_length}"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+      <geometry><box size="0.015 0.008 ${finger_length}"/></geometry>
+    </collision>
+    <xacro:box_inertia m="${finger_mass}" l="0.015" w="0.008" h="${finger_length}"/>
+  </link>
+  <joint name="left_finger_joint" type="prismatic">
+    <parent link="end_effector_link"/>
+    <child  link="left_finger_link"/>
+    <origin xyz="0 0.02 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="0.04" effort="5" velocity="0.1"/>
+  </joint>
+
+  <!-- Right finger -->
+  <link name="right_finger_link">
+    <visual>
+      <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+      <geometry><box size="0.015 0.008 ${finger_length}"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+      <geometry><box size="0.015 0.008 ${finger_length}"/></geometry>
+    </collision>
+    <xacro:box_inertia m="${finger_mass}" l="0.015" w="0.008" h="${finger_length}"/>
+  </link>
+  <joint name="right_finger_joint" type="prismatic">
+    <parent link="end_effector_link"/>
+    <child  link="right_finger_link"/>
+    <origin xyz="0 -0.02 0" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="0.0" upper="0.04" effort="5" velocity="0.1"/>
+  </joint>
+
+  <!-- ================================================================ -->
+  <!--  RGB-D CAMERA                                                     -->
+  <!-- ================================================================ -->
   <link name="camera_link">
-    <visual><geometry><box size="0.05 0.03 0.03"/></geometry><material name="Orange"><color rgba="0.9 0.5 0.2 1.0"/></material></visual>
+    <visual>
+      <geometry><box size="0.04 0.10 0.03"/></geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="${camera_mass}"/>
+      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+    </inertial>
   </link>
-  <joint name="camera_joint" type="fixed"><parent link="arm_base_link"/><child link="camera_link"/><origin xyz="0.15 0 0.28" rpy="0 0 0"/></joint>
-  <link name="arm_link_1"><visual><geometry><cylinder length="${arm_link1}" radius="0.04"/></geometry><material name="Red"><color rgba="0.8 0.2 0.2 1.0"/></material></visual></link>
-  <joint name="arm_joint_1" type="revolute"><parent link="arm_base_link"/><child link="arm_link_1"/><origin xyz="0 0 0.1" rpy="0 0 0"/><axis xyz="0 0 1"/><limit lower="-${pi}" upper="${pi}" effort="30" velocity="1.5"/></joint>
-  <link name="arm_link_2"><visual><origin xyz="${arm_link2/2.0} 0 0"/><geometry><box size="${arm_link2} 0.05 0.05"/></geometry><material name="Green"><color rgba="0.2 0.8 0.3 1.0"/></material></visual></link>
-  <joint name="arm_joint_2" type="revolute"><parent link="arm_link_1"/><child link="arm_link_2"/><origin xyz="0 0 ${arm_link1}" rpy="0 0 0"/><axis xyz="0 1 0"/><limit lower="-${pi/2.0}" upper="${pi/2.0}" effort="25" velocity="1.5"/></joint>
-  <link name="arm_link_3"><visual><origin xyz="${arm_link3/2.0} 0 0"/><geometry><box size="${arm_link3} 0.045 0.045"/></geometry><material name="Yellow"><color rgba="0.9 0.8 0.2 1.0"/></material></visual></link>
-  <joint name="arm_joint_3" type="revolute"><parent link="arm_link_2"/><child link="arm_link_3"/><origin xyz="${arm_link2} 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/><limit lower="-${pi/2.0}" upper="${pi/2.0}" effort="20" velocity="1.5"/></joint>
-  <link name="arm_link_4"><visual><origin xyz="${arm_link3} 0 0"/><geometry><box size="${arm_link3} 0.035 0.035"/></geometry><material name="Purple"><color rgba="0.7 0.2 0.8 1.0"/></material></visual></link>
-  <joint name="arm_joint_4" type="revolute"><parent link="arm_link_3"/><child link="arm_link_4"/><origin xyz="${arm_link3} 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/><limit lower="-${pi}" upper="${pi}" effort="15" velocity="2.0"/></joint>
-  <link name="gripper_link"><visual><geometry><box size="0.06 0.02 0.02"/></geometry><material name="Black"><color rgba="0.1 0.1 0.1 1.0"/></material></visual></link>
-  <joint name="gripper_joint" type="fixed"><parent link="arm_link_4"/><child link="gripper_link"/><origin xyz="${arm_link3} 0 0" rpy="0 0 0"/></joint>
-  <link name="left_finger_link"><visual><origin xyz="0.02 0.015 0"/><geometry><box size="0.04 0.01 0.02"/></geometry><material name="Silver"><color rgba="0.85 0.85 0.85 1.0"/></material></visual></link>
-  <joint name="left_finger_joint" type="prismatic"><parent link="gripper_link"/><child link="left_finger_link"/><origin xyz="0.03 0.012 0" rpy="0 0 0"/><axis xyz="0 1 0"/><limit lower="0.0" upper="0.03" effort="10" velocity="0.5"/></joint>
-  <link name="right_finger_link"><visual><origin xyz="0.02 -0.015 0"/><geometry><box size="0.04 0.01 0.02"/></geometry><material name="Silver"/></visual></link>
-  <joint name="right_finger_joint" type="prismatic"><parent link="gripper_link"/><child link="right_finger_link"/><origin xyz="0.03 -0.012 0" rpy="0 0 0"/><axis xyz="0 -1 0"/><limit lower="0.0" upper="0.03" effort="10" velocity="0.5"/></joint>
-  <link name="wheel_front_left_link"><visual><geometry><cylinder length="0.03" radius="0.05"/></geometry></visual></link>
-  <joint name="wheel_front_left_joint" type="continuous"><parent link="base_link"/><child link="wheel_front_left_link"/><origin xyz="0.16 0.12 0.03" rpy="1.5708 0 0"/><axis xyz="0 1 0"/></joint>
-  <link name="wheel_front_right_link"><visual><geometry><cylinder length="0.03" radius="0.05"/></geometry></visual></link>
-  <joint name="wheel_front_right_joint" type="continuous"><parent link="base_link"/><child link="wheel_front_right_link"/><origin xyz="0.16 -0.12 0.03" rpy="1.5708 0 0"/><axis xyz="0 1 0"/></joint>
-  <link name="wheel_rear_left_link"><visual><geometry><cylinder length="0.03" radius="0.05"/></geometry></visual></link>
-  <joint name="wheel_rear_left_joint" type="continuous"><parent link="base_link"/><child link="wheel_rear_left_link"/><origin xyz="-0.16 0.12 0.03" rpy="1.5708 0 0"/><axis xyz="0 1 0"/></joint>
-  <link name="wheel_rear_right_link"><visual><geometry><cylinder length="0.03" radius="0.05"/></geometry></visual></link>
-  <joint name="wheel_rear_right_joint" type="continuous"><parent link="base_link"/><child link="wheel_rear_right_link"/><origin xyz="-0.16 -0.12 0.03" rpy="1.5708 0 0"/><axis xyz="0 1 0"/></joint>
+  <joint name="camera_joint" type="fixed">
+    <parent link="link4"/>
+    <child  link="camera_link"/>
+    <origin xyz="0.025 0 ${link4_length - 0.02}" rpy="0 0.3 0"/>
+  </joint>
+
+  <!-- Camera optical frame (Z forward convention for image pipeline) -->
+  <link name="camera_optical_frame"/>
+  <joint name="camera_optical_joint" type="fixed">
+    <parent link="camera_link"/>
+    <child  link="camera_optical_frame"/>
+    <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+  </joint>
+
+  <!-- Gazebo RGB-D plugin -->
+  <gazebo reference="camera_link">
+    <sensor type="depth" name="rgbd_camera">
+      <update_rate>30.0</update_rate>
+      <camera>
+        <horizontal_fov>1.0472</horizontal_fov>
+        <image><width>640</width><height>480</height><format>R8G8B8</format></image>
+        <clip><near>0.1</near><far>10.0</far></clip>
+      </camera>
+      <plugin name="rgbd_plugin" filename="libgazebo_ros_camera.so">
+        <ros>
+          <remapping>~/image_raw:=/camera/image_raw</remapping>
+          <remapping>~/camera_info:=/camera/camera_info</remapping>
+          <remapping>~/depth/image_raw:=/camera/depth/image_raw</remapping>
+          <remapping>~/depth/camera_info:=/camera/depth/camera_info</remapping>
+          <remapping>~/points:=/camera/points</remapping>
+        </ros>
+        <camera_name>rgbd_camera</camera_name>
+        <frame_name>camera_optical_frame</frame_name>
+        <hack_baseline>0.0</hack_baseline>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ================================================================ -->
+  <!--  2D LiDAR                                                         -->
+  <!-- ================================================================ -->
+  <link name="lidar_link">
+    <visual>
+      <geometry><cylinder radius="0.04" length="0.04"/></geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="${lidar_mass}"/>
+      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
+    </inertial>
+  </link>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="lidar_link"/>
+    <origin xyz="0.20 0 ${base_height/2 + 0.02}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Gazebo LiDAR plugin -->
+  <gazebo reference="lidar_link">
+    <sensor type="ray" name="lidar">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10.0</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range><min>0.12</min><max>12.0</max><resolution>0.01</resolution></range>
+        <noise><type>gaussian</type><mean>0.0</mean><stddev>0.01</stddev></noise>
+      </ray>
+      <plugin name="lidar_plugin" filename="libgazebo_ros_ray_sensor.so">
+        <ros><remapping>~/out:=/scan</remapping></ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>lidar_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ================================================================ -->
+  <!--  DIFFERENTIAL DRIVE PLUGIN                                        -->
+  <!-- ================================================================ -->
+  <gazebo>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <ros><remapping>cmd_vel:=/cmd_vel</remapping>
+           <remapping>odom:=/odom</remapping></ros>
+      <left_joint>front_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+      <wheel_separation>${2*wheel_y_off}</wheel_separation>
+      <wheel_diameter>${2*wheel_radius}</wheel_diameter>
+      <max_wheel_torque>20</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+    </plugin>
+  </gazebo>
+
+  <!-- ================================================================ -->
+  <!--  JOINT STATE PUBLISHER PLUGIN                                     -->
+  <!-- ================================================================ -->
+  <gazebo>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <ros><remapping>~/out:=/joint_states</remapping></ros>
+      <joint_name>joint1</joint_name>
+      <joint_name>joint2</joint_name>
+      <joint_name>joint3</joint_name>
+      <joint_name>joint4</joint_name>
+      <joint_name>left_finger_joint</joint_name>
+      <joint_name>right_finger_joint</joint_name>
+      <joint_name>front_left_wheel_joint</joint_name>
+      <joint_name>front_right_wheel_joint</joint_name>
+      <joint_name>rear_left_wheel_joint</joint_name>
+      <joint_name>rear_right_wheel_joint</joint_name>
+      <update_rate>50</update_rate>
+    </plugin>
+  </gazebo>
+
 </robot>
