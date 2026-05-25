@@ -1,31 +1,164 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.6">
-  <world name="pick_and_place_world">
-    <include><uri>model://ground_plane</uri></include>
+  <world name="pick_and_place">
+
+    <!-- ============================================================ -->
+    <!--  PHYSICS & ENVIRONMENT                                        -->
+    <!-- ============================================================ -->
+    <gravity>0 0 -9.81</gravity>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <ode><solver><type>quick</type><iters>50</iters></solver></ode>
+    </physics>
+
+    <!-- Lighting -->
     <include><uri>model://sun</uri></include>
+    <include>
+      <uri>model://ground_plane</uri>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+
+    <!-- ============================================================ -->
+    <!--  ROOM WALLS                                                   -->
+    <!-- ============================================================ -->
+    <!-- North wall -->
+    <model name="wall_north">
+      <static>true</static>
+      <pose>0 3.0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>6.0 0.1 1.0</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>6.0 0.1 1.0</size></box></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- South wall -->
+    <model name="wall_south">
+      <static>true</static>
+      <pose>0 -3.0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>6.0 0.1 1.0</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>6.0 0.1 1.0</size></box></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- East wall -->
+    <model name="wall_east">
+      <static>true</static>
+      <pose>3.0 0 0.5 0 0 1.5708</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>6.0 0.1 1.0</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>6.0 0.1 1.0</size></box></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- West wall -->
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-3.0 0 0.5 0 0 1.5708</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>6.0 0.1 1.0</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>6.0 0.1 1.0</size></box></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient></material></visual>
+      </link>
+    </model>
+
+    <!-- ============================================================ -->
+    <!--  PICK TABLE (robot picks from here)                           -->
+    <!-- ============================================================ -->
     <model name="pick_table">
       <static>true</static>
-      <link name="link">
-        <pose>1.4 0 0.375 0 0 0</pose>
-        <collision name="collision"><geometry><box><size>0.9 0.7 0.75</size></box></geometry></collision>
-        <visual name="visual"><geometry><box><size>0.9 0.7 0.75</size></box></geometry><material><ambient>0.45 0.3 0.2 1</ambient><diffuse>0.45 0.3 0.2 1</diffuse></material></visual>
+      <pose>1.5 0 0 0 0 0</pose>
+      <link name="table_top">
+        <pose>0 0 0.72 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.80 0.60 0.04</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.80 0.60 0.04</size></box></geometry>
+          <material><ambient>0.6 0.4 0.2 1</ambient></material></visual>
       </link>
+      <!-- Table leg FL -->
+      <link name="leg_fl"><pose>0.36 0.26 0.35 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.04 0.04 0.70</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.04 0.04 0.70</size></box></geometry>
+          <material><ambient>0.5 0.3 0.1 1</ambient></material></visual></link>
+      <!-- Table leg FR -->
+      <link name="leg_fr"><pose>0.36 -0.26 0.35 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.04 0.04 0.70</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.04 0.04 0.70</size></box></geometry>
+          <material><ambient>0.5 0.3 0.1 1</ambient></material></visual></link>
+      <!-- Table leg RL -->
+      <link name="leg_rl"><pose>-0.36 0.26 0.35 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.04 0.04 0.70</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.04 0.04 0.70</size></box></geometry>
+          <material><ambient>0.5 0.3 0.1 1</ambient></material></visual></link>
+      <!-- Table leg RR -->
+      <link name="leg_rr"><pose>-0.36 -0.26 0.35 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.04 0.04 0.70</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.04 0.04 0.70</size></box></geometry>
+          <material><ambient>0.5 0.3 0.1 1</ambient></material></visual></link>
     </model>
-    <model name="drop_zone">
+
+    <!-- ============================================================ -->
+    <!--  DROP TABLE (robot places objects here)                       -->
+    <!-- ============================================================ -->
+    <model name="drop_table">
       <static>true</static>
-      <link name="link">
-        <pose>-1.2 -0.9 0.1 0 0 0</pose>
-        <collision name="collision"><geometry><box><size>0.3 0.3 0.2</size></box></geometry></collision>
-        <visual name="visual"><geometry><box><size>0.3 0.3 0.2</size></box></geometry><material><ambient>0.2 0.7 0.2 1</ambient><diffuse>0.2 0.7 0.2 1</diffuse></material></visual>
+      <pose>-1.5 0 0 0 0 0</pose>
+      <link name="table_top">
+        <pose>0 0 0.62 0 0 0</pose>
+        <collision name="col"><geometry><box><size>0.70 0.50 0.04</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.70 0.50 0.04</size></box></geometry>
+          <material><ambient>0.3 0.5 0.7 1</ambient></material></visual>
       </link>
     </model>
-    <model name="target_cube">
-      <static>true</static>
+
+    <!-- ============================================================ -->
+    <!--  TARGET OBJECTS (coloured boxes to pick)                      -->
+    <!-- ============================================================ -->
+    <!-- Red box -->
+    <model name="red_box">
+      <pose>1.50 0.10 0.76 0 0 0</pose>
       <link name="link">
-        <pose>1.3 0.1 0.82 0 0 0</pose>
-        <collision name="collision"><geometry><box><size>0.05 0.05 0.05</size></box></geometry></collision>
-        <visual name="visual"><geometry><box><size>0.05 0.05 0.05</size></box></geometry><material><ambient>0.8 0.1 0.1 1</ambient><diffuse>0.8 0.1 0.1 1</diffuse></material></visual>
+        <inertial><mass>0.15</mass>
+          <inertia><ixx>4e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                   <iyy>4e-5</iyy><iyz>0</iyz><izz>4e-5</izz></inertia>
+        </inertial>
+        <collision name="col"><geometry><box><size>0.06 0.06 0.06</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.06 0.06 0.06</size></box></geometry>
+          <material><ambient>0.9 0.1 0.1 1</ambient><diffuse>0.9 0.1 0.1 1</diffuse></material></visual>
       </link>
     </model>
+
+    <!-- Green box -->
+    <model name="green_box">
+      <pose>1.50 -0.10 0.76 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.15</mass>
+          <inertia><ixx>4e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                   <iyy>4e-5</iyy><iyz>0</iyz><izz>4e-5</izz></inertia>
+        </inertial>
+        <collision name="col"><geometry><box><size>0.06 0.06 0.06</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.06 0.06 0.06</size></box></geometry>
+          <material><ambient>0.1 0.8 0.1 1</ambient><diffuse>0.1 0.8 0.1 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Blue cylinder -->
+    <model name="blue_cylinder">
+      <pose>1.60 0 0.76 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass>
+          <inertia><ixx>2e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                   <iyy>2e-5</iyy><iyz>0</iyz><izz>1e-5</izz></inertia>
+        </inertial>
+        <collision name="col"><geometry><cylinder><radius>0.03</radius><length>0.08</length></cylinder></geometry></collision>
+        <visual name="vis"><geometry><cylinder><radius>0.03</radius><length>0.08</length></cylinder></geometry>
+          <material><ambient>0.1 0.3 0.9 1</ambient><diffuse>0.1 0.3 0.9 1</diffuse></material></visual>
+      </link>
+    </model>
+
   </world>
 </sdf>
