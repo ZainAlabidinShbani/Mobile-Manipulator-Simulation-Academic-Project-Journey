@@ -1,32 +1,16 @@
-"""simulation.launch.py
-
-Phase 2 — Robot Description + Simulation Launch
-Launches: robot_state_publisher, Gazebo (with pick_and_place world),
-          spawns the robot URDF, and opens RViz2.
-
-Usage:
-    ros2 launch simulation_pkg simulation.launch.py
-    ros2 launch simulation_pkg simulation.launch.py gui:=false rviz:=false
-"""
+"""simulation.launch.py — Phase 2: Robot Description + Simulation Launch"""
 
 import os
+import subprocess
 
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
-from launch.actions import (
-    DeclareLaunchArgument,
-    IncludeLaunchDescription,
-    TimerAction,
-)
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import (
-    Command,
-    FindExecutable,
-    LaunchConfiguration,
-)
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -37,6 +21,17 @@ def generate_launch_description() -> LaunchDescription:
     urdf_file   = os.path.join(pkg_share, "urdf",   "mobile_manipulator.urdf.xacro")
     world_file  = os.path.join(pkg_share, "worlds", "pick_and_place.world")
     rviz_config = os.path.join(pkg_share, "rviz",   "default.rviz")
+
+    # Pre-process xacro → URDF string at launch time (captures only stdout,
+    # discards the harmless stderr "redefining pi" warning completely)
+    xacro_result = subprocess.run(
+        ["xacro", urdf_file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,   # silence the pi-redefinition warning
+        check=True,
+    )
+    robot_urdf = xacro_result.stdout.decode("utf-8")
+    robot_description = {"robot_description": robot_urdf}
 
     # ------------------------------------------------------------------
     # Launch arguments
@@ -50,21 +45,6 @@ def generate_launch_description() -> LaunchDescription:
     launch_rviz  = LaunchConfiguration("rviz")
 
     # ------------------------------------------------------------------
-    # Robot description
-    # --quiet suppresses the harmless "redefining global symbol: pi"
-    # warning that xacro emits on Humble, which would otherwise cause
-    # robot_state_publisher to treat stderr output as a fatal error.
-    # ------------------------------------------------------------------
-    robot_description_content = Command(
-        [
-            FindExecutable(name="xacro"),
-            " --quiet ",
-            urdf_file,
-        ]
-    )
-    robot_description = {"robot_description": robot_description_content}
-
-    # ------------------------------------------------------------------
     # Nodes
     # ------------------------------------------------------------------
     robot_state_publisher_node = Node(
@@ -72,10 +52,7 @@ def generate_launch_description() -> LaunchDescription:
         executable="robot_state_publisher",
         name="robot_state_publisher",
         output="screen",
-        parameters=[
-            robot_description,
-            {"use_sim_time": use_sim_time},
-        ],
+        parameters=[robot_description, {"use_sim_time": use_sim_time}],
     )
 
     gazebo_server = IncludeLaunchDescription(
@@ -102,10 +79,7 @@ def generate_launch_description() -> LaunchDescription:
                 arguments=[
                     "-topic", "/robot_description",
                     "-entity", "mobile_manipulator",
-                    "-x", "0.0",
-                    "-y", "0.0",
-                    "-z", "0.06",
-                    "-Y", "0.0",
+                    "-x", "0.0", "-y", "0.0", "-z", "0.06", "-Y", "0.0",
                 ],
                 output="screen",
             )
@@ -121,14 +95,11 @@ def generate_launch_description() -> LaunchDescription:
         condition=IfCondition(launch_rviz),
         output="screen",
     )
+    
 
     return LaunchDescription([
-        declare_gui,
-        declare_use_sim_time,
-        declare_rviz,
+        declare_gui, declare_use_sim_time, declare_rviz,
         robot_state_publisher_node,
-        gazebo_server,
-        gazebo_client,
-        spawn_robot,
-        rviz_node,
+        gazebo_server, gazebo_client,
+        spawn_robot, rviz_node,
     ])
