@@ -1,0 +1,40 @@
+# perception_params.yaml
+# Phase 3 — Perception package configuration
+# Loaded by perception.launch.py for both nodes
+
+yolo_detector_node:
+  ros__parameters:
+    # Path to YOLOv8 weights
+    # Simulation  : 'yolov8n.pt'         (auto-downloaded, ~6 MB)
+    # Raspberry Pi: '/path/to/yolov8n.onnx'  (quantized for edge)
+    model_path: "yolov8n.pt"
+
+    # Minimum confidence to publish a detection
+    confidence_threshold: 0.40
+
+    # COCO class names to keep — empty list means ALL classes
+    # Lightweight objects suitable for pick-and-place:
+    target_classes:
+      - "bottle"
+      - "cup"
+      - "bowl"
+      - "book"
+      - "can"
+
+    # Publish annotated image to /perception/image_annotated
+    publish_annotated: true
+
+depth_localizer_node:
+  ros__parameters:
+    # TF frame to express the final grasp pose in
+    target_frame: "base_footprint"
+
+    # Depth image unit scale factor (Gazebo publishes in metres → 1.0)
+    depth_scale: 1.0
+
+    # Valid depth range [m]
+    min_depth: 0.10
+    max_depth: 5.00
+
+    # Publish RViz sphere markers for each detected object
+    publish_markers: true
