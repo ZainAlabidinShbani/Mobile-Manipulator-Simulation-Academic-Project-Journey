@@ -22,10 +22,10 @@ setup(
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
-        'console_scripts': [
-            'camera_node = perception_pkg.camera_node:main',
-            'yolo_detector_node = perception_pkg.yolo_detector_node:main',
-            'grasp_pose_estimator_node = perception_pkg.grasp_pose_estimator_node:main',
-        ],
-    },
+    'console_scripts': [
+        'yolo_detector_node   = perception_pkg.yolo_detector_node:main',
+        'depth_localizer_node = perception_pkg.depth_localizer_node:main',
+        'camera_node          = perception_pkg.camera_node:main',
+    ],
+},
 )
