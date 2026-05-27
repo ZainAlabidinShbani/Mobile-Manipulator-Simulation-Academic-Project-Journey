@@ -1,5 +1,4 @@
 from glob import glob
-
 from setuptools import setup
 
 package_name = 'navigation_pkg'
@@ -16,17 +15,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='essa',
-    maintainer_email='essa@todo.todo',
-    description='Navigation and localization support for the autonomous mobile manipulator.',
+    maintainer='Zain Alabidin Shbani',
+    maintainer_email='zain.alabidin.shbani@gmail.com',
+    description='Navigation and localization for the autonomous mobile manipulator (Nav2 + SLAM Toolbox).',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'localization_node = navigation_pkg.localization_node:main',
-            'slam_node = navigation_pkg.slam_node:main',
-            'obstacle_avoidance_node = navigation_pkg.obstacle_avoidance_node:main',
-            'nav2_bridge_node = navigation_pkg.nav2_bridge_node:main',
+            'navigation_node = navigation_pkg.navigation_node:main',
         ],
     },
 )
