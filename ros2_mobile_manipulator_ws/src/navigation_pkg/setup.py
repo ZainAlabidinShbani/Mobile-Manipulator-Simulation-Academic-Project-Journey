@@ -22,7 +22,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'navigation_node = navigation_pkg.navigation_node:main',
+            'navigation_node        = navigation_pkg.navigation_node:main',
+            'slam_node              = navigation_pkg.slam_node:main',
+            'localization_node      = navigation_pkg.localization_node:main',
+            'obstacle_avoidance_node = navigation_pkg.obstacle_avoidance_node:main',
+            'nav2_bridge_node       = navigation_pkg.nav2_bridge_node:main',
         ],
     },
 )
