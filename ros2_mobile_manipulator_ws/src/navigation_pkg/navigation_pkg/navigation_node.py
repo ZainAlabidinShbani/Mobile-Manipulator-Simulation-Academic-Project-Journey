@@ -9,12 +9,18 @@ Goals:
   pick_approach : (1.0, 0.0, 0.0)   — 1 m in front of pick table
   drop_approach : (-2.0, -2.5, 0.0) — in front of drop station
   home          : (0.0, 0.0, 0.0)   — start zone
+
+Fixes applied:
+  - PoseStamped header stamp now set (required by Nav2 for goal acceptance)
+  - Shutdown traceback fixed: destroy_node() before rclpy.shutdown()
+  - Added manual command topic test helper log on startup
 """
 
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
 from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.executors import MultiThreadedExecutor
 
 from nav2_msgs.action import NavigateToPose
 from geometry_msgs.msg import PoseStamped
@@ -42,12 +48,12 @@ class NavigationNode(Node):
         self.declare_parameter('pick_approach_x', 1.0)
         self.declare_parameter('pick_approach_y', 0.0)
 
-        self.auto_nav      = self.get_parameter('auto_navigate_on_detection').value
-        self.target_class  = self.get_parameter('target_class').value
+        self.auto_nav     = self.get_parameter('auto_navigate_on_detection').value
+        self.target_class = self.get_parameter('target_class').value
 
         # ── State ───────────────────────────────────────────────────────────
-        self._navigating   = False
-        self._current_goal = None
+        self._navigating         = False
+        self._current_goal       = None
         self._detection_received = False
 
         # ── Nav2 Action Client ───────────────────────────────────────────────
@@ -64,7 +70,8 @@ class NavigationNode(Node):
         )
         self.create_subscription(
             String, '/navigation/command',
-            self._command_callback, 10
+            self._command_callback, 10,
+            callback_group=self._cb_group
         )
 
         # ── Publishers ───────────────────────────────────────────────────────
@@ -73,6 +80,10 @@ class NavigationNode(Node):
         self.get_logger().info('NavigationNode started. Waiting for Nav2...')
         self._nav_client.wait_for_server()
         self.get_logger().info('Nav2 action server ready ✓')
+        self.get_logger().info(
+            'To test movement, publish a goal name to /navigation/command:\n'
+            '  ros2 topic pub --once /navigation/command std_msgs/String "{data: home}"'
+        )
         self._publish_status('READY')
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -101,7 +112,10 @@ class NavigationNode(Node):
             self.get_logger().info(f'Command received: navigate to "{goal_name}"')
             self.navigate_to(goal_name)
         else:
-            self.get_logger().warn(f'Unknown goal name: {goal_name}')
+            self.get_logger().warn(
+                f'Unknown goal name: "{goal_name}". '
+                f'Valid options: {list(self.GOALS.keys())}'
+            )
 
     # ─────────────────────────────────────────────────────────────────────────
     # Navigation helpers
@@ -123,6 +137,8 @@ class NavigationNode(Node):
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose = self._make_pose(x, y, yaw)
+        # Stamp the header with current ROS time (required by Nav2)
+        goal_msg.pose.header.stamp = self.get_clock().now().to_msg()
 
         self._navigating   = True
         self._current_goal = label
@@ -163,7 +179,10 @@ class NavigationNode(Node):
         fb = feedback_msg.feedback
         dist = fb.distance_remaining
         if dist > 0.1:
-            self.get_logger().info(f'Distance remaining: {dist:.2f} m', throttle_duration_sec=2.0)
+            self.get_logger().info(
+                f'Distance remaining: {dist:.2f} m',
+                throttle_duration_sec=2.0
+            )
 
     # ─────────────────────────────────────────────────────────────────────────
     # Utilities
@@ -173,10 +192,13 @@ class NavigationNode(Node):
     def _make_pose(x: float, y: float, yaw: float) -> PoseStamped:
         pose = PoseStamped()
         pose.header.frame_id = 'map'
+        # Note: stamp is set in _send_goal using live clock
         pose.pose.position.x = x
         pose.pose.position.y = y
         pose.pose.position.z = 0.0
-        # Convert yaw to quaternion (rotation around Z)
+        # Convert yaw to quaternion (rotation around Z axis)
+        pose.pose.orientation.x = 0.0
+        pose.pose.orientation.y = 0.0
         pose.pose.orientation.z = math.sin(yaw / 2.0)
         pose.pose.orientation.w = math.cos(yaw / 2.0)
         return pose
@@ -190,11 +212,15 @@ class NavigationNode(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = NavigationNode()
+    executor = MultiThreadedExecutor()
+    executor.add_node(node)
     try:
-        rclpy.spin(node)
+        executor.spin()
     except KeyboardInterrupt:
         pass
     finally:
+        # Clean shutdown — avoids traceback on Ctrl+C
+        executor.shutdown()
         node.destroy_node()
         rclpy.shutdown()
 
