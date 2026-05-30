@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="mobile_manipulator">
 
-  <!-- PROPERTIES -->
+  <!-- ============================================================
+       PROPERTIES
+  ============================================================ -->
   <xacro:property name="base_length" value="0.46"/>
   <xacro:property name="base_width"  value="0.38"/>
   <xacro:property name="base_height" value="0.12"/>
@@ -10,15 +12,17 @@
   <xacro:property name="wheel_radius" value="0.05"/>
   <xacro:property name="wheel_width"  value="0.03"/>
   <xacro:property name="wheel_mass"   value="0.5"/>
-
-  <!-- Actual lateral distance between wheel centres (y offset × 2) -->
+  <!-- centre-to-centre lateral distance between left and right wheels -->
   <xacro:property name="wheel_sep"    value="0.42"/>
 
   <xacro:property name="arm_link1" value="0.28"/>
   <xacro:property name="arm_link2" value="0.24"/>
   <xacro:property name="arm_link3" value="0.14"/>
 
-  <!-- INERTIA MACROS -->
+  <!-- ============================================================
+       INERTIA MACROS
+       ox/oy/oz = centre-of-mass offset from the link origin
+  ============================================================ -->
   <xacro:macro name="box_inertia" params="m l w h ox:=0 oy:=0 oz:=0">
     <inertial>
       <origin xyz="${ox} ${oy} ${oz}"/>
@@ -29,8 +33,9 @@
     </inertial>
   </xacro:macro>
 
-  <xacro:macro name="cylinder_inertia" params="m r h">
+  <xacro:macro name="cylinder_inertia" params="m r h oz:=0">
     <inertial>
+      <origin xyz="0 0 ${oz}"/>
       <mass value="${m}"/>
       <inertia ixx="${m*(3*r*r+h*h)/12}" ixy="0" ixz="0"
                iyy="${m*(3*r*r+h*h)/12}" iyz="0"
@@ -38,7 +43,9 @@
     </inertial>
   </xacro:macro>
 
-  <!-- WHEEL MACRO -->
+  <!-- ============================================================
+       WHEEL MACRO
+  ============================================================ -->
   <xacro:macro name="wheel" params="name x y">
     <link name="${name}_link">
       <visual>
@@ -48,6 +55,7 @@
       <collision>
         <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
       </collision>
+      <!-- cylinder along Z after rpy pi/2 rotation → inertia is symmetric, oz=0 -->
       <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
     </link>
     <joint name="${name}_joint" type="continuous">
@@ -59,15 +67,23 @@
     </joint>
   </xacro:macro>
 
-  <!-- BASE FOOTPRINT -->
+  <!-- ============================================================
+       BASE FOOTPRINT  (sits on the ground plane)
+  ============================================================ -->
   <link name="base_footprint"/>
   <joint name="base_footprint_joint" type="fixed">
     <parent link="base_footprint"/>
     <child  link="base_link"/>
+    <!-- base_link origin is at wheel-axle height = wheel_radius above footprint -->
     <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
   </joint>
 
-  <!-- BASE LINK -->
+  <!-- ============================================================
+       BASE LINK
+       Visual/collision box is offset +z by half its height so its
+       bottom face sits at z=0 (wheel-axle plane).
+       Inertia origin must match that same offset.
+  ============================================================ -->
   <link name="base_link">
     <visual>
       <origin xyz="0 0 ${base_height/2}"/>
@@ -78,43 +94,46 @@
       <origin xyz="0 0 ${base_height/2}"/>
       <geometry><box size="${base_length} ${base_width} ${base_height}"/></geometry>
     </collision>
-    <!-- origin aligned with centre-of-mass (middle of box height) -->
     <xacro:box_inertia m="${base_mass}"
                        l="${base_length}" w="${base_width}" h="${base_height}"
                        oz="${base_height/2}"/>
   </link>
 
-  <!-- WHEELS -->
+  <!-- ============================================================
+       WHEELS  (4 × macro)
+  ============================================================ -->
   <xacro:wheel name="wheel_front_left"  x="0.16"  y="0.21"/>
   <xacro:wheel name="wheel_front_right" x="0.16"  y="-0.21"/>
   <xacro:wheel name="wheel_rear_left"   x="-0.16" y="0.21"/>
   <xacro:wheel name="wheel_rear_right"  x="-0.16" y="-0.21"/>
 
-  <!-- Rear wheels: passive casters (very low friction) -->
+  <!-- Rear wheels: passive casters → very low friction -->
   <gazebo reference="wheel_rear_left_link">
     <mu1>0.01</mu1><mu2>0.01</mu2>
-    <kp>500000.0</kp><kd>10.0</kd>
-    <minDepth>0.001</minDepth><maxVel>0.1</maxVel>
+    <kp>1000000.0</kp><kd>100.0</kd>
+    <minDepth>0.001</minDepth><maxVel>1.0</maxVel>
   </gazebo>
   <gazebo reference="wheel_rear_right_link">
     <mu1>0.01</mu1><mu2>0.01</mu2>
-    <kp>500000.0</kp><kd>10.0</kd>
-    <minDepth>0.001</minDepth><maxVel>0.1</maxVel>
+    <kp>1000000.0</kp><kd>100.0</kd>
+    <minDepth>0.001</minDepth><maxVel>1.0</maxVel>
   </gazebo>
 
-  <!-- Front wheels: driven (good traction) -->
+  <!-- Front wheels: driven → good traction -->
   <gazebo reference="wheel_front_left_link">
     <mu1>1.5</mu1><mu2>1.5</mu2>
-    <kp>500000.0</kp><kd>10.0</kd>
-    <minDepth>0.001</minDepth><maxVel>0.1</maxVel>
+    <kp>1000000.0</kp><kd>100.0</kd>
+    <minDepth>0.001</minDepth><maxVel>1.0</maxVel>
   </gazebo>
   <gazebo reference="wheel_front_right_link">
     <mu1>1.5</mu1><mu2>1.5</mu2>
-    <kp>500000.0</kp><kd>10.0</kd>
-    <minDepth>0.001</minDepth><maxVel>0.1</maxVel>
+    <kp>1000000.0</kp><kd>100.0</kd>
+    <minDepth>0.001</minDepth><maxVel>1.0</maxVel>
   </gazebo>
 
-  <!-- ARM BASE -->
+  <!-- ============================================================
+       ARM BASE
+  ============================================================ -->
   <link name="arm_base_link">
     <visual>
       <origin xyz="0 0 0.05"/>
@@ -125,7 +144,7 @@
       <origin xyz="0 0 0.05"/>
       <geometry><cylinder length="0.1" radius="0.08"/></geometry>
     </collision>
-    <xacro:cylinder_inertia m="1.0" r="0.08" h="0.1"/>
+    <xacro:cylinder_inertia m="1.0" r="0.08" h="0.1" oz="0.05"/>
   </link>
   <joint name="arm_base_joint" type="fixed">
     <parent link="base_link"/>
@@ -133,66 +152,104 @@
     <origin xyz="0 0 0.18" rpy="0 0 0"/>
   </joint>
 
-  <!-- ARM LINKS -->
+  <!-- ============================================================
+       ARM LINK 1  (vertical cylinder, rotates about Z)
+  ============================================================ -->
   <link name="arm_link_1">
-    <visual><geometry><cylinder length="${arm_link1}" radius="0.04"/></geometry>
-      <material name="red"><color rgba="0.8 0.2 0.2 1.0"/></material></visual>
-    <collision><geometry><cylinder length="${arm_link1}" radius="0.04"/></geometry></collision>
-    <xacro:cylinder_inertia m="0.5" r="0.04" h="${arm_link1}"/>
+    <visual>
+      <origin xyz="0 0 ${arm_link1/2}"/>
+      <geometry><cylinder length="${arm_link1}" radius="0.04"/></geometry>
+      <material name="red"><color rgba="0.8 0.2 0.2 1.0"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${arm_link1/2}"/>
+      <geometry><cylinder length="${arm_link1}" radius="0.04"/></geometry>
+    </collision>
+    <xacro:cylinder_inertia m="0.5" r="0.04" h="${arm_link1}" oz="${arm_link1/2}"/>
   </link>
   <joint name="arm_joint_1" type="revolute">
     <parent link="arm_base_link"/><child link="arm_link_1"/>
-    <origin xyz="0 0 0.1" rpy="0 0 0"/><axis xyz="0 0 1"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
     <limit lower="${-pi}" upper="${pi}" effort="30" velocity="1.5"/>
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
+  <!-- ============================================================
+       ARM LINK 2
+  ============================================================ -->
   <link name="arm_link_2">
-    <visual><origin xyz="${arm_link2/2} 0 0"/>
+    <visual>
+      <origin xyz="${arm_link2/2} 0 0"/>
       <geometry><box size="${arm_link2} 0.05 0.05"/></geometry>
-      <material name="green"><color rgba="0.2 0.8 0.3 1.0"/></material></visual>
-    <collision><origin xyz="${arm_link2/2} 0 0"/>
-      <geometry><box size="${arm_link2} 0.05 0.05"/></geometry></collision>
-    <xacro:box_inertia m="0.4" l="${arm_link2}" w="0.05" h="0.05" ox="${arm_link2/2}"/>
+      <material name="green"><color rgba="0.2 0.8 0.3 1.0"/></material>
+    </visual>
+    <collision>
+      <origin xyz="${arm_link2/2} 0 0"/>
+      <geometry><box size="${arm_link2} 0.05 0.05"/></geometry>
+    </collision>
+    <xacro:box_inertia m="0.4" l="${arm_link2}" w="0.05" h="0.05"
+                       ox="${arm_link2/2}"/>
   </link>
   <joint name="arm_joint_2" type="revolute">
     <parent link="arm_link_1"/><child link="arm_link_2"/>
-    <origin xyz="0 0 ${arm_link1}" rpy="0 0 0"/><axis xyz="0 1 0"/>
+    <origin xyz="0 0 ${arm_link1}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
     <limit lower="${-pi/2}" upper="${pi/2}" effort="25" velocity="1.5"/>
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
+  <!-- ============================================================
+       ARM LINK 3
+  ============================================================ -->
   <link name="arm_link_3">
-    <visual><origin xyz="${arm_link3/2} 0 0"/>
+    <visual>
+      <origin xyz="${arm_link3/2} 0 0"/>
       <geometry><box size="${arm_link3} 0.045 0.045"/></geometry>
-      <material name="yellow"><color rgba="0.9 0.8 0.2 1.0"/></material></visual>
-    <collision><origin xyz="${arm_link3/2} 0 0"/>
-      <geometry><box size="${arm_link3} 0.045 0.045"/></geometry></collision>
-    <xacro:box_inertia m="0.3" l="${arm_link3}" w="0.045" h="0.045" ox="${arm_link3/2}"/>
+      <material name="yellow"><color rgba="0.9 0.8 0.2 1.0"/></material>
+    </visual>
+    <collision>
+      <origin xyz="${arm_link3/2} 0 0"/>
+      <geometry><box size="${arm_link3} 0.045 0.045"/></geometry>
+    </collision>
+    <xacro:box_inertia m="0.3" l="${arm_link3}" w="0.045" h="0.045"
+                       ox="${arm_link3/2}"/>
   </link>
   <joint name="arm_joint_3" type="revolute">
     <parent link="arm_link_2"/><child link="arm_link_3"/>
-    <origin xyz="${arm_link2} 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+    <origin xyz="${arm_link2} 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
     <limit lower="${-pi/2}" upper="${pi/2}" effort="20" velocity="1.5"/>
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
+  <!-- ============================================================
+       ARM LINK 4
+  ============================================================ -->
   <link name="arm_link_4">
-    <visual><origin xyz="${arm_link3} 0 0"/>
+    <visual>
+      <origin xyz="${arm_link3/2} 0 0"/>
       <geometry><box size="${arm_link3} 0.035 0.035"/></geometry>
-      <material name="purple"><color rgba="0.7 0.2 0.8 1.0"/></material></visual>
-    <collision><origin xyz="${arm_link3} 0 0"/>
-      <geometry><box size="${arm_link3} 0.035 0.035"/></geometry></collision>
-    <xacro:box_inertia m="0.2" l="${arm_link3}" w="0.035" h="0.035" ox="${arm_link3}"/>
+      <material name="purple"><color rgba="0.7 0.2 0.8 1.0"/></material>
+    </visual>
+    <collision>
+      <origin xyz="${arm_link3/2} 0 0"/>
+      <geometry><box size="${arm_link3} 0.035 0.035"/></geometry>
+    </collision>
+    <xacro:box_inertia m="0.2" l="${arm_link3}" w="0.035" h="0.035"
+                       ox="${arm_link3/2}"/>
   </link>
   <joint name="arm_joint_4" type="revolute">
     <parent link="arm_link_3"/><child link="arm_link_4"/>
-    <origin xyz="${arm_link3} 0 0" rpy="0 0 0"/><axis xyz="0 1 0"/>
+    <origin xyz="${arm_link3} 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
     <limit lower="${-pi}" upper="${pi}" effort="15" velocity="2.0"/>
     <dynamics damping="0.05" friction="0.02"/>
   </joint>
 
-  <!-- GRIPPER -->
+  <!-- ============================================================
+       GRIPPER
+  ============================================================ -->
   <link name="gripper_link">
     <visual><geometry><box size="0.06 0.02 0.02"/></geometry>
       <material name="black2"><color rgba="0.1 0.1 0.1 1.0"/></material></visual>
@@ -210,7 +267,8 @@
       <material name="silver"><color rgba="0.85 0.85 0.85 1.0"/></material></visual>
     <collision><origin xyz="0.02 0.015 0"/>
       <geometry><box size="0.04 0.01 0.02"/></geometry></collision>
-    <xacro:box_inertia m="0.05" l="0.04" w="0.01" h="0.02" ox="0.02" oy="0.015"/>
+    <xacro:box_inertia m="0.05" l="0.04" w="0.01" h="0.02"
+                       ox="0.02" oy="0.015"/>
   </link>
   <joint name="left_finger_joint" type="prismatic">
     <parent link="gripper_link"/><child link="left_finger_link"/>
@@ -224,7 +282,8 @@
       <material name="silver"/></visual>
     <collision><origin xyz="0.02 -0.015 0"/>
       <geometry><box size="0.04 0.01 0.02"/></geometry></collision>
-    <xacro:box_inertia m="0.05" l="0.04" w="0.01" h="0.02" ox="0.02" oy="-0.015"/>
+    <xacro:box_inertia m="0.05" l="0.04" w="0.01" h="0.02"
+                       ox="0.02" oy="-0.015"/>
   </link>
   <joint name="right_finger_joint" type="prismatic">
     <parent link="gripper_link"/><child link="right_finger_link"/>
@@ -232,7 +291,9 @@
     <limit lower="0.0" upper="0.03" effort="10" velocity="0.5"/>
   </joint>
 
-  <!-- LIDAR -->
+  <!-- ============================================================
+       LIDAR
+  ============================================================ -->
   <link name="lidar_link">
     <visual><geometry><cylinder radius="0.04" length="0.04"/></geometry>
       <material name="black3"><color rgba="0.05 0.05 0.05 1"/></material></visual>
@@ -244,7 +305,9 @@
     <origin xyz="0.18 0 0.22" rpy="0 0 0"/>
   </joint>
 
-  <!-- CAMERA -->
+  <!-- ============================================================
+       CAMERA
+  ============================================================ -->
   <link name="camera_link">
     <visual><geometry><box size="0.05 0.03 0.03"/></geometry>
       <material name="orange"><color rgba="0.9 0.5 0.2 1.0"/></material></visual>
@@ -261,12 +324,15 @@
     <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
   </joint>
 
-  <!-- ==================== GAZEBO PLUGINS ==================== -->
+  <!-- ============================================================
+       GAZEBO PLUGINS
+  ============================================================ -->
 
-  <!-- Differential Drive
-       - Controls front two wheels only.
-       - Rear wheels are passive (low friction) and follow freely.
-       - wheel_separation: actual centre-to-centre lateral distance = 0.42 m
+  <!--
+    Differential Drive
+    - Only front wheels are driven.
+    - Rear wheels are passive (mu≈0) and follow freely.
+    - wheel_separation = lateral distance between wheel centres = 0.42 m
   -->
   <gazebo>
     <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
