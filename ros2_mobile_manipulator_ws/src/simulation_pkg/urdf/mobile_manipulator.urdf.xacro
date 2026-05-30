@@ -83,6 +83,42 @@
   <xacro:wheel name="wheel_rear_left"   x="-0.16" y="0.21"/>
   <xacro:wheel name="wheel_rear_right"  x="-0.16" y="-0.21"/>
 
+  <!-- Rear wheels act as passive casters (low friction so they don't resist motion) -->
+  <gazebo reference="wheel_rear_left_link">
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+  <gazebo reference="wheel_rear_right_link">
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+
+  <!-- Front wheels have good traction -->
+  <gazebo reference="wheel_front_left_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+  <gazebo reference="wheel_front_right_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+
   <!-- ARM BASE -->
   <link name="arm_base_link">
     <visual>
@@ -232,19 +268,24 @@
 
   <!-- ==================== GAZEBO PLUGINS ==================== -->
 
-  <!-- Differential Drive -->
+  <!-- Differential Drive
+       Controls the two FRONT wheels.
+       Rear wheels are passive (low friction) so they follow freely.
+  -->
   <gazebo>
     <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
       <ros>
         <remapping>cmd_vel:=/cmd_vel</remapping>
         <remapping>odom:=/odom</remapping>
       </ros>
+      <update_rate>20</update_rate>
       <left_joint>wheel_front_left_joint</left_joint>
       <right_joint>wheel_front_right_joint</right_joint>
       <wheel_separation>0.42</wheel_separation>
       <wheel_diameter>${2*wheel_radius}</wheel_diameter>
       <max_wheel_torque>20</max_wheel_torque>
       <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <command_timeout>0.5</command_timeout>
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>true</publish_wheel_tf>
