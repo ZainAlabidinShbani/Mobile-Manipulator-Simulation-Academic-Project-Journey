@@ -12,7 +12,6 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-
 def generate_launch_description() -> LaunchDescription:
 
     pkg_share    = get_package_share_directory("simulation_pkg")
@@ -22,12 +21,10 @@ def generate_launch_description() -> LaunchDescription:
     world_file  = os.path.join(pkg_share, "worlds", "pick_and_place.world")
     rviz_config = os.path.join(pkg_share, "rviz",   "default.rviz")
 
-    # Pre-process xacro → URDF string at launch time (captures only stdout,
-    # discards the harmless stderr "redefining pi" warning completely)
     xacro_result = subprocess.run(
         ["xacro", urdf_file],
         stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,   # silence the pi-redefinition warning
+        stderr=subprocess.DEVNULL,
         check=True,
     )
     robot_urdf = xacro_result.stdout.decode("utf-8")
@@ -69,8 +66,10 @@ def generate_launch_description() -> LaunchDescription:
         condition=IfCondition(gui),
     )
 
+    # -z 0.05 = wheel_radius, so base_footprint sits exactly on the ground
+    # Timer 5s ensures Gazebo physics is fully loaded before spawning
     spawn_robot = TimerAction(
-        period=2.0,
+        period=5.0,
         actions=[
             Node(
                 package="gazebo_ros",
@@ -79,7 +78,10 @@ def generate_launch_description() -> LaunchDescription:
                 arguments=[
                     "-topic", "/robot_description",
                     "-entity", "mobile_manipulator",
-                    "-x", "0.0", "-y", "0.0", "-z", "0.06", "-Y", "0.0",
+                    "-x", "0.0",
+                    "-y", "0.0",
+                    "-z", "0.05",   # wheel_radius = 0.05 m above ground
+                    "-Y", "0.0",
                 ],
                 output="screen",
             )
@@ -95,7 +97,6 @@ def generate_launch_description() -> LaunchDescription:
         condition=IfCondition(launch_rviz),
         output="screen",
     )
-    
 
     return LaunchDescription([
         declare_gui, declare_use_sim_time, declare_rviz,
