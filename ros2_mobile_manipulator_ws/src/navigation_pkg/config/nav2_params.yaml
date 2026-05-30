@@ -89,7 +89,7 @@ controller_server:
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: true
-      min_vel_x: 0.0
+      min_vel_x: 0.05
       min_vel_y: 0.0
       max_vel_x: 0.35
       max_vel_y: 0.0
@@ -162,9 +162,9 @@ local_costmap:
           marking: true
           data_type: "LaserScan"
           raytrace_max_range: 10.0
-          raytrace_min_range: 0.0
+          raytrace_min_range: 0.1
           obstacle_max_range: 8.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.1
       always_send_full_costmap: true
 
 global_costmap:
@@ -191,9 +191,9 @@ global_costmap:
           marking: true
           data_type: "LaserScan"
           raytrace_max_range: 10.0
-          raytrace_min_range: 0.0
+          raytrace_min_range: 0.1
           obstacle_max_range: 8.0
-          obstacle_min_range: 0.0
+          obstacle_min_range: 0.1
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: true
@@ -287,6 +287,7 @@ velocity_smoother:
 
 slam_toolbox:
   ros__parameters:
+    # Fixed: min range now matches LiDAR hardware capability (was 0.0)
     minimum_laser_range: 0.1
     maximum_laser_range: 10.0
     transform_publish_period: 0.02
