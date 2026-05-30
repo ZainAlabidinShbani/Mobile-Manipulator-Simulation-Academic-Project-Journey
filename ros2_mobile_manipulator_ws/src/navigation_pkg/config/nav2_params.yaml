@@ -132,7 +132,7 @@ local_costmap:
       use_sim_time: true
       update_frequency: 5.0
       publish_frequency: 2.0
-       transform_tolerance: 1.0
+      transform_tolerance: 1.0
       global_frame: odom
       robot_base_frame: base_footprint
       rolling_window: true
@@ -249,7 +249,7 @@ behavior_server:
     wait:
       plugin: "nav2_behaviors/Wait"
     assisted_teleop:
-      plugin: "nav2_behaviors::AssistedTeleop"
+      plugin: "nav2_behaviors/AssistedTeleop"
     global_frame: odom
     robot_base_frame: base_footprint
     transform_tolerance: 0.1
@@ -289,4 +289,4 @@ slam_toolbox:
   ros__parameters:
     minimum_laser_range: 0.1
     maximum_laser_range: 10.0
-    transform_publish_period: 0.02  # 50Hz
+    transform_publish_period: 0.02
