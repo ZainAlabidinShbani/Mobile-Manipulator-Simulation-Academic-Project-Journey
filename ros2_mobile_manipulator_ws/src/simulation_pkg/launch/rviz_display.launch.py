@@ -1,7 +1,12 @@
-"""RViz-only display launch for the SolidWorks URDF."""
+"""RViz-only display launch for the Mobile Manipulator URDF.
+
+Fixes:
+  - Reads the URDF from assembly_of_robot package (not a missing xacro in simulation_pkg).
+  - Uses open() instead of subprocess/xacro because the file is a plain .urdf.
+  - Sets Fixed Frame to base_link so RViz works without a nav stack publishing odom.
+"""
 
 import os
-import subprocess
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -11,38 +16,56 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description() -> LaunchDescription:
-    pkg_share = get_package_share_directory("simulation_pkg")
-    urdf_file = os.path.join(pkg_share, "urdf", "mobile_manipulator.urdf.xacro")
-    rviz_config = os.path.join(pkg_share, "rviz", "assembly_of_robot.rviz")
+    # --- Paths -----------------------------------------------------------
+    # URDF lives in assembly_of_robot, not simulation_pkg
+    robot_pkg_share = get_package_share_directory("assembly_of_robot")
+    sim_pkg_share   = get_package_share_directory("simulation_pkg")
 
-    xacro_result = subprocess.run(
-        ["xacro", urdf_file],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        check=True,
+    urdf_file   = os.path.join(robot_pkg_share, "urdf", "assembly_of_robot.urdf")
+    rviz_config = os.path.join(sim_pkg_share,   "rviz", "default.rviz")
+
+    # Read the plain URDF file (no xacro processing needed)
+    with open(urdf_file, "r") as f:
+        robot_description = f.read()
+
+    # --- Launch arguments ------------------------------------------------
+    declare_use_sim_time = DeclareLaunchArgument(
+        "use_sim_time",
+        default_value="false",
+        description="Use simulation (Gazebo) clock",
     )
-    robot_urdf = xacro_result.stdout.decode("utf-8")
+    declare_rviz_config = DeclareLaunchArgument(
+        "rviz_config",
+        default_value=rviz_config,
+        description="Full path to the RViz config file",
+    )
 
-    declare_use_sim_time = DeclareLaunchArgument("use_sim_time", default_value="false")
-    declare_rviz_config = DeclareLaunchArgument("rviz_config", default_value=rviz_config)
-
-    use_sim_time = LaunchConfiguration("use_sim_time")
+    use_sim_time    = LaunchConfiguration("use_sim_time")
     rviz_config_arg = LaunchConfiguration("rviz_config")
 
+    # --- Nodes -----------------------------------------------------------
+    # 1. Publishes /tf and /tf_static from the URDF joint tree
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         name="robot_state_publisher",
-        parameters=[{"robot_description": robot_urdf}, {"use_sim_time": use_sim_time}],
+        parameters=[
+            {"robot_description": robot_description},
+            {"use_sim_time": use_sim_time},
+        ],
         output="screen",
     )
 
-    joint_state_publisher_node = Node(
+    # 2. GUI slider panel to move the revolute/continuous joints interactively
+    joint_state_publisher_gui_node = Node(
         package="joint_state_publisher_gui",
         executable="joint_state_publisher_gui",
         name="joint_state_publisher_gui",
+        parameters=[{"use_sim_time": use_sim_time}],
+        output="screen",
     )
 
+    # 3. RViz2 visualiser
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -57,7 +80,7 @@ def generate_launch_description() -> LaunchDescription:
             declare_use_sim_time,
             declare_rviz_config,
             robot_state_publisher_node,
-            joint_state_publisher_node,
+            joint_state_publisher_gui_node,
             rviz_node,
         ]
     )
