@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="assembly of robot.SLDASM">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.00064800297556189 -0.000199949156994117 0.0224556179216661"
+        rpy="0 0 0" />
+      <mass
+        value="1.07426092773631" />
+      <inertia
+        ixx="0.000523142009624511"
+        ixy="-5.33696225267061E-05"
+        ixz="-7.19949258461872E-09"
+        iyy="0.00122730643995076"
+        iyz="3.02660473497791E-07"
+        izz="0.00127913895096428" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="ultra_lf_link">
+    <inertial>
+      <origin
+        xyz="0.000392502520046079 0.00999778155024024 0.00386934718745924"
+        rpy="0 0 0" />
+      <mass
+        value="0.00627539687489747" />
+      <inertia
+        ixx="1.78976908086646E-07"
+        ixy="7.30391819666835E-09"
+        ixz="3.96814441299485E-10"
+        iyy="3.90047381838217E-07"
+        iyz="1.93385096181571E-09"
+        izz="4.6747919767257E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_lf_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_lf_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ultra_lf_joint"
+    type="fixed">
+    <origin
+      xyz="-0.00226580751498728 0.0750361820477629 0.00200000000000006"
+      rpy="1.5707963267949 -0.034893228197693 -3.06809938651869" />
+    <parent
+      link="base_link" />
+    <child
+      link="ultra_lf_link" />
+    <axis
+      xyz="0.994109411682675 -0.0902133376226379 0.0600452863671194" />
+  </joint>
+  <link
+    name="ultra_cl_link">
+    <inertial>
+      <origin
+        xyz="0.000222406075916948 0.010003020783912 0.00386934006852402"
+        rpy="0 0 0" />
+      <mass
+        value="0.00627540556306311" />
+      <inertia
+        ixx="1.78789966908303E-07"
+        ixy="3.71045324302472E-09"
+        ixz="3.63869202998041E-10"
+        iyy="3.90234791362463E-07"
+        iyz="1.94031977317123E-09"
+        izz="4.67479665984999E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_cl_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_cl_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ultra_cl_joint"
+    type="fixed">
+    <origin
+      xyz="0.117331768199602 0.0520604546695451 0.00200000000000003"
+      rpy="1.5707963267949 -0.0178847798605488 2.22332530130247" />
+    <parent
+      link="base_link" />
+    <child
+      link="ultra_cl_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ultra_center_link">
+    <inertial>
+      <origin
+        xyz="0.000903651099340264 0.00996459690264215 0.00386934479063039"
+        rpy="0 0 0" />
+      <mass
+        value="0.00627539932879679" />
+      <inertia
+        ixx="1.80276559726899E-07"
+        ixy="1.80536125704803E-08"
+        ixz="4.95265966528288E-10"
+        iyy="3.88747971268318E-07"
+        iyz="1.91101944350272E-09"
+        izz="4.67479439045531E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_center_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_center_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ultra_center_joint"
+    type="fixed">
+    <origin
+      xyz="0.126350089728397 0.00784554805723164 0.00200000000000003"
+      rpy="1.5707963267949 -0.0860932764661557 1.71543729999604" />
+    <parent
+      link="base_link" />
+    <child
+      link="ultra_center_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ultra_cr_link">
+    <inertial>
+      <origin
+        xyz="0.000399191916967911 -0.00974732286991095 0.00336934153326418"
+        rpy="0 0 0" />
+      <mass
+        value="0.00627540372500677" />
+      <inertia
+        ixx="1.79166991919321E-07"
+        ixy="-9.66225182141075E-09"
+        ixz="-2.40452170936952E-10"
+        iyy="3.89857689023337E-07"
+        iyz="-1.95944567319489E-09"
+        izz="4.67479586656258E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_cr_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_cr_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ultra_cr_joint"
+    type="fixed">
+    <origin
+      xyz="0.120364794822 -0.0378424458058604 0.00225000000000003"
+      rpy="-1.5707963267949 -0.0453879801240789 -1.78287911613685" />
+    <parent
+      link="base_link" />
+    <child
+      link="ultra_cr_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="ultra_right_side_link">
+    <inertial>
+      <origin
+        xyz="-0.000922742788134978 -0.0100156939621976 0.0038693426395956"
+        rpy="0 0 0" />
+      <mass
+        value="0.00627540290688136" />
+      <inertia
+        ixx="1.78749869264092E-07"
+        ixy="-2.30610000214141E-09"
+        ixz="-3.08541334677673E-10"
+        iyy="3.90274735150182E-07"
+        iyz="-1.94986850656983E-09"
+        izz="4.67479505514093E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_right_side_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/ultra_right_side_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="ultra_right_side_joint"
+    type="fixed">
+    <origin
+      xyz="0.00472675427660008 -0.0748549926956864 0.00200000000000003"
+      rpy="-1.5707963267949 -0.0105564142397783 -3.06809938651869" />
+    <parent
+      link="base_link" />
+    <child
+      link="ultra_right_side_link" />
+    <axis
+      xyz="0.999873275135185 -0.0153119105873406 0.00322673218666552" />
+  </joint>
+  <link
+    name="camera_link">
+    <inertial>
+      <origin
+        xyz="0.113101613282004 0.280706583049789 -0.844987323319077"
+        rpy="0 0 0" />
+      <mass
+        value="0" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/camera_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/camera_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_joint"
+    type="fixed">
+    <origin
+      xyz="0.101824132879338 0.00950646835199812 0.128659999721809"
+      rpy="1.32812932523048 0.443573327716237 1.53844767065916" />
+    <parent
+      link="base_link" />
+    <child
+      link="camera_link" />
+    <axis
+      xyz="-0.77008155834134 0.594774051730041 0.230693936398864" />
+  </joint>
+  <link
+    name="arm1_link">
+    <inertial>
+      <origin
+        xyz="-0.0774407866713394 -0.00510260600289045 0.105779455605111"
+        rpy="0 0 0" />
+      <mass
+        value="0.0555771996526445" />
+      <inertia
+        ixx="6.21594066214897E-06"
+        ixy="-3.5063653156084E-07"
+        ixz="-2.71141858998155E-07"
+        iyy="1.01641651598326E-05"
+        iyz="-2.39497009232085E-08"
+        izz="9.59540801924735E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm1_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm1_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm1_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm1_link" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-1.5"
+      upper="1.5"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm2_link">
+    <inertial>
+      <origin
+        xyz="-0.125168636410049 0.00321053283421635 0.165883121514536"
+        rpy="0 0 0" />
+      <mass
+        value="0.025421450970038" />
+      <inertia
+        ixx="4.93539788987539E-06"
+        ixy="-1.69138231922324E-07"
+        ixz="5.92515859666424E-08"
+        iyy="6.92707179301842E-06"
+        iyz="-2.355541751498E-08"
+        izz="2.78066800894729E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm2_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm2_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm2_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="arm1_link" />
+    <child
+      link="arm2_link" />
+    <axis
+      xyz="0.087986 -0.99612 0" />
+    <limit
+      lower="-1.5"
+      upper="1.5"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="gripper_link">
+    <inertial>
+      <origin
+        xyz="-0.186719938225505 -0.0101933243873208 0.154829436742073"
+        rpy="0 0 0" />
+      <mass
+        value="0.0134689809182682" />
+      <inertia
+        ixx="6.42660595212128E-07"
+        ixy="-3.68224348843171E-08"
+        ixz="1.34491448246805E-07"
+        iyy="1.09353163583225E-06"
+        iyz="9.4548029175504E-09"
+        izz="7.73525430068985E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/gripper_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.741176470588235 0.733333333333333 0.725490196078431 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/gripper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="arm2_link" />
+    <child
+      link="gripper_link" />
+    <axis
+      xyz="-0.61534 -0.054353 -0.78638" />
+    <limit
+      lower="-1.5"
+      upper="1.5"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="arm3_link">
+    <inertial>
+      <origin
+        xyz="-0.131612459247667 -0.015818441156768 0.158136097302883"
+        rpy="0 0 0" />
+      <mass
+        value="0.0231763537794877" />
+      <inertia
+        ixx="4.44764720548677E-06"
+        ixy="-2.52370171791878E-07"
+        ixz="-7.36137603387454E-07"
+        iyy="7.28121465716448E-06"
+        iyz="-6.50979103179039E-08"
+        izz="3.163472332731E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm3_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://assembly of robot.SLDASM/meshes/arm3_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm3_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="arm1_link" />
+    <child
+      link="arm3_link" />
+    <axis
+      xyz="-0.0879860150931316 0.996121710007382 0" />
+    <limit
+      lower="-1.5"
+      upper="1.5"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
