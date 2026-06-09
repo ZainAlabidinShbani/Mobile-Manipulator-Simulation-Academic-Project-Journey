@@ -26,6 +26,8 @@
   The STL on base_link remains the sole visual reference.
 -->
 <robot name="assembly_of_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Controllers config path; launch files pass an absolute path override -->
+  <xacro:arg name="controllers_yaml" default="$(find simulation_pkg)/config/controllers.yaml"/>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        MATERIALS
@@ -740,7 +742,7 @@
 
   <gazebo>
     <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-      <parameters>$(find simulation_pkg)/config/controllers.yaml</parameters>
+      <parameters>$(arg controllers_yaml)</parameters>
     </plugin>
   </gazebo>
 

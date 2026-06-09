@@ -58,6 +58,7 @@ def generate_launch_description():
     xacro_file  = os.path.join(pkg_sim,  'urdf',   'mobile_manipulator.urdf.xacro')
     world_file  = os.path.join(pkg_sim,  'worlds', 'pick_and_place.world')
     rviz_config = os.path.join(pkg_sim,  'rviz',   'assembly_of_robot.rviz')
+    controllers_file = os.path.join(pkg_sim, 'config', 'controllers.yaml')
 
     # ── Declare launch arguments ──────────────────────────────────────
     declare_gui = DeclareLaunchArgument(
@@ -131,7 +132,7 @@ def generate_launch_description():
 
     # ── robot_description ────────────────────────────────────────────
     robot_description_content = ParameterValue(
-        Command(['xacro ', xacro_file]),
+        Command(['xacro ', xacro_file, ' controllers_yaml:=', controllers_file]),
         value_type=str
     )
     robot_description = {'robot_description': robot_description_content}
@@ -236,18 +237,18 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # ── env vars first (order matters) ──
+        # ── args must be declared before referenced in conditions ──
+        declare_gui,
+        declare_rviz,
+        declare_use_sim_time,
+        declare_software_render,
+        # ── env vars ──
         set_gazebo_model_path,
         set_gazebo_resource_path,
         set_display,
         set_libgl_software,        # conditional: only when software_render=true
         set_ogre_rtt,              # conditional: only when software_render=true
         set_mesa_gl,               # conditional: only when software_render=true
-        # ── args ──
-        declare_gui,
-        declare_rviz,
-        declare_use_sim_time,
-        declare_software_render,
         # ── nodes ──
         robot_state_publisher_node,
         joint_state_publisher_node,
