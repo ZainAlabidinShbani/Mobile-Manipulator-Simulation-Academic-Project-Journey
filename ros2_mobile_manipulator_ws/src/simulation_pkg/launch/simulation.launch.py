@@ -9,7 +9,7 @@ Chain:
   joint_state_publisher   (publishes /joint_states for arm joints
                            until ros2_control takes over)
   spawn_entity            (spawns robot into Gazebo)
-  rviz2                   (optional)
+  rviz2                   (optional, uses same config as rviz_display.launch)
 
 Note on /odom:
   - In Gazebo mode the diff_drive plugin publishes /odom and the
@@ -42,7 +42,8 @@ def generate_launch_description():
 
     xacro_file  = os.path.join(pkg_sim, 'urdf',   'mobile_manipulator.urdf.xacro')
     world_file  = os.path.join(pkg_sim, 'worlds', 'pick_and_place.world')
-    rviz_config = os.path.join(pkg_sim, 'rviz',   'default.rviz')
+    # Use the same RViz config that works in rviz_display.launch.py
+    rviz_config = os.path.join(pkg_sim, 'rviz',   'assembly_of_robot.rviz')
 
     # ── Launch arguments ──────────────────────────────────────────────
     declare_gui          = DeclareLaunchArgument('gui',          default_value='true')
@@ -73,7 +74,6 @@ def generate_launch_description():
 
     # 2. joint_state_publisher — publishes /joint_states so RViz can
     #    display the arm links before ros2_control takes over.
-    #    (use joint_state_publisher, NOT the _gui version, in sim mode)
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
@@ -144,7 +144,7 @@ def generate_launch_description():
         ],
     )
 
-    # 7. RViz2
+    # 7. RViz2 — same config as rviz_display.launch.py
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
