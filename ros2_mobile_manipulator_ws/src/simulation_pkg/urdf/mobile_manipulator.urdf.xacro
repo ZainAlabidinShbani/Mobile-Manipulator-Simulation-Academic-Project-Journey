@@ -26,8 +26,8 @@
   The STL on base_link remains the sole visual reference.
 -->
 <robot name="assembly_of_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
-  <!-- Required xacro argument; launch files pass an absolute path -->
-  <xacro:arg name="controllers_yaml" default=""/>
+  <!-- Controllers config path; launch files pass an absolute path override -->
+  <xacro:arg name="controllers_yaml" default="$(find simulation_pkg)/config/controllers.yaml"/>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        MATERIALS
