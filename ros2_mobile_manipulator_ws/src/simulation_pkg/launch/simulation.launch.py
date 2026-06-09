@@ -5,17 +5,19 @@ Gazebo full-simulation launch for the Mobile Manipulator.
 
 Chain:
   gzserver  +  gzclient
-  robot_state_publisher   (robot_description from xacro)
-  joint_state_publisher   (publishes /joint_states for arm joints
-                           until ros2_control takes over)
-  spawn_entity            (spawns robot into Gazebo)
-  rviz2                   (optional, uses same config as rviz_display.launch)
+  robot_state_publisher   (use_sim_time=false so robot_description is
+                           available immediately for spawn_entity)
+  joint_state_publisher
+  spawn_entity            (spawns robot into Gazebo, delayed 8 s)
+  rviz2                   (use_sim_time=false, same config as rviz_display)
 
-Note on /odom:
-  - In Gazebo mode the diff_drive plugin publishes /odom and the
-    odom->base_footprint TF automatically once the robot is spawned.
-  - The static_tf fallback is NOT used here so it doesn't conflict
-    with the real odometry coming from the plugin.
+Notes:
+  - robot_state_publisher and rviz2 use use_sim_time=false.
+    This matches rviz_display.launch.py behaviour (no clock dependency)
+    and ensures robot_description is published before spawn_entity runs.
+  - The diff_drive plugin publishes /odom and odom->base_footprint TF
+    automatically once the robot is spawned.
+  - No static_tf fallback here (would conflict with diff_drive odom TF).
 """
 
 import os
@@ -42,19 +44,16 @@ def generate_launch_description():
 
     xacro_file  = os.path.join(pkg_sim, 'urdf',   'mobile_manipulator.urdf.xacro')
     world_file  = os.path.join(pkg_sim, 'worlds', 'pick_and_place.world')
-    # Use the same RViz config that works in rviz_display.launch.py
     rviz_config = os.path.join(pkg_sim, 'rviz',   'assembly_of_robot.rviz')
 
     # ── Launch arguments ──────────────────────────────────────────────
-    declare_gui          = DeclareLaunchArgument('gui',          default_value='true')
-    declare_use_sim_time = DeclareLaunchArgument('use_sim_time', default_value='true')
-    declare_rviz         = DeclareLaunchArgument('rviz',         default_value='true')
+    declare_gui  = DeclareLaunchArgument('gui',  default_value='true')
+    declare_rviz = DeclareLaunchArgument('rviz', default_value='true')
 
-    gui          = LaunchConfiguration('gui')
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    launch_rviz  = LaunchConfiguration('rviz')
+    gui         = LaunchConfiguration('gui')
+    launch_rviz = LaunchConfiguration('rviz')
 
-    # ── robot_description: process xacro at launch time ───────────────
+    # ── robot_description ─────────────────────────────────────────────
     robot_description_content = ParameterValue(
         Command(['xacro ', xacro_file]),
         value_type=str
@@ -63,23 +62,24 @@ def generate_launch_description():
 
     # ── Nodes ──────────────────────────────────────────────────────────
 
-    # 1. robot_state_publisher — publishes TF tree from URDF
+    # 1. robot_state_publisher
+    #    use_sim_time=FALSE → publishes robot_description immediately,
+    #    no dependency on Gazebo /clock topic.
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
         output='screen',
-        parameters=[robot_description, {'use_sim_time': use_sim_time}],
+        parameters=[robot_description, {'use_sim_time': False}],
     )
 
-    # 2. joint_state_publisher — publishes /joint_states so RViz can
-    #    display the arm links before ros2_control takes over.
+    # 2. joint_state_publisher
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
+        parameters=[{'use_sim_time': False}],
     )
 
     # 3. Gazebo server
@@ -98,9 +98,9 @@ def generate_launch_description():
         condition=IfCondition(gui),
     )
 
-    # 5. Spawn robot — wait 5 s for Gazebo physics to be ready
+    # 5. Spawn robot — wait 8 s for Gazebo physics + ROS bridge to be ready
     spawn_robot = TimerAction(
-        period=5.0,
+        period=8.0,
         actions=[
             Node(
                 package='gazebo_ros',
@@ -119,9 +119,9 @@ def generate_launch_description():
         ],
     )
 
-    # 6. Load ros2_control controllers after spawn (10 s total margin)
+    # 6. Load ros2_control controllers
     load_joint_state_broadcaster = TimerAction(
-        period=12.0,
+        period=15.0,
         actions=[
             ExecuteProcess(
                 cmd=['ros2', 'control', 'load_controller',
@@ -133,7 +133,7 @@ def generate_launch_description():
     )
 
     load_arm_controller = TimerAction(
-        period=14.0,
+        period=17.0,
         actions=[
             ExecuteProcess(
                 cmd=['ros2', 'control', 'load_controller',
@@ -144,20 +144,20 @@ def generate_launch_description():
         ],
     )
 
-    # 7. RViz2 — same config as rviz_display.launch.py
+    # 7. RViz2 — use_sim_time=FALSE (matches rviz_display behaviour)
+    #    Same assembly_of_robot.rviz config used in rviz_display.launch.py
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         arguments=['-d', rviz_config],
-        parameters=[{'use_sim_time': use_sim_time}],
+        parameters=[{'use_sim_time': False}],
         condition=IfCondition(launch_rviz),
         output='screen',
     )
 
     return LaunchDescription([
         declare_gui,
-        declare_use_sim_time,
         declare_rviz,
         robot_state_publisher_node,
         joint_state_publisher_node,
