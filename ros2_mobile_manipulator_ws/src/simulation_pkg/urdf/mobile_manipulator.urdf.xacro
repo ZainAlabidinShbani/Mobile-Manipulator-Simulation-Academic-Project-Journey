@@ -3,11 +3,20 @@
   mobile_manipulator.urdf.xacro
   ─────────────────────────────
   Gazebo-ready URDF for the Mobile Manipulator.
-  Robot geometry is **identical** to assembly_of_robot/urdf/assembly_of_robot.urdf
-  (exported from SolidWorks).  Gazebo / ros2_control extensions are added here
-  so that simulation_pkg stays consistent with the real robot.
 
-  Link / joint names must stay in sync with assembly_of_robot.urdf.
+  Fixes applied (v3):
+  1. Wheel joints changed fixed → continuous  →  diff_drive plugin works,
+     /odom topic and odom→base_footprint TF are published correctly.
+  2. Gazebo friction (mu1/mu2) added to wheels so the robot doesn't slide.
+  3. base_link inertia corrected (real mass ~1 kg) so Gazebo physics is stable
+     and the robot actually appears instead of falling through the ground.
+  4. arm1_joint origin kept xyz="0 0 0" – identical to assembly_of_robot.urdf;
+     the arm mesh itself carries its SolidWorks geometry offset, so the arm IS
+     visible in RViz when base_link is the fixed frame (same behaviour as assembly).
+  5. robot_state_publisher is launched alongside so /tf is always populated,
+     fixing the "Status: Error" in simulation RViz.
+
+  Link / joint names are 100 % identical to assembly_of_robot.urdf.
 -->
 <robot name="assembly_of_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
@@ -23,12 +32,15 @@
   <material name="gripper_color">
     <color rgba="0.741176470588235 0.733333333333333 0.725490196078431 1"/>
   </material>
+  <material name="dark_grey">
+    <color rgba="0.2 0.2 0.2 1"/>
+  </material>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        BASE
   ══════════════════════════════════════════════════════════════════════ -->
 
-  <!-- base_footprint – virtual root on the ground plane -->
+  <!-- base_footprint – virtual root, sits on the ground plane -->
   <link name="base_footprint"/>
 
   <joint name="base_joint" type="fixed">
@@ -37,7 +49,6 @@
     <child  link="base_link"/>
   </joint>
 
-  <!-- base_link – main chassis (mesh from assembly_of_robot) -->
   <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -49,28 +60,208 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/base_link.STL"/>
+        <!-- Simple box for collision – cheaper than mesh and avoids
+             concave-hull issues in Gazebo ODE -->
+        <box size="0.20 0.16 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <!-- Approximate chassis mass 0.8 kg, box 20×16×6 cm -->
+      <origin xyz="0 0 0.03" rpy="0 0 0"/>
+      <mass value="0.8"/>
+      <inertia ixx="0.002133" ixy="0" ixz="0"
+                               iyy="0.003200" iyz="0"
+                                              izz="0.004267"/>
+    </inertial>
+  </link>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/Blue</material>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+  </gazebo>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       WHEELS  –  continuous joints (needed by diff_drive plugin)
+       Origins and RPY are identical to assembly_of_robot.urdf.
+       Collision geometry is a cylinder matching the real wheel radius.
+  ══════════════════════════════════════════════════════════════════════ -->
+
+  <!-- wheel_fl (front-left) -->
+  <link name="wheel_fl_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://assembly_of_robot/meshes/wheel_fl_link.STL"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <!-- cylinder axis = local Z (wheel rotates around its own Z) -->
+        <cylinder length="0.025" radius="0.021"/>
       </geometry>
     </collision>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="1.0"/>
-      <inertia ixx="0.01" ixy="0" ixz="0"
-                          iyy="0.01" iyz="0"
-                                     izz="0.02"/>
+      <mass value="0.05"/>
+      <!-- solid cylinder: Ixx=Iyy=m(3r²+h²)/12, Izz=mr²/2 -->
+      <inertia ixx="6.25e-06" ixy="0" ixz="0"
+                               iyy="6.25e-06" iyz="0"
+                                               izz="1.10e-05"/>
     </inertial>
   </link>
 
-  <!-- Gazebo colour for base -->
-  <gazebo reference="base_link">
-    <material>Gazebo/BlueTransparent</material>
+  <!-- continuous joint – axis is local Y so the wheel rolls forward -->
+  <joint name="wheel_fl_joint" type="continuous">
+    <origin xyz="-0.064799 -0.06515 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
+    <parent link="base_link"/>
+    <child  link="wheel_fl_link"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.01" friction="0.01"/>
+  </joint>
+
+  <gazebo reference="wheel_fl_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>1.5</mu1>
+    <mu2>1.5</mu2>
+    <kp>500000</kp>
+    <kd>10</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+
+  <!-- wheel_fr (front-right) -->
+  <link name="wheel_fr_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://assembly_of_robot/meshes/wheel_fr_link.STL"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.025" radius="0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="6.25e-06" ixy="0" ixz="0"
+                               iyy="6.25e-06" iyz="0"
+                                               izz="1.10e-05"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_fr_joint" type="continuous">
+    <origin xyz="-0.070948 0.056167 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
+    <parent link="base_link"/>
+    <child  link="wheel_fr_link"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.01" friction="0.01"/>
+  </joint>
+
+  <gazebo reference="wheel_fr_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>1.5</mu1>
+    <mu2>1.5</mu2>
+    <kp>500000</kp>
+    <kd>10</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+
+  <!-- wheel_bl (back-left) – passive caster, stays continuous for consistency -->
+  <link name="wheel_bl_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://assembly_of_robot/meshes/wheel_bl_link.STL"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.025" radius="0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="6.25e-06" ixy="0" ixz="0"
+                               iyy="6.25e-06" iyz="0"
+                                               izz="1.10e-05"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_bl_joint" type="continuous">
+    <origin xyz="0.063537 -0.058645 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
+    <parent link="base_link"/>
+    <child  link="wheel_bl_link"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.05" friction="0.05"/>
+  </joint>
+
+  <gazebo reference="wheel_bl_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <kp>500000</kp>
+    <kd>10</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+  </gazebo>
+
+  <!-- wheel_br (back-right) -->
+  <link name="wheel_br_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://assembly_of_robot/meshes/wheel_br_link.STL"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.025" radius="0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia ixx="6.25e-06" ixy="0" ixz="0"
+                               iyy="6.25e-06" iyz="0"
+                                               izz="1.10e-05"/>
+    </inertial>
+  </link>
+
+  <joint name="wheel_br_joint" type="continuous">
+    <origin xyz="0.057387 0.062672 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
+    <parent link="base_link"/>
+    <child  link="wheel_br_link"/>
+    <axis xyz="0 0 1"/>
+    <dynamics damping="0.05" friction="0.05"/>
+  </joint>
+
+  <gazebo reference="wheel_br_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.5</mu1>
+    <mu2>0.5</mu2>
+    <kp>500000</kp>
+    <kd>10</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
   </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        ULTRASONIC SENSORS  (5 sensors – fixed joints, same as assembly)
   ══════════════════════════════════════════════════════════════════════ -->
 
-  <!-- ultra_lf_link (left-front) -->
   <link name="ultra_lf_link">
     <inertial>
       <origin xyz="0.000392502520046079 0.00999778155024024 0.00386934718745924" rpy="0 0 0"/>
@@ -80,19 +271,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="ultra_lf_joint" type="fixed">
     <origin xyz="-0.00226580751498728 0.0750361820477629 0.00200000000000006"
             rpy="1.5707963267949 -0.034893228197693 -3.06809938651869"/>
@@ -101,7 +287,6 @@
     <axis xyz="0.994109411682675 -0.0902133376226379 0.0600452863671194"/>
   </joint>
 
-  <!-- ultra_cl_link (center-left) -->
   <link name="ultra_cl_link">
     <inertial>
       <origin xyz="0.000222406075916948 0.010003020783912 0.00386934006852402" rpy="0 0 0"/>
@@ -111,19 +296,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="ultra_cl_joint" type="fixed">
     <origin xyz="0.117331768199602 0.0520604546695451 0.00200000000000003"
             rpy="1.5707963267949 -0.0178847798605488 2.22332530130247"/>
@@ -132,7 +312,6 @@
     <axis xyz="0 0 0"/>
   </joint>
 
-  <!-- ultra_center_link -->
   <link name="ultra_center_link">
     <inertial>
       <origin xyz="0.000903651099340264 0.00996459690264215 0.00386934479063039" rpy="0 0 0"/>
@@ -142,19 +321,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="ultra_center_joint" type="fixed">
     <origin xyz="0.126350089728397 0.00784554805723164 0.00200000000000003"
             rpy="1.5707963267949 -0.0860932764661557 1.71543729999604"/>
@@ -163,7 +337,6 @@
     <axis xyz="0 0 0"/>
   </joint>
 
-  <!-- ultra_cr_link (center-right) -->
   <link name="ultra_cr_link">
     <inertial>
       <origin xyz="0.000399191916967911 -0.00974732286991095 0.00336934153326418" rpy="0 0 0"/>
@@ -173,19 +346,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="ultra_cr_joint" type="fixed">
     <origin xyz="0.120364794822 -0.0378424458058604 0.00225000000000003"
             rpy="-1.5707963267949 -0.0453879801240789 -1.78287911613685"/>
@@ -194,7 +362,6 @@
     <axis xyz="0 0 0"/>
   </joint>
 
-  <!-- ultra_right_side_link -->
   <link name="ultra_right_side_link">
     <inertial>
       <origin xyz="-0.000922742788134978 -0.0100156939621976 0.0038693426395956" rpy="0 0 0"/>
@@ -204,19 +371,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="ultra_right_side_joint" type="fixed">
     <origin xyz="0.00472675427660008 -0.0748549926956864 0.00200000000000003"
             rpy="-1.5707963267949 -0.0105564142397783 -3.06809938651869"/>
@@ -225,17 +387,13 @@
     <axis xyz="0.999873275135185 -0.0153119105873406 0.00322673218666552"/>
   </joint>
 
-  <!-- Gazebo ultrasonic sensor plugins -->
+  <!-- Gazebo ultrasonic ray sensor plugins -->
   <gazebo reference="ultra_lf_link">
     <sensor type="ray" name="ultra_lf_sensor">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan><horizontal><samples>1</samples><resolution>1</resolution>
-          <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
-        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range>
-      </ray>
+      <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
+      <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
+        <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range></ray>
       <plugin name="ultra_lf_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros><remapping>~/out:=/ultrasonic/front_left</remapping></ros>
         <output_type>sensor_msgs/Range</output_type>
@@ -243,17 +401,12 @@
       </plugin>
     </sensor>
   </gazebo>
-
   <gazebo reference="ultra_cl_link">
     <sensor type="ray" name="ultra_cl_sensor">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan><horizontal><samples>1</samples><resolution>1</resolution>
-          <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
-        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range>
-      </ray>
+      <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
+      <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
+        <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range></ray>
       <plugin name="ultra_cl_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros><remapping>~/out:=/ultrasonic/center_left</remapping></ros>
         <output_type>sensor_msgs/Range</output_type>
@@ -261,17 +414,12 @@
       </plugin>
     </sensor>
   </gazebo>
-
   <gazebo reference="ultra_center_link">
     <sensor type="ray" name="ultra_center_sensor">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan><horizontal><samples>1</samples><resolution>1</resolution>
-          <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
-        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range>
-      </ray>
+      <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
+      <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
+        <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range></ray>
       <plugin name="ultra_center_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros><remapping>~/out:=/ultrasonic/front_center</remapping></ros>
         <output_type>sensor_msgs/Range</output_type>
@@ -279,17 +427,12 @@
       </plugin>
     </sensor>
   </gazebo>
-
   <gazebo reference="ultra_cr_link">
     <sensor type="ray" name="ultra_cr_sensor">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan><horizontal><samples>1</samples><resolution>1</resolution>
-          <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
-        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range>
-      </ray>
+      <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
+      <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
+        <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range></ray>
       <plugin name="ultra_cr_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros><remapping>~/out:=/ultrasonic/center_right</remapping></ros>
         <output_type>sensor_msgs/Range</output_type>
@@ -297,17 +440,12 @@
       </plugin>
     </sensor>
   </gazebo>
-
   <gazebo reference="ultra_right_side_link">
     <sensor type="ray" name="ultra_right_side_sensor">
-      <pose>0 0 0 0 0 0</pose>
-      <visualize>false</visualize>
-      <update_rate>10</update_rate>
-      <ray>
-        <scan><horizontal><samples>1</samples><resolution>1</resolution>
-          <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
-        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range>
-      </ray>
+      <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
+      <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
+        <min_angle>-0.1</min_angle><max_angle>0.1</max_angle></horizontal></scan>
+        <range><min>0.02</min><max>4.0</max><resolution>0.01</resolution></range></ray>
       <plugin name="ultra_right_side_plugin" filename="libgazebo_ros_ray_sensor.so">
         <ros><remapping>~/out:=/ultrasonic/right_side</remapping></ros>
         <output_type>sensor_msgs/Range</output_type>
@@ -327,19 +465,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/></geometry>
       <material name="light_blue"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="camera_joint" type="fixed">
     <origin xyz="0.101824132879338 0.00950646835199812 0.128659999721809"
             rpy="1.32812932523048 0.443573327716237 1.53844767065916"/>
@@ -356,7 +489,6 @@
     <child  link="camera_optical_link"/>
   </joint>
 
-  <!-- Gazebo camera plugin -->
   <gazebo reference="camera_link">
     <sensor type="camera" name="rgb_camera">
       <update_rate>30.0</update_rate>
@@ -379,11 +511,12 @@
   </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       ARM  (4-DOF: arm1 → arm2 → arm3 → gripper)
-       Joint names and axes are identical to assembly_of_robot.urdf.
+       ARM  (4-DOF)
+       Joint origins are xyz="0 0 0" – identical to assembly_of_robot.urdf.
+       The arm mesh files carry their own SolidWorks geometry offsets,
+       so the arm is visible in RViz even with origin at zero.
   ══════════════════════════════════════════════════════════════════════ -->
 
-  <!-- arm1_link -->
   <link name="arm1_link">
     <inertial>
       <origin xyz="-0.0774407866713394 -0.00510260600289045 0.105779455605111" rpy="0 0 0"/>
@@ -393,19 +526,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm1_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm1_link.STL"/></geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm1_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm1_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="arm1_joint" type="revolute">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="base_link"/>
@@ -415,7 +543,6 @@
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
-  <!-- arm2_link -->
   <link name="arm2_link">
     <inertial>
       <origin xyz="-0.125168636410049 0.00321053283421635 0.165883121514536" rpy="0 0 0"/>
@@ -425,19 +552,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm2_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm2_link.STL"/></geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm2_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm2_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="arm2_joint" type="revolute">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="arm1_link"/>
@@ -447,7 +569,7 @@
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
-  <!-- arm3_link  (sibling of arm2, child of arm1 – same as assembly_of_robot) -->
+  <!-- arm3_link is a sibling of arm2 (child of arm1) – same as assembly_of_robot -->
   <link name="arm3_link">
     <inertial>
       <origin xyz="-0.131612459247667 -0.015818441156768 0.158136097302883" rpy="0 0 0"/>
@@ -457,19 +579,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm3_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm3_link.STL"/></geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm3_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/arm3_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="arm3_joint" type="revolute">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="arm1_link"/>
@@ -479,7 +596,6 @@
     <dynamics damping="0.1" friction="0.05"/>
   </joint>
 
-  <!-- gripper_link -->
   <link name="gripper_link">
     <inertial>
       <origin xyz="-0.186719938225505 -0.0101933243873208 0.154829436742073" rpy="0 0 0"/>
@@ -489,19 +605,14 @@
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/></geometry>
       <material name="gripper_color"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/>
-      </geometry>
+      <geometry><mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/></geometry>
     </collision>
   </link>
-
   <joint name="gripper_joint" type="revolute">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="arm2_link"/>
@@ -511,16 +622,15 @@
     <dynamics damping="0.05" friction="0.02"/>
   </joint>
 
-  <!-- Gazebo arm colours -->
   <gazebo reference="arm1_link">  <material>Gazebo/Grey</material>  </gazebo>
   <gazebo reference="arm2_link">  <material>Gazebo/Grey</material>  </gazebo>
   <gazebo reference="arm3_link">  <material>Gazebo/Grey</material>  </gazebo>
   <gazebo reference="gripper_link"><material>Gazebo/DarkGrey</material></gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       GAZEBO DIFFERENTIAL-DRIVE PLUGIN  (mobile base)
-       Using the 4 fixed wheels already present on the real chassis mesh.
-       Velocities are commanded via /cmd_vel (geometry_msgs/Twist).
+       GAZEBO DIFFERENTIAL-DRIVE PLUGIN
+       – drives wheel_fl_joint (left) and wheel_fr_joint (right)
+       – publishes /odom  +  odom → base_footprint TF
   ══════════════════════════════════════════════════════════════════════ -->
   <gazebo>
     <plugin name="diff_drive_plugin" filename="libgazebo_ros_diff_drive.so">
@@ -529,18 +639,20 @@
         <remapping>odom:=/odom</remapping>
       </ros>
 
-      <!-- Wheel joints – the assembly uses fixed wheels; for simulation we
-           treat the front-left / front-right pair as the driven wheels. -->
+      <!-- driven wheels (continuous joints) -->
       <left_joint>wheel_fl_joint</left_joint>
       <right_joint>wheel_fr_joint</right_joint>
 
-      <!-- Physical params (approximate from the SolidWorks model) -->
-      <wheel_separation>0.13</wheel_separation>   <!-- ~distance between fl and fr -->
-      <wheel_diameter>0.042</wheel_diameter>       <!-- ~wheel radius × 2 -->
+      <!-- Physical params matched to the SolidWorks model -->
+      <!-- distance between wheel_fl and wheel_fr centres: ~0.1215 m -->
+      <wheel_separation>0.1215</wheel_separation>
+      <!-- wheel diameter = 2 × 0.021 m radius -->
+      <wheel_diameter>0.042</wheel_diameter>
 
       <max_wheel_torque>5.0</max_wheel_torque>
       <max_wheel_acceleration>1.0</max_wheel_acceleration>
 
+      <!-- odometry -->
       <publish_odom>true</publish_odom>
       <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
@@ -551,124 +663,8 @@
   </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       WHEEL LINKS  (visual only – joints remain fixed in Gazebo just like
-       in the real robot; diff-drive plugin drives base_footprint directly)
-  ══════════════════════════════════════════════════════════════════════ -->
-
-  <!-- wheel_fl -->
-  <link name="wheel_fl_link">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.05"/>
-      <inertia ixx="2e-05" ixy="0" ixz="0" iyy="2e-05" iyz="0" izz="3e-05"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fl_link.STL"/>
-      </geometry>
-      <material name="light_blue"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fl_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="wheel_fl_joint" type="fixed">
-    <origin xyz="-0.064799 -0.06515 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child  link="wheel_fl_link"/>
-    <axis xyz="0 0 0"/>
-  </joint>
-
-  <!-- wheel_fr -->
-  <link name="wheel_fr_link">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.05"/>
-      <inertia ixx="2e-05" ixy="0" ixz="0" iyy="2e-05" iyz="0" izz="3e-05"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fr_link.STL"/>
-      </geometry>
-      <material name="light_blue"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fr_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="wheel_fr_joint" type="fixed">
-    <origin xyz="-0.070948 0.056167 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child  link="wheel_fr_link"/>
-    <axis xyz="0 0 0"/>
-  </joint>
-
-  <!-- wheel_bl -->
-  <link name="wheel_bl_link">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.05"/>
-      <inertia ixx="2e-05" ixy="0" ixz="0" iyy="2e-05" iyz="0" izz="3e-05"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_bl_link.STL"/>
-      </geometry>
-      <material name="light_blue"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_bl_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="wheel_bl_joint" type="fixed">
-    <origin xyz="0.063537 -0.058645 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child  link="wheel_bl_link"/>
-    <axis xyz="0 0 0"/>
-  </joint>
-
-  <!-- wheel_br -->
-  <link name="wheel_br_link">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.05"/>
-      <inertia ixx="2e-05" ixy="0" ixz="0" iyy="2e-05" iyz="0" izz="3e-05"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_br_link.STL"/>
-      </geometry>
-      <material name="light_blue"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_br_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="wheel_br_joint" type="fixed">
-    <origin xyz="0.057387 0.062672 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child  link="wheel_br_link"/>
-    <axis xyz="0 0 0"/>
-  </joint>
-
-  <!-- ═══════════════════════════════════════════════════════════════════
        ROS2 CONTROL  – position controllers for the 4 arm joints
+       (wheel joints are driven directly by diff_drive, not ros2_control)
   ══════════════════════════════════════════════════════════════════════ -->
   <ros2_control name="arm_control" type="system">
     <hardware>
