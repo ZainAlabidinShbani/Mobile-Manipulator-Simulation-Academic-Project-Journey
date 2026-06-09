@@ -18,7 +18,7 @@ Notes:
 
 import os
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, Command
 from launch_ros.actions import Node
@@ -35,6 +35,12 @@ def generate_launch_description():
         name='urdf',
         default_value=urdf_path,
         description='Absolute path to the robot URDF file'
+    )
+
+    # Set Gazebo resource path so it can find the mesh files
+    set_gazebo_resource_path = SetEnvironmentVariable(
+        name='IGN_GAZEBO_RESOURCE_PATH',
+        value=pkg_share
     )
 
     robot_description = ParameterValue(
@@ -90,6 +96,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
+        set_gazebo_resource_path,
         declare_urdf_arg,
         gazebo,
         robot_state_publisher_node,
