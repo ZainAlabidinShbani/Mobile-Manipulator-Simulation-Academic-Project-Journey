@@ -58,6 +58,7 @@ def generate_launch_description():
     xacro_file  = os.path.join(pkg_sim,  'urdf',   'mobile_manipulator.urdf.xacro')
     world_file  = os.path.join(pkg_sim,  'worlds', 'pick_and_place.world')
     rviz_config = os.path.join(pkg_sim,  'rviz',   'assembly_of_robot.rviz')
+    controllers_file = os.path.join(pkg_sim, 'config', 'controllers.yaml')
 
     # ── Declare launch arguments ──────────────────────────────────────
     declare_gui = DeclareLaunchArgument(
@@ -131,7 +132,7 @@ def generate_launch_description():
 
     # ── robot_description ────────────────────────────────────────────
     robot_description_content = ParameterValue(
-        Command(['xacro ', xacro_file]),
+        Command(['xacro ', xacro_file, ' controllers_yaml:=', controllers_file]),
         value_type=str
     )
     robot_description = {'robot_description': robot_description_content}

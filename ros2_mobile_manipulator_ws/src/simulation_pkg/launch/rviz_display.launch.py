@@ -32,6 +32,7 @@ def generate_launch_description():
 
     xacro_file  = os.path.join(pkg_sim, 'urdf', 'mobile_manipulator.urdf.xacro')
     rviz_config = os.path.join(pkg_sim, 'rviz', 'default.rviz')
+    controllers_file = os.path.join(pkg_sim, 'config', 'controllers.yaml')
 
     # ── Launch argument: allow overriding the xacro path ──────────────
     declare_xacro_arg = DeclareLaunchArgument(
@@ -42,7 +43,12 @@ def generate_launch_description():
 
     # ── robot_description: process xacro at launch time ───────────────
     robot_description_content = ParameterValue(
-        Command(['xacro ', LaunchConfiguration('xacro')]),
+        Command([
+            'xacro ',
+            LaunchConfiguration('xacro'),
+            ' controllers_yaml:=',
+            controllers_file,
+        ]),
         value_type=str,
     )
     robot_description = {'robot_description': robot_description_content}
