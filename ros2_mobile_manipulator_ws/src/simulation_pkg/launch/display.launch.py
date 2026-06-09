@@ -1,4 +1,9 @@
-"""Alias launcher for rviz_display.launch.py."""
+"""Compatibility wrapper for RViz display launch.
+
+Allows both:
+  ros2 launch simulation_pkg display.launch.py
+  ros2 launch simulation_pkg rviz_display.launch.py
+"""
 
 import os
 
