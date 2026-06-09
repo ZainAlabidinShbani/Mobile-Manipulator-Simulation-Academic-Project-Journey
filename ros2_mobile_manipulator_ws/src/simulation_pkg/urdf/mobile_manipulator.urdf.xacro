@@ -4,6 +4,16 @@
   ─────────────────────────────
   Gazebo-ready URDF for the Mobile Manipulator.
 
+  Key fix (2026-06-09):
+  ─────────────────────
+  All <collision> geometries now use PRIMITIVE shapes (box / cylinder /
+  sphere).  The previous version used STL meshes for collision, which
+  caused Gazebo to crash / hang on startup because the mesh loader
+  failed for complex or non-watertight meshes.
+
+  Visual geometries still reference the original assembly_of_robot STL
+  meshes so RViz continues to display the correct 3-D model.
+
   Wheel strategy
   ──────────────
   The base_link.STL (from SolidWorks) already contains the wheels drawn
@@ -57,8 +67,9 @@
       </geometry>
       <material name="light_blue"/>
     </visual>
+    <!-- PRIMITIVE collision – avoids Gazebo mesh-load crash -->
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0.03" rpy="0 0 0"/>
       <geometry>
         <box size="0.20 0.16 0.06"/>
       </geometry>
@@ -76,6 +87,8 @@
     <material>Gazebo/Blue</material>
     <mu1>0.5</mu1>
     <mu2>0.5</mu2>
+    <self_collide>false</self_collide>
+    <maxContacts>1</maxContacts>
   </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
@@ -121,6 +134,8 @@
     <kd>10</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
+    <self_collide>false</self_collide>
+    <maxContacts>1</maxContacts>
   </gazebo>
 
   <!-- wheel_fr (front-right) -->
@@ -159,6 +174,8 @@
     <kd>10</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
+    <self_collide>false</self_collide>
+    <maxContacts>1</maxContacts>
   </gazebo>
 
   <!-- wheel_bl (back-left) -->
@@ -197,6 +214,8 @@
     <kd>10</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
+    <self_collide>false</self_collide>
+    <maxContacts>1</maxContacts>
   </gazebo>
 
   <!-- wheel_br (back-right) -->
@@ -235,10 +254,13 @@
     <kd>10</kd>
     <minDepth>0.001</minDepth>
     <maxVel>0.1</maxVel>
+    <self_collide>false</self_collide>
+    <maxContacts>1</maxContacts>
   </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        ULTRASONIC SENSORS
+       Collision: small box primitive (no STL) → stable in Gazebo
   ══════════════════════════════════════════════════════════════════════ -->
 
   <link name="ultra_lf_link">
@@ -254,8 +276,8 @@
       <material name="light_blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL"/></geometry>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.020 0.045 0.012"/></geometry>
     </collision>
   </link>
   <joint name="ultra_lf_joint" type="fixed">
@@ -279,8 +301,8 @@
       <material name="light_blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL"/></geometry>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.020 0.045 0.012"/></geometry>
     </collision>
   </link>
   <joint name="ultra_cl_joint" type="fixed">
@@ -304,8 +326,8 @@
       <material name="light_blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL"/></geometry>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.020 0.045 0.012"/></geometry>
     </collision>
   </link>
   <joint name="ultra_center_joint" type="fixed">
@@ -329,8 +351,8 @@
       <material name="light_blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL"/></geometry>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.020 0.045 0.012"/></geometry>
     </collision>
   </link>
   <joint name="ultra_cr_joint" type="fixed">
@@ -354,8 +376,8 @@
       <material name="light_blue"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL"/></geometry>
+      <origin xyz="0 0 0.004" rpy="0 0 0"/>
+      <geometry><box size="0.020 0.045 0.012"/></geometry>
     </collision>
   </link>
   <joint name="ultra_right_side_joint" type="fixed">
@@ -368,6 +390,7 @@
 
   <!-- Gazebo ultrasonic ray sensor plugins -->
   <gazebo reference="ultra_lf_link">
+    <self_collide>false</self_collide>
     <sensor type="ray" name="ultra_lf_sensor">
       <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
       <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
@@ -381,6 +404,7 @@
     </sensor>
   </gazebo>
   <gazebo reference="ultra_cl_link">
+    <self_collide>false</self_collide>
     <sensor type="ray" name="ultra_cl_sensor">
       <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
       <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
@@ -394,6 +418,7 @@
     </sensor>
   </gazebo>
   <gazebo reference="ultra_center_link">
+    <self_collide>false</self_collide>
     <sensor type="ray" name="ultra_center_sensor">
       <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
       <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
@@ -407,6 +432,7 @@
     </sensor>
   </gazebo>
   <gazebo reference="ultra_cr_link">
+    <self_collide>false</self_collide>
     <sensor type="ray" name="ultra_cr_sensor">
       <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
       <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
@@ -420,6 +446,7 @@
     </sensor>
   </gazebo>
   <gazebo reference="ultra_right_side_link">
+    <self_collide>false</self_collide>
     <sensor type="ray" name="ultra_right_side_sensor">
       <pose>0 0 0 0 0 0</pose><visualize>false</visualize><update_rate>10</update_rate>
       <ray><scan><horizontal><samples>1</samples><resolution>1</resolution>
@@ -435,6 +462,7 @@
 
   <!-- ═══════════════════════════════════════════════════════════════════
        CAMERA
+       Collision: small box primitive (no STL)
   ══════════════════════════════════════════════════════════════════════ -->
   <link name="camera_link">
     <inertial>
@@ -449,7 +477,7 @@
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/></geometry>
+      <geometry><box size="0.025 0.090 0.025"/></geometry>
     </collision>
   </link>
   <joint name="camera_joint" type="fixed">
@@ -468,6 +496,7 @@
   </joint>
 
   <gazebo reference="camera_link">
+    <self_collide>false</self_collide>
     <sensor type="camera" name="rgb_camera">
       <update_rate>30.0</update_rate>
       <visualize>false</visualize>
@@ -490,6 +519,7 @@
 
   <!-- ═══════════════════════════════════════════════════════════════════
        ARM  (4-DOF)
+       Collision: cylinder primitives (no STL) → stable physics
   ══════════════════════════════════════════════════════════════════════ -->
 
   <link name="arm1_link">
@@ -505,8 +535,8 @@
       <material name="silver"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/arm1_link.STL"/></geometry>
+      <origin xyz="-0.05 0 0.08" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.12" radius="0.018"/></geometry>
     </collision>
   </link>
   <joint name="arm1_joint" type="revolute">
@@ -531,8 +561,8 @@
       <material name="silver"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/arm2_link.STL"/></geometry>
+      <origin xyz="-0.07 0 0.1" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.10" radius="0.015"/></geometry>
     </collision>
   </link>
   <joint name="arm2_joint" type="revolute">
@@ -557,8 +587,8 @@
       <material name="silver"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/arm3_link.STL"/></geometry>
+      <origin xyz="-0.07 0 0.1" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.10" radius="0.015"/></geometry>
     </collision>
   </link>
   <joint name="arm3_joint" type="revolute">
@@ -584,7 +614,7 @@
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry><mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/></geometry>
+      <geometry><box size="0.05 0.04 0.03"/></geometry>
     </collision>
   </link>
   <joint name="gripper_joint" type="revolute">
@@ -596,13 +626,68 @@
     <dynamics damping="0.05" friction="0.02"/>
   </joint>
 
-  <gazebo reference="arm1_link">  <material>Gazebo/Grey</material>  </gazebo>
-  <gazebo reference="arm2_link">  <material>Gazebo/Grey</material>  </gazebo>
-  <gazebo reference="arm3_link">  <material>Gazebo/Grey</material>  </gazebo>
-  <gazebo reference="gripper_link"><material>Gazebo/DarkGrey</material></gazebo>
+  <gazebo reference="arm1_link">
+    <material>Gazebo/Grey</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+  <gazebo reference="arm2_link">
+    <material>Gazebo/Grey</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+  <gazebo reference="arm3_link">
+    <material>Gazebo/Grey</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+  <gazebo reference="gripper_link">
+    <material>Gazebo/DarkGrey</material>
+    <self_collide>false</self_collide>
+  </gazebo>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       IMU LINK  (added for Nav2 / EKF fusion)
+  ══════════════════════════════════════════════════════════════════════ -->
+  <link name="imu_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.01 0.005"/></geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.01 0.01 0.005"/></geometry>
+    </collision>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <origin xyz="0 0 0.03" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child  link="imu_link"/>
+  </joint>
+
+  <gazebo reference="imu_link">
+    <self_collide>false</self_collide>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>false</visualize>
+      <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <remapping>~/out:=/imu/data</remapping>
+        </ros>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        <frame_name>imu_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        GAZEBO DIFFERENTIAL-DRIVE PLUGIN
+       wheel_separation recalculated from actual joint origins:
+         fl_y = -0.06515,  fr_y = 0.056167  →  separation ≈ 0.1213
   ══════════════════════════════════════════════════════════════════════ -->
   <gazebo>
     <plugin name="diff_drive_plugin" filename="libgazebo_ros_diff_drive.so">
@@ -612,7 +697,7 @@
       </ros>
       <left_joint>wheel_fl_joint</left_joint>
       <right_joint>wheel_fr_joint</right_joint>
-      <wheel_separation>0.1215</wheel_separation>
+      <wheel_separation>0.1213</wheel_separation>
       <wheel_diameter>0.042</wheel_diameter>
       <max_wheel_torque>5.0</max_wheel_torque>
       <max_wheel_acceleration>1.0</max_wheel_acceleration>
