@@ -13,7 +13,6 @@ Usage:
 """
 
 import os
-from ament_python_cmake_module import get_local_libpython_dir  # noqa: F401 (unused import guard)
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, Command
