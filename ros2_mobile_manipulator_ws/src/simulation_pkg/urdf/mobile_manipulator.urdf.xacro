@@ -27,7 +27,7 @@
 -->
 <robot name="assembly_of_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- Required xacro argument; launch files pass an absolute path -->
-  <xacro:arg name="controllers_yaml"/>
+  <xacro:arg name="controllers_yaml" default=""/>
 
   <!-- ═══════════════════════════════════════════════════════════════════
        MATERIALS
