@@ -237,18 +237,18 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        # ── env vars first (order matters) ──
+        # ── args must be declared before referenced in conditions ──
+        declare_gui,
+        declare_rviz,
+        declare_use_sim_time,
+        declare_software_render,
+        # ── env vars ──
         set_gazebo_model_path,
         set_gazebo_resource_path,
         set_display,
         set_libgl_software,        # conditional: only when software_render=true
         set_ogre_rtt,              # conditional: only when software_render=true
         set_mesa_gl,               # conditional: only when software_render=true
-        # ── args ──
-        declare_gui,
-        declare_rviz,
-        declare_use_sim_time,
-        declare_software_render,
         # ── nodes ──
         robot_state_publisher_node,
         joint_state_publisher_node,
