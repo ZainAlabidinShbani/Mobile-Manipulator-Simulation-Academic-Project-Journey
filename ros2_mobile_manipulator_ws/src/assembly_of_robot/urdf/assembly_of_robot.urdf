@@ -1,524 +1,304 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  URDF for Mobile Manipulator - assembly_of_robot
-  Source: SolidWorks URDF Exporter 1.6.0
-  Fixed: joint types, rotation axes, joint limits, inertia scaling.
-  All joint origin xyz+rpy values are UNCHANGED from the SolidWorks export.
--->
-<robot name="assembly_of_robot">
-
-  <!-- ================================================================
-       MATERIALS
-       ================================================================ -->
-  <material name="silver">
-    <color rgba="0.6667 0.6980 0.7686 1"/>
-  </material>
-  <material name="wheel_color">
-    <color rgba="0.7922 0.8196 0.9333 1"/>
-  </material>
-  <material name="arm_color">
-    <color rgba="0.9176 0.9176 0.9176 1"/>
-  </material>
-  <material name="sensor_color">
-    <color rgba="0.7922 0.8196 0.9333 1"/>
-  </material>
-
-  <!-- ================================================================
-       BASE LINK
-       ================================================================ -->
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="assembly of robot.SLDASM">
   <link name="base_link">
-    <inertial>
-      <origin xyz="-0.00370560542088127 -0.00123891547063168 0.03" rpy="0 0 0"/>
-      <mass value="2.0"/>
-      <inertia ixx="0.02" ixy="-0.0001" ixz="0.0"
-               iyy="0.04" iyz="0.0"
-               izz="0.05"/>
-    </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/base_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/base_link.STL" />
       </geometry>
-      <material name="silver"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/base_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/base_link.STL" />
       </geometry>
     </collision>
   </link>
-
-  <!-- ================================================================
-       WHEEL FRONT-LEFT
-       type: continuous  axis: 0 0 1 (wheel local spin axis)
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
-  <link name="wheel_fl_link">
+  <link name="base_footprint" /><link name="ultra_lf_link">
     <inertial>
-      <origin xyz="-0.000105669853970536 -0.00174681357516555 0.0101270123724146" rpy="0 0 0"/>
-      <mass value="0.3"/>
-      <inertia ixx="0.0003" ixy="0.0" ixz="0.0"
-               iyy="0.0003" iyz="0.0"
-               izz="0.0005"/>
+      <origin xyz="0.000392502520046079 0.00999778155024024 0.00386934718745924" rpy="0 0 0" />
+      <mass value="0.00627539687489747" />
+      <inertia ixx="1.78976908086646E-07" ixy="7.30391819666835E-09" ixz="3.96814441299485E-10" iyy="3.90047381838217E-07" iyz="1.93385096181571E-09" izz="4.6747919767257E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fl_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL" />
       </geometry>
-      <material name="wheel_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fl_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_lf_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_fl_joint" type="continuous">
-    <origin xyz="-0.064799 -0.06515 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child link="wheel_fl_link"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.01" friction="0.1"/>
+  <joint name="base_joint" type="fixed"><origin xyz="0 0 0" rpy="0 0 0" /><parent link="base_footprint" /><child link="base_link" /></joint><joint name="ultra_lf_joint" type="fixed">
+    <origin xyz="-0.00226580751498728 0.0750361820477629 0.00200000000000006" rpy="1.5707963267949 -0.034893228197693 -3.06809938651869" />
+    <parent link="base_link" />
+    <child link="ultra_lf_link" />
+    <axis xyz="0.994109411682675 -0.0902133376226379 0.0600452863671194" />
   </joint>
-
-  <!-- ================================================================
-       WHEEL FRONT-RIGHT
-       type: continuous  axis: 0 0 1
-       ================================================================ -->
-  <link name="wheel_fr_link">
+  <link name="ultra_cl_link">
     <inertial>
-      <origin xyz="-0.000105670029036942 0.00174681288738787 0.010127012388173" rpy="0 0 0"/>
-      <mass value="0.3"/>
-      <inertia ixx="0.0003" ixy="0.0" ixz="0.0"
-               iyy="0.0003" iyz="0.0"
-               izz="0.0005"/>
+      <origin xyz="0.000222406075916948 0.010003020783912 0.00386934006852402" rpy="0 0 0" />
+      <mass value="0.00627540556306311" />
+      <inertia ixx="1.78789966908303E-07" ixy="3.71045324302472E-09" ixz="3.63869202998041E-10" iyy="3.90234791362463E-07" iyz="1.94031977317123E-09" izz="4.67479665984999E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fr_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL" />
       </geometry>
-      <material name="wheel_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_fr_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_cl_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_fr_joint" type="continuous">
-    <origin xyz="-0.070948 0.056167 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child link="wheel_fr_link"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.01" friction="0.1"/>
+  <joint name="ultra_cl_joint" type="fixed">
+    <origin xyz="0.117331768199602 0.0520604546695451 0.00200000000000003" rpy="1.5707963267949 -0.0178847798605488 2.22332530130247" />
+    <parent link="base_link" />
+    <child link="ultra_cl_link" />
+    <axis xyz="0 0 0" />
   </joint>
-
-  <!-- ================================================================
-       WHEEL BACK-LEFT
-       type: continuous  axis: 0 0 1
-       ================================================================ -->
-  <link name="wheel_bl_link">
+  <link name="ultra_center_link">
     <inertial>
-      <origin xyz="-0.000105669853960988 -0.0017468135751744 0.0101270123724197" rpy="0 0 0"/>
-      <mass value="0.3"/>
-      <inertia ixx="0.0003" ixy="0.0" ixz="0.0"
-               iyy="0.0003" iyz="0.0"
-               izz="0.0005"/>
+      <origin xyz="0.000903651099340264 0.00996459690264215 0.00386934479063039" rpy="0 0 0" />
+      <mass value="0.00627539932879679" />
+      <inertia ixx="1.80276559726899E-07" ixy="1.80536125704803E-08" ixz="4.95265966528288E-10" iyy="3.88747971268318E-07" iyz="1.91101944350272E-09" izz="4.67479439045531E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_bl_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL" />
       </geometry>
-      <material name="wheel_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_bl_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_center_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_bl_joint" type="continuous">
-    <origin xyz="0.063537 -0.058645 -0.020884" rpy="1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child link="wheel_bl_link"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.01" friction="0.1"/>
+  <joint name="ultra_center_joint" type="fixed">
+    <origin xyz="0.126350089728397 0.00784554805723164 0.00200000000000003" rpy="1.5707963267949 -0.0860932764661557 1.71543729999604" />
+    <parent link="base_link" />
+    <child link="ultra_center_link" />
+    <axis xyz="0 0 0" />
   </joint>
-
-  <!-- ================================================================
-       WHEEL BACK-RIGHT
-       type: continuous  axis: 0 0 1
-       ================================================================ -->
-  <link name="wheel_br_link">
+  <link name="ultra_cr_link">
     <inertial>
-      <origin xyz="-0.000105670029167615 0.00174681288747511 0.010127012388229" rpy="0 0 0"/>
-      <mass value="0.3"/>
-      <inertia ixx="0.0003" ixy="0.0" ixz="0.0"
-               iyy="0.0003" iyz="0.0"
-               izz="0.0005"/>
+      <origin xyz="0.000399191916967911 -0.00974732286991095 0.00336934153326418" rpy="0 0 0" />
+      <mass value="0.00627540372500677" />
+      <inertia ixx="1.79166991919321E-07" ixy="-9.66225182141075E-09" ixz="-2.40452170936952E-10" iyy="3.89857689023337E-07" iyz="-1.95944567319489E-09" izz="4.67479586656258E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_br_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL" />
       </geometry>
-      <material name="wheel_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/wheel_br_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_cr_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_br_joint" type="continuous">
-    <origin xyz="0.057387 0.062672 -0.020884" rpy="-1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child link="wheel_br_link"/>
-    <axis xyz="0 0 1"/>
-    <dynamics damping="0.01" friction="0.1"/>
+  <joint name="ultra_cr_joint" type="fixed">
+    <origin xyz="0.120364794822 -0.0378424458058604 0.00225000000000003" rpy="-1.5707963267949 -0.0453879801240789 -1.78287911613685" />
+    <parent link="base_link" />
+    <child link="ultra_cr_link" />
+    <axis xyz="0 0 0" />
   </joint>
-
-  <!-- ================================================================
-       ARM LINK 1  (base yaw rotation)
-       type: revolute  axis: 0 0 1  limits: +-180 deg
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
-  <link name="arm_link_1">
+  <link name="ultra_right_side_link">
     <inertial>
-      <origin xyz="-0.124122626261111 0.00674578860620575 -0.0308255459423702" rpy="0 0 0"/>
-      <mass value="0.5"/>
-      <inertia ixx="0.002" ixy="-0.00005" ixz="-0.000005"
-               iyy="0.0005" iyz="0.0"
-               izz="0.002"/>
+      <origin xyz="-0.000922742788134978 -0.0100156939621976 0.0038693426395956" rpy="0 0 0" />
+      <mass value="0.00627540290688136" />
+      <inertia ixx="1.78749869264092E-07" ixy="-2.30610000214141E-09" ixz="-3.08541334677673E-10" iyy="3.90274735150182E-07" iyz="-1.94986850656983E-09" izz="4.67479505514093E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_1.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL" />
       </geometry>
-      <material name="arm_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_1.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/ultra_right_side_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="arm_joint_1" type="revolute">
-    <origin xyz="0.18587 0.0065057 0.10591" rpy="-3.0796 -0.66341 -0.035278"/>
-    <parent link="base_link"/>
-    <child link="arm_link_1"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-3.14159" upper="3.14159" effort="20.0" velocity="1.0"/>
-    <dynamics damping="0.1" friction="0.1"/>
+  <joint name="ultra_right_side_joint" type="fixed">
+    <origin xyz="0.00472675427660008 -0.0748549926956864 0.00200000000000003" rpy="-1.5707963267949 -0.0105564142397783 -3.06809938651869" />
+    <parent link="base_link" />
+    <child link="ultra_right_side_link" />
+    <axis xyz="0.999873275135185 -0.0153119105873406 0.00322673218666552" />
   </joint>
-
-  <!-- ================================================================
-       ARM LINK 2  (shoulder pitch)
-       type: revolute  axis: 0 1 0  limits: +-90 deg
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
-  <link name="arm_link_2">
-    <inertial>
-      <origin xyz="0.00648574509338751 -0.0035676648492927 0.0146673556846963" rpy="0 0 0"/>
-      <mass value="0.3"/>
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.0005" iyz="0.0"
-               izz="0.001"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_2.STL"/>
-      </geometry>
-      <material name="arm_color"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_2.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="arm_joint_2" type="revolute">
-    <origin xyz="-0.0977341582856277 0.032098573245808 -0.0458965624183291"
-            rpy="1.57079632679489 -0.605405747453626 -0.0791549736736961"/>
-    <parent link="arm_link_1"/>
-    <child link="arm_link_2"/>
-    <axis xyz="0 1 0"/>
-    <limit lower="-1.5708" upper="1.5708" effort="15.0" velocity="1.0"/>
-    <dynamics damping="0.1" friction="0.1"/>
-  </joint>
-
-  <!-- ================================================================
-       ARM LINK 3  (elbow pitch)
-       type: revolute  axis: 0 1 0  limits: +-90 deg
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
-  <link name="arm_link_3">
-    <inertial>
-      <origin xyz="0.0018500879530019 0.00214391271618598 0.0146673556846982" rpy="0 0 0"/>
-      <mass value="0.2"/>
-      <inertia ixx="0.0005" ixy="0.0" ixz="0.0"
-               iyy="0.0003" iyz="0.0"
-               izz="0.0005"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_3.STL"/>
-      </geometry>
-      <material name="arm_color"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/arm_link_3.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="arm_joint_3" type="revolute">
-    <origin xyz="0 0 0.05472" rpy="-3.14159265358979 0 0"/>
-    <parent link="arm_link_2"/>
-    <child link="arm_link_3"/>
-    <axis xyz="0 1 0"/>
-    <limit lower="-1.5708" upper="1.5708" effort="15.0" velocity="1.0"/>
-    <dynamics damping="0.1" friction="0.1"/>
-  </joint>
-
-  <!-- ================================================================
-       GRIPPER LINK  (wrist rotation)
-       type: revolute  axis: 0 0 1  limits: +-90 deg
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
-  <link name="gripper_link">
-    <inertial>
-      <origin xyz="0.113318137458526 0.000812721670038208 0.0681968479941391" rpy="0 0 0"/>
-      <mass value="0.1"/>
-      <inertia ixx="0.0002" ixy="0.0" ixz="0.0"
-               iyy="0.0001" iyz="0.0"
-               izz="0.0002"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/>
-      </geometry>
-      <material name="arm_color"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="gripper_joint" type="revolute">
-    <origin xyz="-0.00711645531853933 -0.0406041889920145 0.0273600000000001"
-            rpy="-1.5707963267949 -0.0652497686603052 -0.0604604536911187"/>
-    <parent link="arm_link_3"/>
-    <child link="gripper_link"/>
-    <axis xyz="0 0 1"/>
-    <limit lower="-1.5708" upper="1.5708" effort="5.0" velocity="1.0"/>
-    <dynamics damping="0.05" friction="0.05"/>
-  </joint>
-
-  <!-- ================================================================
-       CAMERA LINK  (fixed sensor)
-       Zero-mass from SolidWorks replaced with 0.05kg minimal valid inertia.
-       Joint origin xyz+rpy: EXACT from SolidWorks
-       ================================================================ -->
   <link name="camera_link">
     <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.05"/>
-      <inertia ixx="1e-05" ixy="0" ixz="0"
-               iyy="1e-05" iyz="0"
-               izz="1e-05"/>
+      <origin xyz="0.113101613282004 0.280706583049789 -0.844987323319077" rpy="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL" />
       </geometry>
-      <material name="sensor_color"/>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/camera_link.STL" />
       </geometry>
     </collision>
   </link>
   <joint name="camera_joint" type="fixed">
-    <origin xyz="-0.10746 -0.021291 0.093296" rpy="0.89986 -1.2952 -0.86787"/>
-    <parent link="base_link"/>
-    <child link="camera_link"/>
+    <origin xyz="0.101824132879338 0.00950646835199812 0.128659999721809" rpy="1.32812932523048 0.443573327716237 1.53844767065916" />
+    <parent link="base_link" />
+    <child link="camera_link" />
+    <axis xyz="-0.77008155834134 0.594774051730041 0.230693936398864" />
   </joint>
-
-  <!-- ================================================================
-       ULTRASONIC FRONT LEFT  (fixed sensor)
-       ================================================================ -->
-  <link name="ultrasonic_front_left_link">
+  <link name="arm1_link">
     <inertial>
-      <origin xyz="-0.00410496565863083 0.00342186137231378 0.000787748429459056" rpy="0 0 0"/>
-      <mass value="0.02"/>
-      <inertia ixx="1e-06" ixy="0" ixz="0"
-               iyy="1e-06" iyz="0"
-               izz="1e-06"/>
+      <origin xyz="-0.0774407866713394 -0.00510260600289045 0.105779455605111" rpy="0 0 0" />
+      <mass value="0.0555771996526445" />
+      <inertia ixx="6.21594066214897E-06" ixy="-3.5063653156084E-07" ixz="-2.71141858998155E-07" iyy="1.01641651598326E-05" iyz="-2.39497009232085E-08" izz="9.59540801924735E-06" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_left_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm1_link.STL" />
       </geometry>
-      <material name="sensor_color"/>
+      <material name="">
+        <color rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_left_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm1_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="ultrasonic_front_left_joint" type="fixed">
-    <origin xyz="-0.12324 -0.05497 -0.026486" rpy="1.5708 -0.10222 -0.94112"/>
-    <parent link="base_link"/>
-    <child link="ultrasonic_front_left_link"/>
+  <joint name="arm1_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="arm1_link" />
+    <axis xyz="0 0 -1" />
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0" />
   </joint>
-
-  <!-- ================================================================
-       ULTRASONIC FRONT CENTER  (fixed sensor)
-       ================================================================ -->
-  <link name="ultrasonic_front_center_link">
+  <link name="arm2_link">
     <inertial>
-      <origin xyz="0.00324100069095823 -0.00261611782199495 0.00491527271117598" rpy="0 0 0"/>
-      <mass value="0.02"/>
-      <inertia ixx="1e-06" ixy="0" ixz="0"
-               iyy="1e-06" iyz="0"
-               izz="1e-06"/>
+      <origin xyz="-0.125168636410049 0.00321053283421635 0.165883121514536" rpy="0 0 0" />
+      <mass value="0.025421450970038" />
+      <inertia ixx="4.93539788987539E-06" ixy="-1.69138231922324E-07" ixz="5.92515859666424E-08" iyy="6.92707179301842E-06" iyz="-2.355541751498E-08" izz="2.78066800894729E-06" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_center_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm2_link.STL" />
       </geometry>
-      <material name="sensor_color"/>
+      <material name="">
+        <color rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_center_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm2_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="ultrasonic_front_center_joint" type="fixed">
-    <origin xyz="-0.13537 -0.0024024 -0.022602" rpy="1.5708 -0.46141 -1.449"/>
-    <parent link="base_link"/>
-    <child link="ultrasonic_front_center_link"/>
+  <joint name="arm2_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="arm1_link" />
+    <child link="arm2_link" />
+    <axis xyz="0.087986 -0.99612 0" />
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0" />
   </joint>
-
-  <!-- ================================================================
-       ULTRASONIC FRONT RIGHT  (fixed sensor)
-       ================================================================ -->
-  <link name="ultrasonic_front_right_link">
+  <link name="gripper_link">
     <inertial>
-      <origin xyz="-0.00261931645458721 0.00964536949786512 0.00386934100105762" rpy="0 0 0"/>
-      <mass value="0.02"/>
-      <inertia ixx="1e-06" ixy="0" ixz="0"
-               iyy="1e-06" iyz="0"
-               izz="1e-06"/>
+      <origin xyz="-0.186719938225505 -0.0101933243873208 0.154829436742073" rpy="0 0 0" />
+      <mass value="0.0134689809182682" />
+      <inertia ixx="6.42660595212128E-07" ixy="-3.68224348843171E-08" ixz="1.34491448246805E-07" iyy="1.09353163583225E-06" iyz="9.4548029175504E-09" izz="7.73525430068985E-07" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_right_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL" />
       </geometry>
-      <material name="sensor_color"/>
+      <material name="">
+        <color rgba="0.741176470588235 0.733333333333333 0.725490196078431 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_front_right_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/gripper_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="ultrasonic_front_right_joint" type="fixed">
-    <origin xyz="-0.1231 0.038886 -0.013507" rpy="-1.5708 -0.26082 1.3425"/>
-    <parent link="base_link"/>
-    <child link="ultrasonic_front_right_link"/>
+  <joint name="gripper_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="arm2_link" />
+    <child link="gripper_link" />
+    <axis xyz="-0.61534 -0.054353 -0.78638" />
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0" />
   </joint>
-
-  <!-- ================================================================
-       ULTRASONIC SIDE LEFT  (fixed sensor)
-       ================================================================ -->
-  <link name="ultrasonic_side_left_link">
+  <link name="arm3_link">
     <inertial>
-      <origin xyz="-0.00056000068313411 -0.00997900627428127 0.00386934838768141" rpy="0 0 0"/>
-      <mass value="0.02"/>
-      <inertia ixx="1e-06" ixy="0" ixz="0"
-               iyy="1e-06" iyz="0"
-               izz="1e-06"/>
+      <origin xyz="-0.131612459247667 -0.015818441156768 0.158136097302883" rpy="0 0 0" />
+      <mass value="0.0231763537794877" />
+      <inertia ixx="4.44764720548677E-06" ixy="-2.52370171791878E-07" ixz="-7.36137603387454E-07" iyy="7.28121465716448E-06" iyz="-6.50979103179039E-08" izz="3.163472332731E-06" />
     </inertial>
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_side_left_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm3_link.STL" />
       </geometry>
-      <material name="sensor_color"/>
+      <material name="">
+        <color rgba="0.749019607843137 0.749019607843137 0.749019607843137 1" />
+      </material>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_side_left_link.STL"/>
+        <mesh filename="package://assembly_of_robot/meshes/arm3_link.STL" />
       </geometry>
     </collision>
   </link>
-  <joint name="ultrasonic_side_left_joint" type="fixed">
-    <origin xyz="-0.0023558 -0.076267 -0.013507" rpy="1.5708 -0.060409 0.050643"/>
-    <parent link="base_link"/>
-    <child link="ultrasonic_side_left_link"/>
+  <joint name="arm3_joint" type="revolute">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="arm1_link" />
+    <child link="arm3_link" />
+    <axis xyz="-0.0879860150931316 0.996121710007382 0" />
+    <limit lower="-1.5" upper="1.5" effort="0" velocity="0" />
   </joint>
-
-  <!-- ================================================================
-       ULTRASONIC SIDE RIGHT  (fixed sensor)
-       ================================================================ -->
-  <link name="ultrasonic_side_right_link">
-    <inertial>
-      <origin xyz="-0.000646800388318991 0.00997374798829989 0.00386934210090545" rpy="0 0 0"/>
-      <mass value="0.02"/>
-      <inertia ixx="1e-06" ixy="0" ixz="0"
-               iyy="1e-06" iyz="0"
-               izz="1e-06"/>
-    </inertial>
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_side_right_link.STL"/>
-      </geometry>
-      <material name="sensor_color"/>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://assembly_of_robot/meshes/ultrasonic_side_right_link.STL"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="ultrasonic_side_right_joint" type="fixed">
-    <origin xyz="-0.0133392824147547 0.0733690543744693 -0.0135066495726736"
-            rpy="-1.5707963267949 -0.0604093676773043 0.0506430987959581"/>
-    <parent link="base_link"/>
-    <child link="ultrasonic_side_right_link"/>
-  </joint>
-
 </robot>

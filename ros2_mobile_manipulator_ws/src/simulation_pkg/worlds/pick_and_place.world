@@ -256,12 +256,14 @@
 
     <!-- ═══════════════════════════════════════════════════════
          OBSTACLES  —  to challenge navigation
+         NOTE: pillar moved to (1.5, -1.5) — away from robot
+               spawn point at (0, 0) to prevent collision crash.
     ═══════════════════════════════════════════════════════ -->
-    <!-- Pillar centre -->
+    <!-- Pillar — moved away from origin (robot spawn point) -->
     <model name="pillar_centre">
       <static>true</static>
+      <pose>1.5 -1.5 0 0 0 0</pose>
       <link name="link">
-        <pose>0 0 1.0 0 0 0</pose>
         <collision name="c"><geometry><cylinder><radius>0.12</radius><length>2.0</length></cylinder></geometry></collision>
         <visual name="v"><geometry><cylinder><radius>0.12</radius><length>2.0</length></cylinder></geometry>
           <material><ambient>0.5 0.5 0.52 1</ambient><diffuse>0.5 0.5 0.52 1</diffuse></material></visual>
