@@ -78,7 +78,7 @@ class DepthLocalizerNode(Node):
             self._depth_cb, sensor_qos
         )
         self.create_subscription(
-            DetectionArray, "/perception/detections",
+            DetectionArray, "/detections",
             self._detection_cb, 10
         )
 
