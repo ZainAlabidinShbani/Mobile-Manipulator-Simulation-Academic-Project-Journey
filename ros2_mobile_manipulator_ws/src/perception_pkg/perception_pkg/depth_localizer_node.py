@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import numpy as np
 import rclpy
-from cv_bridge import CvBridge
+import rclpy.duration
 from geometry_msgs.msg import PoseStamped
 from mobile_manipulator_msgs.msg import DetectionArray
 from rclpy.node import Node
