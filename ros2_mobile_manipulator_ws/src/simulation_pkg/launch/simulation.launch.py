@@ -40,7 +40,6 @@ from launch.actions import (
     TimerAction,
     ExecuteProcess,
     SetEnvironmentVariable,
-    GroupAction,
 )
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
