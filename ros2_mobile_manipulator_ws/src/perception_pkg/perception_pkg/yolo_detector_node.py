@@ -11,10 +11,14 @@ class YoloDetectorNode(Node):
     def __init__(self):
         super().__init__('yolo_detector_node')
         self.declare_parameter('target_class', 'cube')
+        self.declare_parameter('target_classes', [])
         self.declare_parameter('mock_detection', True)
+        self.declare_parameter('model_path', 'yolov8n.pt')
+        self.declare_parameter('confidence_threshold', 0.40)
         self.declare_parameter('confidence', 0.92)
         self.declare_parameter('bbox_size_px', 84)
         self.declare_parameter('publish_rate_hz', 10.0)
+        self.declare_parameter('publish_annotated', False)
         self.camera_info = None
         self.frame_index = 0
         self.detect_pub = self.create_publisher(DetectionArray, '/detections', 10)

@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import numpy as np
 import rclpy
-from cv_bridge import CvBridge
+import rclpy.duration
 from geometry_msgs.msg import PoseStamped
 from mobile_manipulator_msgs.msg import DetectionArray
 from rclpy.node import Node
@@ -78,7 +78,7 @@ class DepthLocalizerNode(Node):
             self._depth_cb, sensor_qos
         )
         self.create_subscription(
-            DetectionArray, "/perception/detections",
+            DetectionArray, "/detections",
             self._detection_cb, 10
         )
 
