@@ -31,10 +31,10 @@ class GraspPoseEstimatorNode(Node):
         if self.camera_info is None:
             return
         info = self.camera_info
-        fx = info.k[0] if info.k else 525.0
-        fy = info.k[4] if info.k else 525.0
-        cx = info.k[2] if info.k else info.width / 2.0
-        cy = info.k[5] if info.k else info.height / 2.0
+        fx = info.k[0] if len(info.k) > 0 else 525.0
+        fy = info.k[4] if len(info.k) > 4 else 525.0
+        cx = info.k[2] if len(info.k) > 2 else info.width / 2.0
+        cy = info.k[5] if len(info.k) > 5 else info.height / 2.0
         px = (det.bbox.xmin + det.bbox.xmax) / 2.0
         py = (det.bbox.ymin + det.bbox.ymax) / 2.0
         depth = float(self.get_parameter('object_depth').value)

@@ -1,5 +1,4 @@
 from glob import glob
-
 from setuptools import setup
 
 package_name = 'task_manager_pkg'
@@ -16,14 +15,17 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='essa',
-    maintainer_email='essa@todo.todo',
+    maintainer='Zain Alabidin Shbani',
+    maintainer_email='zain.alabidin.shbani@gmail.com',
     description='Finite-state task manager for autonomous pick-and-place orchestration.',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            # primary name (used by launch files)
             'fsm_task_manager_node = task_manager_pkg.fsm_task_manager_node:main',
+            # alias so `ros2 run task_manager_pkg task_manager_node` also works
+            'task_manager_node     = task_manager_pkg.fsm_task_manager_node:main',
         ],
     },
 )

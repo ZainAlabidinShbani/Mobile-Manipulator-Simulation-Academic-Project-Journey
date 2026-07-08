@@ -1,0 +1,278 @@
+Panels:
+  - Class: rviz_common/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /RobotModel1
+        - /RobotModel1/Links1
+        - /TF1
+        - /Camera1
+        - /Image1
+        - /Range1
+        - /Range2
+        - /Range3
+        - /Range4
+        - /Range5
+        - /Odometry1
+      Splitter Ratio: 0.5
+    Tree Height: 755
+  - Class: rviz_common/Selection
+    Name: Selection
+  - Class: rviz_common/Tool Properties
+    Expanded:
+      - /2D Goal Pose1
+      - /Publish Point1
+    Name: Tool Properties
+  - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+  - Class: rviz_common/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: Camera
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz_default_plugins/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic: /robot_description
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+      Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+      Marker Scale: 0.3
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: false
+      Tree:
+        {}
+      Update Interval: 0
+      Value: true
+    - Class: rviz_default_plugins/Camera
+      Enabled: true
+      Image Rendering: background
+      Image Topic: /camera/image_raw
+      Name: Camera
+      Overlay Alpha: 0.5
+      Queue Size: 2
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Image
+      Enabled: true
+      Max Value: 1
+      Median window: 5
+      Min Value: 0
+      Name: Image (camera)
+      Normalize Range: true
+      Queue Size: 2
+      Topic: /camera/image_raw
+      Transport Hint: raw
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Range
+      Color: 255; 0; 0
+      Enabled: true
+      Name: Ultrasonic Front-Left
+      Queue Size: 5
+      Topic: /ultrasonic/front_left
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Range
+      Color: 0; 200; 0
+      Enabled: true
+      Name: Ultrasonic Center-Left
+      Queue Size: 5
+      Topic: /ultrasonic/center_left
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Range
+      Color: 0; 100; 255
+      Enabled: true
+      Name: Ultrasonic Front-Center
+      Queue Size: 5
+      Topic: /ultrasonic/front_center
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Range
+      Color: 255; 165; 0
+      Enabled: true
+      Name: Ultrasonic Center-Right
+      Queue Size: 5
+      Topic: /ultrasonic/center_right
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Range
+      Color: 200; 0; 200
+      Enabled: true
+      Name: Ultrasonic Right-Side
+      Queue Size: 5
+      Topic: /ultrasonic/right_side
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/Odometry
+      Angle Tolerance: 0.10000000149011612
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Color Style: Unique
+          Frame: Local
+          Offset: 1
+          Scale: 1
+          Value: true
+        Position:
+          Alpha: 0.30000001192092896
+          Color: 204; 51; 204
+          Scale: 1
+          Value: true
+        Value: true
+      Enabled: true
+      Keep: 100
+      Name: Odometry
+      Position Tolerance: 0.10000000149011612
+      Queue Size: 10
+      Shape:
+        Alpha: 1
+        Axes Length: 0.30000001192092896
+        Axes Radius: 0.009999999776482582
+        Color: 255; 25; 0
+        Head Length: 0.07000000029802322
+        Head Radius: 0.014999999664723873
+        Shaft Length: 0.23000000417232513
+        Shaft Radius: 0.009999999776482582
+        Value: Arrow
+      Topic: /odom
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Axes Length: 1
+      Axes Radius: 0.10000000149011612
+      Class: rviz_default_plugins/Axes
+      Enabled: true
+      Name: World Axes
+      Reference Frame: odom
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.25
+      Covariance y: 0.25
+      Covariance yaw: 0.06853891909122467
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /goal_pose
+    - Class: rviz_default_plugins/PublishPoint
+      Single click: true
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 1.5
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.5353981256484985
+      Target Frame: base_link
+      Value: Orbit (rviz_default_plugins)
+      Yaw: 0.7853981852531433
+    Saved: ~
+Window Geometry:
+  Camera:
+    collapsed: false
+  Displays:
+    collapsed: false
+  Height: 1016
+  Hide Left Dock: false
+  Hide Right Dock: false
+  Image (camera):
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000004000000000000018e0000035efc0200000008fb0000001200530065006c006500630074006900sixth006f006e00000001e10000009b0000005c00fffffffb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f007000650072007400690065007302000001e40000006c0000005900fffffffb00000014005400460020005000720065006600690078000000000000007b0000000000000000fb000000100044006900730070006c00610079007302000000000000029b0000007500ffffff000000010000010f0000035efc0200000003fb0000001e0049006d00610067006500200028006300610060006500720061002900000001c60000009500000000000000000fb000000180043006100660065007200610020004900000000b00000007900000000000000000fb0000000a00560069006500770073000000003d0000035e000000a000ffffff000000000100000000000003a9fc0200000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000000d70000003efc0100000002fb0000000800540069006d00650100000000000000d70000000000000000fb0000000800540069006d006500010000000000000450000000000000000000000200000004100000003dfc0100000001fb0000001400430061006d006500720061000000000000000000000000000000000000000000000000000000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: false
+  Width: 1855
+  X: 65
+  Y: 24

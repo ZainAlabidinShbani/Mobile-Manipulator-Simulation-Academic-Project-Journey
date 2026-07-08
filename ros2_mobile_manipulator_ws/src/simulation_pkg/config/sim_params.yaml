@@ -1,0 +1,71 @@
+# =============================================================================
+# simulation_pkg — Simulation Parameters
+# =============================================================================
+# All parameters used by the simulation launch file and robot_state_publisher.
+# Values are tuned for a 4-wheel differential-drive mobile base with a 4-DOF arm.
+
+simulation_pkg:
+  ros__parameters:
+
+    # -------------------------------------------------------------------------
+    # Robot model
+    # -------------------------------------------------------------------------
+    robot_name: "mobile_manipulator"
+    urdf_file: "mobile_manipulator.urdf.xacro"
+
+    # -------------------------------------------------------------------------
+    # Spawn pose (Gazebo world frame)
+    # -------------------------------------------------------------------------
+    spawn:
+      x: 0.0
+      y: 0.0
+      z: 0.06        # slightly above ground to avoid penetration
+      roll:  0.0
+      pitch: 0.0
+      yaw:   0.0
+
+    # -------------------------------------------------------------------------
+    # Simulation control
+    # -------------------------------------------------------------------------
+    use_sim_time: true
+    gui: true          # set false for headless CI runs
+    paused: false
+    world_file: "pick_and_place.world"
+
+    # -------------------------------------------------------------------------
+    # Joint state publisher
+    # -------------------------------------------------------------------------
+    joint_state_publisher:
+      publish_rate: 50  # Hz
+      source_list: []   # empty = robot state from Gazebo plugin
+
+    # -------------------------------------------------------------------------
+    # Robot state publisher
+    # -------------------------------------------------------------------------
+    robot_state_publisher:
+      publish_frequency: 50.0
+      ignore_timestamp: false
+
+    # -------------------------------------------------------------------------
+    # RViz2
+    # -------------------------------------------------------------------------
+    rviz:
+      enabled: true
+      config_file: "default.rviz"
+
+    # -------------------------------------------------------------------------
+    # Sensor update rates (informational — set in URDF/Gazebo plugin)
+    # -------------------------------------------------------------------------
+    sensors:
+      lidar_hz:  10
+      camera_hz: 30
+      imu_hz:    100
+
+    # -------------------------------------------------------------------------
+    # Differential drive
+    # -------------------------------------------------------------------------
+    diff_drive:
+      wheel_separation: 0.39   # 2 * wheel_y_off (from URDF)
+      wheel_radius:     0.06
+      max_linear_vel:   0.5    # m/s
+      max_angular_vel:  1.0    # rad/s
