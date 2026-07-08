@@ -1,14 +1,20 @@
-import atexit
-import os
-from types import SimpleNamespace
-from tempfile import NamedTemporaryFile, TemporaryDirectory
-
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, RegisterEventHandler
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    OpaqueFunction,
+    RegisterEventHandler,
+    SetEnvironmentVariable,
+)
+import atexit
+import os
+from tempfile import NamedTemporaryFile, TemporaryDirectory
+from types import SimpleNamespace
+
 from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.event_handlers import OnShutdown
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.logging import get_logger
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration
 from launch_ros.actions import Node
@@ -20,12 +26,33 @@ LOGGER = get_logger('simulation_launch')
 def generate_launch_description():
     pkg_share = get_package_share_directory('simulation_pkg')
     gazebo_share = get_package_share_directory('gazebo_ros')
+
     world = LaunchConfiguration('world')
     rviz_config = LaunchConfiguration('rviz_config')
     use_rviz = LaunchConfiguration('use_rviz')
 
-    declare_world = DeclareLaunchArgument('world', default_value=os.path.join(pkg_share, 'worlds', 'pick_and_place.world'))
-    declare_rviz = DeclareLaunchArgument('rviz_config', default_value=os.path.join(pkg_share, 'rviz', 'mobile_manipulator.rviz'))
+
+    gazebo_resource_path = '/usr/share/gazebo-11'
+    gazebo_model_path = os.path.join(gazebo_resource_path, 'models')
+
+    existing_resource = os.environ.get('GAZEBO_RESOURCE_PATH', '')
+    existing_model = os.environ.get('GAZEBO_MODEL_PATH', '')
+    new_resource = (gazebo_resource_path + ':' + existing_resource).rstrip(':')
+    new_model = (gazebo_model_path + ':' + existing_model).rstrip(':')
+
+    set_gazebo_resource = SetEnvironmentVariable('GAZEBO_RESOURCE_PATH', new_resource)
+    set_gazebo_model = SetEnvironmentVariable('GAZEBO_MODEL_PATH', new_model)
+    set_display = SetEnvironmentVariable('QT_QPA_PLATFORM', 'xcb')
+    set_mesa = SetEnvironmentVariable('LIBGL_ALWAYS_SOFTWARE', '0')
+
+    declare_world = DeclareLaunchArgument(
+        'world',
+        default_value=os.path.join(pkg_share, 'worlds', 'pick_and_place.world'),
+    )
+    declare_rviz = DeclareLaunchArgument(
+        'rviz_config',
+        default_value=os.path.join(pkg_share, 'rviz', 'mobile_manipulator.rviz'),
+    )
     declare_use_rviz = DeclareLaunchArgument('use_rviz', default_value='true')
 
     gazebo = IncludeLaunchDescription(
@@ -77,10 +104,21 @@ def generate_launch_description():
                 executable='rviz2',
                 arguments=['-d', rviz_config],
                 condition=IfCondition(use_rviz),
+                additional_env={'QT_QPA_PLATFORM': 'xcb'},
                 output='screen',
             )
-            gazebo_bridge = Node(package='simulation_pkg', executable='gazebo_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
-            rviz_bridge = Node(package='simulation_pkg', executable='rviz_bridge_node', parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')], output='screen')
+            gazebo_bridge = Node(
+                package='simulation_pkg',
+                executable='gazebo_bridge_node',
+                parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')],
+                output='screen',
+            )
+            rviz_bridge = Node(
+                package='simulation_pkg',
+                executable='rviz_bridge_node',
+                parameters=[os.path.join(pkg_share, 'config', 'simulation.yaml')],
+                output='screen',
+            )
             cleanup_handler = RegisterEventHandler(OnShutdown(on_shutdown=[OpaqueFunction(function=cleanup_robot_urdf)]))
             return [gazebo, state_publisher, spawn_entity, gazebo_bridge, rviz_bridge, rviz, cleanup_handler]
         except Exception:
@@ -88,4 +126,13 @@ def generate_launch_description():
             robot_urdf_resources.tempdir.cleanup()
             raise
 
-    return LaunchDescription([declare_world, declare_rviz, declare_use_rviz, OpaqueFunction(function=launch_setup)])
+    return LaunchDescription([
+        set_gazebo_resource,
+        set_gazebo_model,
+        set_display,
+        set_mesa,
+        declare_world,
+        declare_rviz,
+        declare_use_rviz,
+        OpaqueFunction(function=launch_setup),
+    ])
