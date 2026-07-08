@@ -1,79 +1,87 @@
-# Mobile Manipulator Simulation Projects
+# Mobile Manipulator Simulation Academic Project Journey
 
-This repository contains **two robotics projects** — a semester project and a senior capstone project — both focused on mobile manipulator simulation. Each project lives in its own subfolder with its own README, code, and documentation.
+This repository documents my complete academic development path in mobile manipulation, from coursework to graduation research and implementation.
 
----
+The projects are ordered from newest to oldest:
 
-## 📁 Projects
+1. Senior Project 2 (graduation project)
+2. Senior Project
+3. Semester Project
 
-### 1. [Semester Project — 5-DOF KUKA youBot](./semester-project/README.md)
+## Repository purpose
 
-> 📂 `semester-project/`
+The repository is organized as a progressive engineering journey:
 
-A complete simulation framework for the **KUKA youBot mobile manipulator**, integrating its **omnidirectional mecanum base** and **5-DOF robotic arm**. Combines **ROS Noetic**, **MATLAB**, and **CoppeliaSim** for modeling, control, and visualization.
+- semester-level foundation in modeling and control
+- senior-level custom robot design and evaluation
+- graduation-level system integration across software, simulation, and hardware tracks
 
-**Highlights:**
-- 5-DOF robotic arm + mecanum-wheeled omnidirectional base
-- Observer-based state feedback control
-- Full ROS Noetic integration (URDF/Xacro, RViz, TF)
-- CoppeliaSim 3D visualization
-- Trajectory planning and manipulability analysis
+Together, these projects demonstrate end-to-end competency in robotics software, kinematics and control, simulation validation, and prototyping.
 
----
+## Senior Project 2 (Graduation Project)
 
-### 2. [Senior Project — 3-DOF Custom Mobile Manipulator](./senior-project/README.md)
+Senior Project 2 is my university graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering.
 
-> 📂 `senior-project/`
+This project combines mechanical design, electronics, simulation, software architecture, and autonomous behaviors for a full mobile manipulator platform. It includes ROS 2 and Python simulation tracks, CAD resources, reinforcement learning experiments, and hardware-oriented assets.
 
-A custom-designed **3-DOF robotic arm** on a mobile base, developed as a senior capstone project. Includes original CAD files and control code built on the foundations of the semester project.
+### Project links
 
-**Highlights:**
-- Custom-designed 3-DOF arm (CAD + code)
-- Mobile base integration
-- MATLAB-based control and simulation
+- [ROS 2 simulation workspace](./senior-project2/ros2_mobile_manipulator_ws/README.md)
+- [Python simulation stack](./senior-project2/mobile_manipulator_sim_python/README.md)
 
----
+### Technical scope
 
-## 🔍 Quick Comparison
+- mobile manipulator architecture and subsystem integration
+- autonomous pick-and-place workflow design
+- simulation in Gazebo, CoppeliaSim, and Python environments
+- reinforcement learning exploration and evaluation assets
+- hardware-oriented prototyping and electronics integration
 
-| Feature | Semester Project | Senior Project |
-|---|---|---|
-| Robot | KUKA youBot | Custom Design |
-| Arm DOF | 5 | 3 |
-| Base | Mecanum-wheel (omnidirectional) | Mobile base |
-| Tools | ROS + MATLAB + CoppeliaSim | MATLAB |
-| CAD | CATIA V5 → URDF | Custom CAD files |
+### Senior Project 2 gallery
 
----
+![Complete system overview](./senior-project2/photo/full_system.png)
+_Complete system architecture and integration view._
 
-## 🚀 Getting Started
+![Real robot prototype](./senior-project2/photo/photo_2026-06-18_18-07-39.jpg)
+_Real-world prototype built and tested during the graduation project._
 
-Navigate to the project subfolder of your choice and follow its `README.md`:
+![Robot CAD solid model](./senior-project2/photo/robot_solid.png)
+_Mechanical design representation of the robot body and manipulator._
 
-```bash
-# Semester project (KUKA youBot 5-DOF)
-cd semester-project/
+![Circuit connections](./senior-project2/photo/circuit_connection.png)
+_Electronics and wiring integration used in the full setup._
 
-# Senior project (Custom 3-DOF arm)
-cd senior-project/
-```
+![CoppeliaSim scene](./senior-project2/photo/Coppelia_sim.jpg)
+_CoppeliaSim environment used for simulation and validation._
 
----
+![Gazebo world](./senior-project2/photo/Gazebo_world.jpg)
+_ROS-based Gazebo simulation world for autonomous task testing._
 
-## 👤 Author
+## Senior Project
 
-**Zain Alabidin Shbani**  
-Robotics & Intelligent Systems Engineering
+The senior project focuses on a custom 3-DOF mobile manipulator design with MATLAB-based modeling and control. It represents the transition from structured course frameworks to an independently developed robotic platform.
 
-<!-- ---
+- [Read Senior Project documentation](./senior-project/README.md)
 
-## 📄 License
+## Semester Project
 
-See [`semester-project/LICENSE`](./semester-project/LICENSE). -->
+The semester project establishes the technical foundation using a KUKA youBot-style 5-DOF mobile manipulator with integrated MATLAB, ROS Noetic, and CoppeliaSim workflows.
 
+- [Read Semester Project documentation](./semester-project/README.md)
 
----
+## Repository structure
 
-## New ROS 2 workspace
+- `semester-project/` - Foundations in kinematics, control, and simulation.
+- `senior-project/` - Custom mechanical design and control extension.
+- `senior-project2/` - Graduation-level integrated robotics platform.
 
-See [`ros2_mobile_manipulator_ws/README.md`](./ros2_mobile_manipulator_ws/README.md) for the simulation-first ROS 2 Humble implementation.
+## Recommended reading order
+
+1. Start with Senior Project 2 for the final integrated result.
+2. Review Senior Project for custom mechanical and control evolution.
+3. Review Semester Project for foundational methods and baseline architecture.
+
+## Author
+
+Zain Alabidin Shbani  
+Bachelor's Degree in Robotics and Intelligent Systems Engineering

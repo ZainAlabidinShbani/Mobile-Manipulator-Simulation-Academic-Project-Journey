@@ -1,0 +1,6 @@
+/**:
+  ros__parameters:
+    target_class: cube
+    perception_timeout: 6.0
+    navigation_tolerance: 0.22
+    transport_tolerance: 0.30

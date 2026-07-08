@@ -1,0 +1,8 @@
+numpy>=1.23
+scipy>=1.9
+pandas>=1.5
+matplotlib>=3.6
+PyQt5>=5.15
+opencv-python>=4.7
+pybullet>=3.2.5
+ultralytics>=8.0.0

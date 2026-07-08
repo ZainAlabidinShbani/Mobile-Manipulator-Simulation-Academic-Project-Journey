@@ -1,53 +1,51 @@
-# Senior Project — 3-DOF Mobile Manipulator
+# Senior Project - Custom 3-DOF Mobile Manipulator
 
-This senior capstone project develops a **custom 3-DOF robotic arm** mounted on a mobile base. It extends the concepts from the [semester project (5-DOF KUKA youBot)](../semester-project/README.md) and focuses on original mechanical design plus MATLAB-based modeling and control.
+This senior project develops a custom 3-DOF robotic arm mounted on a mobile base, building on the control and simulation knowledge established in the semester project.
 
----
+The main objective was to move from a platform-based academic model to a more original, custom mechanical and control-oriented design.
 
-## 📌 Project Overview
+## Project scope
 
-- **System**: Mobile base + custom 3-DOF arm.
-- **Focus**: Kinematics, dynamics, and controller design in MATLAB.
-- **Design assets**: Full CAD models for the arm and base.
+- custom manipulator architecture and joint configuration
+- MATLAB-based kinematic and dynamic analysis
+- simulation-oriented validation before full graduation integration
+- documentation of design trade-offs for future implementation
 
----
+## Project goals
 
-## 📦 Project Structure
+- design and evaluate a custom mobile manipulator concept
+- model arm and base behavior with MATLAB workflows
+- study kinematics, dynamics, and trajectory quality for practical robotic tasks
+- document a design path that supports future hardware implementation
 
-| Folder    | Description                                           |
-| --------- | ----------------------------------------------------- |
-| `matlab/` | Control, kinematics, dynamics, and simulation scripts |
-| `cad/`    | CAD design files for the custom arm and base          |
-| `docs/`   | Project documentation and report material             |
-| `media/`  | Figures and media used in documentation               |
+## Folder structure
 
----
+- `matlab/` - Modeling, simulation, and control scripts.
+- `cad/` - Mechanical design files for the arm and mobile platform.
+- `docs/` - Report and technical notes.
+- `media/` - Visual assets used in documentation.
 
-## 🚦 Usage Instructions
-
-### MATLAB Simulation
+## Suggested workflow
 
 1. Open MATLAB and set the working directory to `senior-project/matlab/`.
-2. Run the main script for the simulation and analysis.
+2. Run the main script used for your simulation scenario.
+3. Review plots and generated outputs to assess performance.
+4. Open CAD assets in `cad/` for mechanical reference and design verification.
 
-### CAD Files
+## Evaluation focus
 
-- Open the files in `cad/` with your preferred CAD software (e.g., SolidWorks).
+This project is typically evaluated through:
 
----
+- kinematic consistency of the 3-DOF arm model
+- trajectory tracking behavior in simulation runs
+- mechanical feasibility and assembly clarity in CAD
+- quality of design documentation and engineering rationale
 
-## ⚙️ Key Differences from Semester Project
+## Relationship to other repository projects
 
-| Feature    | Semester Project (5-DOF KUKA) | Senior Project (3-DOF Custom) |
-| ---------- | ----------------------------- | ----------------------------- |
-| Robot      | KUKA youBot                   | Custom-designed               |
-| DOF        | 5                             | 3                             |
-| Base       | Mecanum-wheel omnidirectional | Mobile base                   |
-| CAD source | CATIA V5 → URDF               | Custom CAD files              |
-| Simulator  | CoppeliaSim + ROS + MATLAB    | MATLAB + CoppeliaSim          |
+- Compared with the semester project, this project emphasizes custom design decisions and reduced arm complexity (3-DOF).
+- Compared with Senior Project 2, this project serves as an intermediate stage before full graduation-level integration.
 
----
+## Media
 
-## 📷 Media
-
-See the `media/` folder for figures and documentation visuals.
+See the `media/` folder for supporting figures and visual documentation.

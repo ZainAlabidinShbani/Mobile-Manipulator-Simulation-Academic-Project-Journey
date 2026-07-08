@@ -1,8 +1,0 @@
-/**:
-  ros__parameters:
-    goal_tolerance: 0.20
-    linear_gain: 0.6
-    angular_gain: 1.4
-    max_linear_speed: 0.5
-    max_angular_speed: 1.2
-    safety_distance: 0.45

@@ -1,0 +1,11 @@
+/**:
+  ros__parameters:
+    use_sim_time: true
+    base_frame: base_link
+    odom_frame: odom
+    scan_frame: base_laser
+    camera_frame: camera_link
+    world_size: 6.0
+    obstacle_x: 1.4
+    obstacle_y: 0.0
+    obstacle_radius: 0.35

@@ -1,9 +1,0 @@
-string target_class
-geometry_msgs/PoseStamped target_pose
-geometry_msgs/PoseStamped dropoff_pose
----
-bool success
-string message
----
-string phase
-string detail

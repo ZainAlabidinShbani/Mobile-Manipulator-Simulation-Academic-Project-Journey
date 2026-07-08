@@ -1,0 +1,366 @@
+import time
+import cv2
+import numpy as np
+from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+
+ROOT_PATH = "/RobotRoot"
+CENTER_PATH = "/RobotRoot/base_link_respondable"
+CAMERA_PATH = "/VisionSensor"
+
+CUBE_PATH = "/Cube"
+GOAL_PATH = "/Goal"
+OBSTACLE_PATHS = ["/Obstacle1", "/Obstacle2", "/Cuboid"]
+
+ARM_MOTION_CANDIDATES = [
+    "/RobotRoot/tool0",
+    "/RobotRoot/ee_link",
+    "/RobotRoot/wrist_3_link_visual",
+    "/RobotRoot/wrist_3_link_respondable",
+    "/RobotRoot/wrist_2_link_visual",
+]
+
+STEP_SIZE = 0.010
+MAX_STEPS = 900
+
+SAFE_DISTANCE = 0.35
+STOP_DISTANCE = 0.22
+SUCCESS_DISTANCE = 0.10
+
+CUBE_START_POS = [1, 1.2, 0.05]
+GOAL_START_POS = [3, 3, 0.05]
+
+HIDDEN_CUBE_POS = [1, 1.2, -5.0]
+HIDDEN_GOAL_POS = [3, 3, -5.0]
+PICK_APPROACH_OFFSET = 0.20
+
+ARM_FAKE_MOVE_Z = 0.08
+
+avoid_mode = False
+avoid_side = 1
+avoid_steps = 0
+
+client = RemoteAPIClient()
+sim = client.require("sim")
+
+root = sim.getObject(ROOT_PATH)
+center = sim.getObject(CENTER_PATH)
+camera = sim.getObject(CAMERA_PATH)
+cube = sim.getObject(CUBE_PATH)
+goal = sim.getObject(GOAL_PATH)
+
+arm_motion_obj = None
+for path in ARM_MOTION_CANDIDATES:
+    try:
+        arm_motion_obj = sim.getObject(path)
+        print("Arm visual motion object found:", path)
+        break
+    except:
+        pass
+
+if arm_motion_obj is None:
+    print("No arm visual motion object found, arm motion will be skipped")
+
+obstacles = []
+for name in OBSTACLE_PATHS:
+    try:
+        h = sim.getObject(name)
+        obstacles.append(h)
+        print("Obstacle found:", name)
+    except:
+        print("Obstacle not found:", name)
+
+
+def xy(obj):
+    p = sim.getObjectPosition(obj, -1)
+    return np.array([p[0], p[1]], dtype=np.float32)
+
+
+def reset_targets():
+    sim.setObjectParent(cube, -1, True)
+    sim.setObjectParent(goal, -1, True)
+
+    sim.setObjectPosition(cube, -1, CUBE_START_POS)
+    sim.setObjectPosition(goal, -1, HIDDEN_GOAL_POS)
+
+    print("Cube visible at pick, goal hidden")
+
+
+def fake_pick_cube():
+    sim.setObjectParent(cube, -1, True)
+    sim.setObjectPosition(cube, -1, HIDDEN_CUBE_POS)
+    print("Fake pick: cube hidden")
+
+
+def fake_place_cube():
+    sim.setObjectParent(cube, -1, True)
+    sim.setObjectPosition(cube, -1, GOAL_START_POS)
+    print("Fake place: cube appeared at place")
+
+
+def fake_arm_motion(label):
+    if arm_motion_obj is None:
+        print(label, "- arm motion skipped")
+        time.sleep(0.5)
+        return
+
+    print(label)
+
+    p0 = sim.getObjectPosition(arm_motion_obj, -1)
+
+    p = p0.copy()
+    p[2] -= ARM_FAKE_MOVE_Z
+    sim.setObjectPosition(arm_motion_obj, -1, p)
+    time.sleep(0.6)
+
+    sim.setObjectPosition(arm_motion_obj, -1, p0)
+    time.sleep(0.4)
+
+
+def get_image():
+    sim.handleVisionSensor(camera)
+    time.sleep(0.01)
+
+    img, res = sim.getVisionSensorImg(camera)
+    w, h = res
+
+    img = np.frombuffer(img, dtype=np.uint8).reshape(h, w, 3)
+    img = cv2.flip(img, 0)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+    return img.copy()
+
+
+def detect_objects(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+    lower = np.array([90, 20, 80])
+    upper = np.array([150, 120, 255])
+
+    mask = cv2.inRange(hsv, lower, upper)
+
+    kernel = np.ones((3, 3), np.uint8)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+
+    contours, _ = cv2.findContours(
+        mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    detections = []
+
+    for c in contours:
+        area = cv2.contourArea(c)
+
+        if area < 50 or area > 4000:
+            continue
+
+        x, y, w, h = cv2.boundingRect(c)
+        cx = x + w // 2
+        cy = y + h // 2
+
+        detections.append((cx, cy, area))
+
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        cv2.circle(img, (cx, cy), 4, (0, 0, 255), -1)
+
+    return detections, img, mask
+
+
+def show_view(phase, dist):
+    img = get_image()
+    detections, img, mask = detect_objects(img)
+
+    cv2.putText(img, phase, (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
+    cv2.putText(
+        img,
+        f"dist={dist:.2f} detections={len(detections)} obstacles={len(obstacles)}",
+        (10, 55),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.50,
+        (0, 255, 0),
+        2,
+    )
+
+    cv2.imshow("Robot Camera View", img)
+    cv2.imshow("Mask", mask)
+
+    return cv2.waitKey(20) & 0xFF
+
+
+def nearest_obstacle_distance(point_xy):
+    if not obstacles:
+        return 999.0
+
+    return min(np.linalg.norm(point_xy - xy(obs)) for obs in obstacles)
+
+
+def get_nearest_obstacle(robot_xy):
+    nearest_obs = None
+    nearest_d = 999.0
+
+    for obs in obstacles:
+        obs_xy = xy(obs)
+        d = np.linalg.norm(robot_xy - obs_xy)
+
+        if d < nearest_d:
+            nearest_d = d
+            nearest_obs = obs
+
+    return nearest_obs, nearest_d
+
+
+def move_robot_toward(target_xy):
+    global avoid_mode, avoid_side, avoid_steps
+
+    robot_xy = xy(center)
+    vec = target_xy - robot_xy
+    dist = np.linalg.norm(vec)
+
+    if dist < 1e-6:
+        return dist
+
+    direction = vec / dist
+    nearest_obs, nearest_d = get_nearest_obstacle(robot_xy)
+
+    if nearest_obs is not None and nearest_d < SAFE_DISTANCE:
+        if not avoid_mode:
+            obs_xy = xy(nearest_obs)
+            away = robot_xy - obs_xy
+            away = away / (np.linalg.norm(away) + 1e-6)
+
+            left = np.array([-away[1], away[0]], dtype=np.float32)
+            right = -left
+
+            left_score = np.linalg.norm(target_xy - (robot_xy + left * STEP_SIZE))
+            right_score = np.linalg.norm(target_xy - (robot_xy + right * STEP_SIZE))
+
+            avoid_side = 1 if left_score < right_score else -1
+            avoid_mode = True
+            avoid_steps = 45
+    else:
+        avoid_mode = False
+        avoid_steps = 0
+
+    if avoid_mode and nearest_obs is not None:
+        obs_xy = xy(nearest_obs)
+
+        away = robot_xy - obs_xy
+        away = away / (np.linalg.norm(away) + 1e-6)
+
+        tangent = np.array([-away[1], away[0]], dtype=np.float32) * avoid_side
+
+        final_dir = 0.20 * tangent + 0.05 * away + 1.20 * direction
+        final_dir = final_dir / (np.linalg.norm(final_dir) + 1e-6)
+
+        avoid_steps -= 1
+
+        if avoid_steps <= 0 and nearest_d > STOP_DISTANCE:
+            avoid_mode = False
+    else:
+        final_dir = direction
+
+    next_xy = robot_xy + final_dir * STEP_SIZE
+
+    if nearest_obstacle_distance(next_xy) < STOP_DISTANCE:
+        if nearest_obs is not None:
+            obs_xy = xy(nearest_obs)
+            away = robot_xy - obs_xy
+            away = away / (np.linalg.norm(away) + 1e-6)
+
+            tangent = np.array([-away[1], away[0]], dtype=np.float32) * avoid_side
+            next_xy = robot_xy + tangent * STEP_SIZE
+
+        if nearest_obstacle_distance(next_xy) < STOP_DISTANCE:
+            print("Too close to obstacle, stopping this step")
+            return dist
+
+    delta = next_xy - robot_xy
+
+    p = sim.getObjectPosition(root, -1)
+    p[0] += float(delta[0])
+    p[1] += float(delta[1])
+    sim.setObjectPosition(root, -1, p)
+
+    return dist
+
+
+def navigate_to_point(target_xy, phase):
+    global avoid_mode, avoid_steps
+
+    avoid_mode = False
+    avoid_steps = 0
+
+    print("\n===", phase, "===")
+
+    for step in range(MAX_STEPS):
+        dist = move_robot_toward(target_xy)
+        key = show_view(phase, dist)
+
+        print(
+            f"{phase} | step={step} | dist={dist:.3f} "
+            f"| avoid={avoid_mode} | side={avoid_side}"
+        )
+
+        if dist < SUCCESS_DISTANCE and step > 40:
+            print("Reached target point")
+            return True
+
+        if key == ord("q"):
+            return False
+
+        time.sleep(0.02)
+
+    print("Timeout")
+    return False
+
+
+try:
+    sim.stopSimulation()
+    time.sleep(0.3)
+except:
+    pass
+
+sim.startSimulation()
+time.sleep(1)
+
+reset_targets()
+
+print("Robot center:", sim.getObjectPosition(center, -1))
+print("Cube:", sim.getObjectPosition(cube, -1))
+print("Goal hidden at:", sim.getObjectPosition(goal, -1))
+
+print("FAKE PICK AND PLACE MODE")
+
+cube_xy = np.array([CUBE_START_POS[0], CUBE_START_POS[1]], dtype=np.float32)
+goal_xy = np.array([GOAL_START_POS[0], GOAL_START_POS[1]], dtype=np.float32)
+
+robot_xy = xy(center)
+to_cube = cube_xy - robot_xy
+to_cube = to_cube / (np.linalg.norm(to_cube) + 1e-6)
+
+pick_xy = cube_xy - to_cube * PICK_APPROACH_OFFSET
+place_xy = goal_xy
+
+ok = navigate_to_point(pick_xy, "Phase 1: Navigate near Pick")
+
+if ok:
+    print("Reached near cube")
+    time.sleep(1)
+
+    fake_arm_motion("Fake arm pick motion")
+    fake_pick_cube()
+
+    ok2 = navigate_to_point(place_xy, "Phase 2: Navigate to Place")
+
+    if ok2:
+        print("Reached place")
+        time.sleep(1)
+
+        fake_arm_motion("Fake arm place motion")
+        fake_place_cube()
+
+print("Mission finished")
+
+time.sleep(2)
+cv2.destroyAllWindows()
+sim.stopSimulation()
