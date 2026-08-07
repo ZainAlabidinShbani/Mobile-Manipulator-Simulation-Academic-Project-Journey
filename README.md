@@ -1,87 +1,87 @@
-# Mobile Manipulator Simulation Academic Project Journey
+# Mobile Manipulator Simulation — Academic Project Journey
 
-This repository documents my complete academic development path in mobile manipulation, from coursework to graduation research and implementation.
+This repository documents my academic and research progression in mobile manipulator design, modeling, and control — from coursework foundations to an independently designed graduation project. It contains three projects, presented in chronological and technical progression from foundational to advanced.
 
-The projects are ordered from newest to oldest:
+---
 
-1. Senior Project 2 (graduation project)
-2. Senior Project
-3. Semester Project
+## 📁 Projects (in reading order)
 
-## Repository purpose
+### 1. [Semester Project — KUKA youBot Mobile Manipulator](./semester-project/README.md)
+> 📂 `semester-project/`
 
-The repository is organized as a progressive engineering journey:
+A simulation and control framework built around the KUKA youBot, integrating its omnidirectional mecanum-wheeled base with a 5-degree-of-freedom (5-DOF) robotic arm. Establishes the kinematic, dynamic, and control foundations used throughout the later projects.
 
-- semester-level foundation in modeling and control
-- senior-level custom robot design and evaluation
-- graduation-level system integration across software, simulation, and hardware tracks
+- 5-DOF arm on a mecanum-wheeled omnidirectional base
+- Trajectory generation and manipulability analysis
+- Observer-based state feedback control
+- MATLAB + ROS Noetic + CoppeliaSim integration
 
-Together, these projects demonstrate end-to-end competency in robotics software, kinematics and control, simulation validation, and prototyping.
+---
 
-## Senior Project 2 (Graduation Project)
+### 2. [Senior Project — Custom 3-DOF Mobile Manipulator](./senior-project/README.md)
+> 📂 `senior-project/`
 
-Senior Project 2 is my university graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering.
+An intermediate, independently designed 3-DOF robotic arm on a mobile base, developed to move beyond a fixed academic platform toward original mechanical and control design. Serves as a bridge between the semester project and the graduation project.
 
-This project combines mechanical design, electronics, simulation, software architecture, and autonomous behaviors for a full mobile manipulator platform. It includes ROS 2 and Python simulation tracks, CAD resources, reinforcement learning experiments, and hardware-oriented assets.
+- Custom 3-DOF arm kinematics and dynamics, modeled in MATLAB
+- Multi-controller design and evaluation: PID, LQR, and Fuzzy-PID
+- CAD-based mechanical design and trajectory-tracking validation
 
-### Project links
+---
 
-- [ROS 2 simulation workspace](./senior-project2/ros2_mobile_manipulator_ws/README.md)
-- [Python simulation stack](./senior-project2/mobile_manipulator_sim_python/README.md)
+### 3. [Senior Project 2 — Autonomous Mobile Manipulator (Graduation Project)](./senior-project2/README.md)
+> 📂 `senior-project2/`
 
-### Technical scope
+My graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering. Presents the design of a prototype autonomous mobile manipulator for pick-and-place operations in static indoor environments: a four-wheel skid-steer base with a custom 4-DOF parallelogram-linkage arm, controlled through reinforcement learning (PPO and SAC) and supported by a YOLO-based perception pipeline.
 
-- mobile manipulator architecture and subsystem integration
-- autonomous pick-and-place workflow design
-- simulation in Gazebo, CoppeliaSim, and Python environments
-- reinforcement learning exploration and evaluation assets
-- hardware-oriented prototyping and electronics integration
+- 4-DOF parallelogram-linkage arm on a four-wheel skid-steer base, modeled in SolidWorks
+- Static and dynamic stability validated via Zero Moment Point (ZMP) analysis (safety factor > 1.5)
+- Reinforcement learning control (PPO vs. SAC) for autonomous pick-and-place
+- YOLO-based perception pipeline (RGB-D and low-cost monocular alternatives)
+- Simulation-first ROS 2 Humble workspace and a standalone Python simulation stack
+- Physical prototype with electronics integration (Arduino Mega, motor drivers, sensors)
 
-### Senior Project 2 gallery
+---
 
-![Complete system overview](./senior-project2/photo/full_system.png)
-_Complete system architecture and integration view._
+## 🔍 Quick Comparison
 
-![Real robot prototype](./senior-project2/photo/photo_2026-06-18_18-07-39.jpg)
-_Real-world prototype built and tested during the graduation project._
+| Feature      | Semester Project        | Senior Project              | Senior Project 2 (Graduation)         |
+|--------------|--------------------------|-------------------------------|-----------------------------------------|
+| Robot        | KUKA youBot               | Custom-designed manipulator   | Custom-designed autonomous manipulator  |
+| Arm DOF      | 5                          | 3                              | 4 (parallelogram linkage)               |
+| Base         | Mecanum-wheel (omni)       | Mobile base                   | Four-wheel skid-steer                   |
+| Control      | Observer-based feedback    | PID, LQR, Fuzzy-PID            | Reinforcement learning (PPO, SAC)       |
+| Perception   | —                          | —                              | YOLO-based detection (RGB-D / monocular)|
+| Stability    | —                          | —                              | Zero Moment Point (ZMP) analysis        |
+| CAD          | —                          | Included                       | SolidWorks, full electromechanical BOM  |
+| Tools        | MATLAB, ROS Noetic, CoppeliaSim | MATLAB                   | MATLAB, Python, ROS 2 Humble, CoppeliaSim, Gazebo |
 
-![Robot CAD solid model](./senior-project2/photo/robot_solid.png)
-_Mechanical design representation of the robot body and manipulator._
+---
 
-![Circuit connections](./senior-project2/photo/circuit_connection.png)
-_Electronics and wiring integration used in the full setup._
+## 🚀 Getting Started
 
-![CoppeliaSim scene](./senior-project2/photo/Coppelia_sim.jpg)
-_CoppeliaSim environment used for simulation and validation._
+Navigate to the project subfolder of your choice and follow its `README.md`:
 
-![Gazebo world](./senior-project2/photo/Gazebo_world.jpg)
-_ROS-based Gazebo simulation world for autonomous task testing._
+```bash
+# Foundational project (5-DOF KUKA youBot)
+cd semester-project/
 
-## Senior Project
+# Intermediate project (custom 3-DOF arm)
+cd senior-project/
 
-The senior project focuses on a custom 3-DOF mobile manipulator design with MATLAB-based modeling and control. It represents the transition from structured course frameworks to an independently developed robotic platform.
+# Graduation project (autonomous 4-DOF mobile manipulator)
+cd senior-project2/
+```
 
-- [Read Senior Project documentation](./senior-project/README.md)
+---
 
-## Semester Project
+## 🧰 Technologies
 
-The semester project establishes the technical foundation using a KUKA youBot-style 5-DOF mobile manipulator with integrated MATLAB, ROS Noetic, and CoppeliaSim workflows.
+MATLAB · Python · SolidWorks · CoppeliaSim · Gazebo · ROS Noetic · ROS 2 Humble · YOLO (Ultralytics) · Reinforcement Learning (PPO, SAC) · PyBullet · Arduino
 
-- [Read Semester Project documentation](./semester-project/README.md)
+---
 
-## Repository structure
+## 👤 Author
 
-- `semester-project/` - Foundations in kinematics, control, and simulation.
-- `senior-project/` - Custom mechanical design and control extension.
-- `senior-project2/` - Graduation-level integrated robotics platform.
-
-## Recommended reading order
-
-1. Start with Senior Project 2 for the final integrated result.
-2. Review Senior Project for custom mechanical and control evolution.
-3. Review Semester Project for foundational methods and baseline architecture.
-
-## Author
-
-Zain Alabidin Shbani  
+**Zain Alabidin Shbani**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering
