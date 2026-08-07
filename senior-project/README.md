@@ -95,7 +95,13 @@ This project is typically evaluated through:
 
 ---
 
-## 10. Author
+## 10. Authors
 
 **Zain Alabidin Shbani**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Beilassan Hdewa**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Lana Alwazzeh**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering
