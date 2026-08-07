@@ -115,7 +115,13 @@ See `media/` for supporting figures, including frame-assignment diagrams, manipu
 
 ---
 
-## 11. Author
+## 11. Authors
 
 **Zain Alabidin Shbani**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Beilassan Hdewa**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Lana Alwazzeh**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering
