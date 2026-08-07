@@ -10,7 +10,7 @@ Experimental results show that SAC outperforms PPO in sample efficiency, final r
 
 **Keywords:** Mobile Manipulator, Pick-and-Place, Reinforcement Learning, PPO, SAC, YOLO, Skid-Steer Robot, CoppeliaSim, Robotic Arm Kinematics, ZMP Stability Analysis
 
-This project was developed as my graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering, and is documented in full in the accompanying [report](./report) and [presentation](./presentation).
+This project was developed as our graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering, and is documented in full in the accompanying [report](./report) and [presentation](./presentation).
 
 ---
 
@@ -152,7 +152,13 @@ This project is the culmination of the academic progression documented in this r
 
 ---
 
-## 10. Author
+## 10. Authors
 
 **Zain Alabidin Shbani**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Beilassan Hdewa**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Lana Alwazzeh**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering
