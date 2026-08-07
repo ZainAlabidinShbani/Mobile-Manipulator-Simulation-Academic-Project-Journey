@@ -1,51 +1,101 @@
-# Senior Project - Custom 3-DOF Mobile Manipulator
+# Senior Project — Custom 3-DOF Mobile Manipulator
 
-This senior project develops a custom 3-DOF robotic arm mounted on a mobile base, building on the control and simulation knowledge established in the semester project.
+## Overview
 
-The main objective was to move from a platform-based academic model to a more original, custom mechanical and control-oriented design.
+This project presents the design, modeling, and control of a custom 3-degree-of-freedom (3-DOF) robotic arm mounted on a mobile base. It builds directly on the kinematic and control foundations established in the [semester project](../semester-project/README.md), with the objective of moving from a fixed, platform-based academic model (the KUKA youBot) toward an independently designed mechanical and control system.
 
-## Project scope
+The project serves as an intermediate design stage, bridging the foundational semester work and the full autonomous system developed in the [graduation project (Senior Project 2)](../senior-project2/README.md).
 
-- custom manipulator architecture and joint configuration
-- MATLAB-based kinematic and dynamic analysis
-- simulation-oriented validation before full graduation integration
-- documentation of design trade-offs for future implementation
+---
 
-## Project goals
+## 1. Objectives
 
-- design and evaluate a custom mobile manipulator concept
-- model arm and base behavior with MATLAB workflows
-- study kinematics, dynamics, and trajectory quality for practical robotic tasks
-- document a design path that supports future hardware implementation
+- Design and evaluate a custom 3-DOF mobile manipulator concept
+- Model arm and base behavior through MATLAB-based kinematic and dynamic analysis
+- Design, implement, and compare multiple control strategies for trajectory tracking
+- Validate mechanical feasibility through CAD design
+- Document a design path suitable for future hardware implementation
 
-## Folder structure
+---
 
-- `matlab/` - Modeling, simulation, and control scripts.
-- `cad/` - Mechanical design files for the arm and mobile platform.
-- `docs/` - Report and technical notes.
-- `media/` - Visual assets used in documentation.
+## 2. System Overview
 
-## Suggested workflow
+| Component        | Description                                                        |
+|-------------------|---------------------------------------------------------------------|
+| Manipulator       | Custom 3-DOF robotic arm                                            |
+| Mechanical design | CAD-based mechanical modeling                                       |
+| Analysis          | Forward/inverse kinematics, dynamics modeling (MATLAB)              |
+| Control approach  | PID, LQR, and Fuzzy-PID — designed and benchmarked                  |
+| Simulation        | MATLAB-based trajectory and control simulation                      |
 
-1. Open MATLAB and set the working directory to `senior-project/matlab/`.
-2. Run the main script used for your simulation scenario.
-3. Review plots and generated outputs to assess performance.
-4. Open CAD assets in `cad/` for mechanical reference and design verification.
+---
 
-## Evaluation focus
+## 3. Kinematics and Dynamics
+
+Forward and inverse kinematics were derived for the 3-DOF arm, together with a dynamics model (mass, Coriolis, and gravity terms) used to evaluate joint torques under representative pick-and-place trajectories.
+
+---
+
+## 4. Control Strategies
+
+Three control approaches were designed and evaluated under matched trajectory-tracking conditions, to compare tracking accuracy, robustness, and response quality:
+
+- **PID control** — a baseline, model-independent approach
+- **LQR (Linear-Quadratic Regulator)** — a model-based optimal control approach
+- **Fuzzy-PID** — a hybrid approach combining fuzzy-logic gain adaptation with PID control, to improve robustness under varying operating conditions
+
+Each controller was evaluated across multiple representative cases (nominal operation and operation with dynamic lag), with performance assessed through trajectory-tracking accuracy and joint-level response quality.
+
+---
+
+## 5. Mechanical Design
+
+The mechanical structure of the arm and mobile base was modeled in CAD, with the design assessed for assembly feasibility and consistency with the kinematic model used in MATLAB.
+
+---
+
+## 6. Tools and Technologies
+
+- **Analysis / Control design:** MATLAB
+- **Mechanical design:** CAD
+
+---
+
+## 7. Repository Structure
+
+```
+senior-project/
+├── matlab/
+│   ├── CombinedSystem/    # Integrated kinematics, planning, and simulation
+│   ├── Fuzzy/              # Fuzzy-PID controller design and evaluation
+│   ├── LQR/                 # LQR controller design and evaluation
+│   └── PID/                  # PID controller design and evaluation
+├── cad/                        # Mechanical design files for the arm and mobile base
+├── docs/                        # Report and technical documentation
+└── media/                        # Figures and visual documentation
+```
+
+---
+
+## 8. Evaluation Focus
 
 This project is typically evaluated through:
 
-- kinematic consistency of the 3-DOF arm model
-- trajectory tracking behavior in simulation runs
-- mechanical feasibility and assembly clarity in CAD
-- quality of design documentation and engineering rationale
+- Kinematic consistency of the 3-DOF arm model
+- Trajectory-tracking performance across PID, LQR, and Fuzzy-PID controllers
+- Mechanical feasibility and assembly clarity in CAD
+- Quality of design documentation and engineering rationale
 
-## Relationship to other repository projects
+---
 
-- Compared with the semester project, this project emphasizes custom design decisions and reduced arm complexity (3-DOF).
-- Compared with Senior Project 2, this project serves as an intermediate stage before full graduation-level integration.
+## 9. Relationship to Other Repository Projects
 
-## Media
+- Compared with the [semester project](../semester-project/README.md), this project emphasizes original design decisions with a reduced arm complexity (3-DOF).
+- Compared with [Senior Project 2](../senior-project2/README.md), this project served as an intermediate design and control study, ahead of the full autonomous, RL-controlled system developed for the graduation project.
 
-See the `media/` folder for supporting figures and visual documentation.
+---
+
+## 10. Author
+
+**Zain Alabidin Shbani**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
