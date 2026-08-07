@@ -32,7 +32,7 @@ An intermediate, independently designed 3-DOF robotic arm on a mobile base, deve
 ### 3. [Senior Project 2 — Autonomous Mobile Manipulator (Graduation Project)](./senior-project2/README.md)
 > 📂 `senior-project2/`
 
-My graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering. Presents the design of a prototype autonomous mobile manipulator for pick-and-place operations in static indoor environments: a four-wheel skid-steer base with a custom 4-DOF parallelogram-linkage arm, controlled through reinforcement learning (PPO and SAC) and supported by a YOLO-based perception pipeline.
+Our graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering. Presents the design of a prototype autonomous mobile manipulator for pick-and-place operations in static indoor environments: a four-wheel skid-steer base with a custom 4-DOF parallelogram-linkage arm, controlled through reinforcement learning (PPO and SAC) and supported by a YOLO-based perception pipeline.
 
 - 4-DOF parallelogram-linkage arm on a four-wheel skid-steer base, modeled in SolidWorks
 - Static and dynamic stability validated via Zero Moment Point (ZMP) analysis (safety factor > 1.5)
@@ -81,7 +81,13 @@ MATLAB · Python · SolidWorks · CoppeliaSim · Gazebo · ROS Noetic · ROS 2 H
 
 ---
 
-## 👤 Author
+## 👤 Authors
 
 **Zain Alabidin Shbani**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Beilassan Hdewa**
+Bachelor's Degree in Robotics and Intelligent Systems Engineering
+
+**Lana Alwazzeh**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering
