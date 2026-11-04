@@ -1,4 +1,6 @@
-# Semester Project — KUKA youBot Mobile Manipulator Simulation Framework
+# Semester Project: KUKA youBot Mobile Manipulator
+
+> Academic project | MATLAB, ROS Noetic, and CoppeliaSim
 
 ## Overview
 
@@ -6,7 +8,7 @@ This project presents a complete simulation and control framework for a KUKA you
 
 ---
 
-## 1. Objectives
+## Objectives
 
 - Build a complete mobile manipulator simulation baseline
 - Validate arm and base kinematics in coordinated tasks
@@ -15,7 +17,7 @@ This project presents a complete simulation and control framework for a KUKA you
 
 ---
 
-## 2. System Overview
+## System overview
 
 | Component        | Description                                                        |
 |-------------------|---------------------------------------------------------------------|
@@ -28,7 +30,7 @@ This project presents a complete simulation and control framework for a KUKA you
 
 ---
 
-## 3. Academic Focus
+## Academic focus
 
 The project was developed to study core robotics topics within a single, connected workflow:
 
@@ -39,13 +41,13 @@ The project was developed to study core robotics topics within a single, connect
 
 ---
 
-## 4. Kinematics, Control, and Analysis
+## Kinematics, control, and analysis
 
 Forward and inverse kinematics were derived for the combined base–arm system, and an **observer-based state feedback controller** was designed to regulate joint and base states where direct measurement was unavailable or noisy. **Trajectory planning** and **manipulability analysis** were carried out across the arm's workspace to characterize dexterity and identify configurations prone to kinematic singularities.
 
 ---
 
-## 5. Tools and Environment
+## Tools and environment
 
 - **MATLAB** — modeling, control algorithms, and analysis
 - **CoppeliaSim** — 3D scenario testing
@@ -53,7 +55,7 @@ Forward and inverse kinematics were derived for the combined base–arm system, 
 
 ---
 
-## 6. Repository Structure
+## Repository structure
 
 ```
 semester-project/
@@ -67,7 +69,15 @@ semester-project/
 
 ---
 
-## 7. How to Use
+## How to use
+
+### Prerequisites
+
+- MATLAB with the required toolboxes for the included scripts
+- CoppeliaSim for 3D scene execution
+- ROS Noetic on Linux for the optional ROS integration
+
+The MATLAB and CoppeliaSim workflows can be used independently of ROS.
 
 ### 7.1 MATLAB Simulation
 
@@ -94,7 +104,7 @@ roslaunch kuka_youbot full_robot.launch
 
 ---
 
-## 8. Evaluation Focus
+## Evaluation focus
 
 - Path-tracking quality of the arm and base
 - Stability and smoothness of control responses
@@ -103,19 +113,19 @@ roslaunch kuka_youbot full_robot.launch
 
 ---
 
-## 9. Outputs and Analysis
+## Outputs and analysis
 
 The CSV files in `csv files/` can be replayed and analyzed in MATLAB for base and arm motion behavior, tracking performance, and end-effector trajectory quality.
 
 ---
 
-## 10. Media
+## Media
 
 See `media/` for supporting figures, including frame-assignment diagrams, manipulability results, and wheel-behavior plots.
 
 ---
 
-## 11. Authors
+## Authors
 
 **Zain Alabidin Shbani**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering

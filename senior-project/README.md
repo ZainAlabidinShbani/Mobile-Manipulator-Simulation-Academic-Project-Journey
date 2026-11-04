@@ -1,4 +1,6 @@
-# Senior Project — Custom 3-DOF Mobile Manipulator
+# Senior Project: Custom 3-DOF Mobile Manipulator
+
+> Academic project | MATLAB and CAD
 
 ## Overview
 
@@ -8,7 +10,7 @@ The project serves as an intermediate design stage, bridging the foundational se
 
 ---
 
-## 1. Objectives
+## Objectives
 
 - Design and evaluate a custom 3-DOF mobile manipulator concept
 - Model arm and base behavior through MATLAB-based kinematic and dynamic analysis
@@ -18,7 +20,7 @@ The project serves as an intermediate design stage, bridging the foundational se
 
 ---
 
-## 2. System Overview
+## System overview
 
 | Component        | Description                                                        |
 |-------------------|---------------------------------------------------------------------|
@@ -30,13 +32,13 @@ The project serves as an intermediate design stage, bridging the foundational se
 
 ---
 
-## 3. Kinematics and Dynamics
+## Kinematics and dynamics
 
 Forward and inverse kinematics were derived for the 3-DOF arm, together with a dynamics model (mass, Coriolis, and gravity terms) used to evaluate joint torques under representative pick-and-place trajectories.
 
 ---
 
-## 4. Control Strategies
+## Control strategies
 
 Three control approaches were designed and evaluated under matched trajectory-tracking conditions, to compare tracking accuracy, robustness, and response quality:
 
@@ -48,20 +50,20 @@ Each controller was evaluated across multiple representative cases (nominal oper
 
 ---
 
-## 5. Mechanical Design
+## Mechanical design
 
 The mechanical structure of the arm and mobile base was modeled in CAD, with the design assessed for assembly feasibility and consistency with the kinematic model used in MATLAB.
 
 ---
 
-## 6. Tools and Technologies
+## Tools and technologies
 
 - **Analysis / Control design:** MATLAB
 - **Mechanical design:** CAD
 
 ---
 
-## 7. Repository Structure
+## Repository structure
 
 ```
 senior-project/
@@ -77,7 +79,7 @@ senior-project/
 
 ---
 
-## 8. Evaluation Focus
+## Evaluation focus
 
 This project is typically evaluated through:
 
@@ -88,14 +90,14 @@ This project is typically evaluated through:
 
 ---
 
-## 9. Relationship to Other Repository Projects
+## Relationship to other projects
 
 - Compared with the [semester project](../semester-project/README.md), this project emphasizes original design decisions with a reduced arm complexity (3-DOF).
 - Compared with [Senior Project 2](../senior-project2/README.md), this project served as an intermediate design and control study, ahead of the full autonomous, RL-controlled system developed for the graduation project.
 
 ---
 
-## 10. Authors
+## Authors
 
 **Zain Alabidin Shbani**
 Bachelor's Degree in Robotics and Intelligent Systems Engineering

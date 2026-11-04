@@ -1,4 +1,6 @@
-# Senior Project 2 — Autonomous Mobile Manipulator for Indoor Pick-and-Place (Graduation Project)
+# Senior Project 2: Autonomous Mobile Manipulator
+
+> Graduation project | Indoor pick-and-place research prototype
 
 ## Abstract
 
@@ -14,7 +16,7 @@ This project was developed as our graduation project for the Bachelor's degree i
 
 ---
 
-## 1. System Overview
+## System overview
 
 | Component        | Description                                                        |
 |-------------------|---------------------------------------------------------------------|
@@ -30,7 +32,7 @@ This project was developed as our graduation project for the Bachelor's degree i
 
 ---
 
-## 2. Mechanical Design and Stability Analysis
+## Mechanical design and stability analysis
 
 The mobile manipulator was modeled in SolidWorks as a four-wheel skid-steer base carrying a 4-DOF arm built on a parallelogram-linkage configuration, chosen to maintain end-effector orientation through the arm's range of motion while simplifying the kinematic model relative to a fully serial chain.
 
@@ -38,7 +40,7 @@ Stability was evaluated using **Zero Moment Point (ZMP) theory**, applied to bot
 
 ---
 
-## 3. Reinforcement Learning Control Framework
+## Reinforcement-learning control framework
 
 ### 3.1 Problem Formulation
 
@@ -69,7 +71,7 @@ SAC outperformed PPO on final task performance, while PPO showed more stable beh
 
 ---
 
-## 4. Perception Pipeline
+## Perception pipeline
 
 A **YOLO-based perception pipeline** was designed for object detection and target localization, supporting two implementation paths:
 
@@ -78,7 +80,7 @@ A **YOLO-based perception pipeline** was designed for object detection and targe
 
 ---
 
-## 5. Software Architecture
+## Software architecture
 
 Two independent, parallel implementation tracks were developed:
 
@@ -104,7 +106,7 @@ MATLAB-based RL environment, agent setup, and training scripts for the PPO/SAC c
 
 ---
 
-## 6. Hardware Prototype
+## Hardware prototype
 
 A physical prototype was built to validate the mechanical and control design, including:
 
@@ -114,7 +116,7 @@ A physical prototype was built to validate the mechanical and control design, in
 
 ---
 
-## 7. Tools and Technologies
+## Tools and technologies
 
 - **Mechanical design:** SolidWorks
 - **Simulation:** CoppeliaSim, Gazebo, PyBullet, custom Python-based RL training environment

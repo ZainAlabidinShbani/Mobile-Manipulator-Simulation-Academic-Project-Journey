@@ -1,95 +1,90 @@
-# Mobile Manipulator Simulation — Academic Project Journey
+# Mobile Manipulator Simulation: Academic Project Journey
 
-> 🚀 **Continue the academic journey:** The next stage of this work is the **[Mobile Manipulator Warehouse Simulation (ROS 2 Humble)](https://github.com/ZainAlabidinShbani/mobile_manipulator_ws)** repository, which contains the full ROS 2 warehouse simulation with autonomous navigation, manipulation, perception, and pick-and-place capabilities.
+This repository documents the progression of a mobile-manipulator project from an
+initial KUKA youBot simulation, through a custom 3-DOF design, to an autonomous
+4-DOF graduation-project prototype.
 
-This repository documents my academic and research progression in mobile manipulator design, modeling, and control — from coursework foundations to an independently designed graduation project. It contains three projects, presented in chronological and technical progression from foundational to advanced.
+Each project is kept in its own directory with its own technical documentation.
+Use this README as the project map, then follow the setup instructions in the
+README for the project you want to run.
 
----
+## Project map
 
-## 📁 Projects (in reading order)
+| Stage | Project | Main focus | Primary technologies |
+| --- | --- | --- | --- |
+| 1 | [Semester project](./semester-project/README.md) | KUKA youBot modeling, kinematics, and observer-based control | MATLAB, ROS Noetic, CoppeliaSim |
+| 2 | [Senior project](./senior-project/README.md) | Custom 3-DOF manipulator design and controller comparison | MATLAB, CAD |
+| 3 | [Senior project 2](./senior-project2/README.md) | Autonomous pick-and-place with perception and reinforcement learning | ROS 2 Humble, Python, MATLAB, CoppeliaSim, Gazebo |
 
-### 1. [Semester Project — KUKA youBot Mobile Manipulator](./semester-project/README.md)
-> 📂 `semester-project/`
+## How to use this repository
 
-A simulation and control framework built around the KUKA youBot, integrating its omnidirectional mecanum-wheeled base with a 5-degree-of-freedom (5-DOF) robotic arm. Establishes the kinematic, dynamic, and control foundations used throughout the later projects.
+1. Choose a project from the table above.
+2. Open that project's README for prerequisites and execution steps.
+3. Install dependencies only for the selected project and toolchain.
+4. Keep generated build products, virtual environments, and experiment outputs
+   out of version control.
 
-- 5-DOF arm on a mecanum-wheeled omnidirectional base
-- Trajectory generation and manipulability analysis
-- Observer-based state feedback control
-- MATLAB + ROS Noetic + CoppeliaSim integration
+The projects are related chronologically, but they are not a single build
+workspace. A project can be studied or executed independently once its
+prerequisites are available.
 
----
+## Progression
 
-### 2. [Senior Project — Custom 3-DOF Mobile Manipulator](./senior-project/README.md)
-> 📂 `senior-project/`
+### Semester project
 
-An intermediate, independently designed 3-DOF robotic arm on a mobile base, developed to move beyond a fixed academic platform toward original mechanical and control design. Serves as a bridge between the semester project and the graduation project.
+The first stage establishes the baseline mobile-manipulator workflow:
 
-- Custom 3-DOF arm kinematics and dynamics, modeled in MATLAB
-- Multi-controller design and evaluation: PID, LQR, and Fuzzy-PID
-- CAD-based mechanical design and trajectory-tracking validation
+- 5-DOF KUKA youBot-style arm on a mecanum-wheeled base
+- Forward and inverse kinematics and trajectory generation
+- Observer-based state-feedback control
+- MATLAB, ROS Noetic, and CoppeliaSim integration
 
----
+### Senior project
 
-### 3. [Senior Project 2 — Autonomous Mobile Manipulator (Graduation Project)](./senior-project2/README.md)
-> 📂 `senior-project2/`
+The second stage moves from a reference platform to an original design:
 
-Our graduation project for the Bachelor's degree in Robotics and Intelligent Systems Engineering. Presents the design of a prototype autonomous mobile manipulator for pick-and-place operations in static indoor environments: a four-wheel skid-steer base with a custom 4-DOF parallelogram-linkage arm, controlled through reinforcement learning (PPO and SAC) and supported by a YOLO-based perception pipeline.
+- Custom 3-DOF arm mounted on a mobile base
+- MATLAB kinematic and dynamic modeling
+- PID, LQR, and Fuzzy-PID controller comparison
+- CAD-based mechanical design and feasibility analysis
 
-- 4-DOF parallelogram-linkage arm on a four-wheel skid-steer base, modeled in SolidWorks
-- Static and dynamic stability validated via Zero Moment Point (ZMP) analysis (safety factor > 1.5)
-- Reinforcement learning control (PPO vs. SAC) for autonomous pick-and-place
-- YOLO-based perception pipeline (RGB-D and low-cost monocular alternatives)
-- Simulation-first ROS 2 Humble workspace and a standalone Python simulation stack
-- Physical prototype with electronics integration (Arduino Mega, motor drivers, sensors)
+### Senior project 2
 
----
+The graduation-project stage extends the system toward autonomous operation:
 
-## 🔍 Quick Comparison
+- 4-DOF parallelogram-linkage arm on a four-wheel skid-steer base
+- YOLO-based object detection and target localization
+- PPO and SAC reinforcement-learning experiments
+- ROS 2 integration and a standalone Python simulation stack
+- Hardware-oriented CAD and electronics work
 
-| Feature      | Semester Project        | Senior Project              | Senior Project 2 (Graduation)         |
-|--------------|--------------------------|-------------------------------|-----------------------------------------|
-| Robot        | KUKA youBot               | Custom-designed manipulator   | Custom-designed autonomous manipulator  |
-| Arm DOF      | 5                          | 3                              | 4 (parallelogram linkage)               |
-| Base         | Mecanum-wheel (omni)       | Mobile base                   | Four-wheel skid-steer                   |
-| Control      | Observer-based feedback    | PID, LQR, Fuzzy-PID            | Reinforcement learning (PPO, SAC)       |
-| Perception   | —                          | —                              | YOLO-based detection (RGB-D / monocular)|
-| Stability    | —                          | —                              | Zero Moment Point (ZMP) analysis        |
-| CAD          | —                          | Included                       | SolidWorks, full electromechanical BOM  |
-| Tools        | MATLAB, ROS Noetic, CoppeliaSim | MATLAB                   | MATLAB, Python, ROS 2 Humble, CoppeliaSim, Gazebo |
+See the [Senior Project 2 README](./senior-project2/README.md) for the
+architecture and links to its ROS 2 and Python implementation tracks.
 
----
+## Repository structure
 
-## 🚀 Getting Started
-
-Navigate to the project subfolder of your choice and follow its `README.md`:
-
-```bash
-# Foundational project (5-DOF KUKA youBot)
-cd semester-project/
-
-# Intermediate project (custom 3-DOF arm)
-cd senior-project/
-
-# Graduation project (autonomous 4-DOF mobile manipulator)
-cd senior-project2/
+```text
+.
+├── semester-project/   # KUKA youBot simulation and control
+├── senior-project/     # Custom 3-DOF manipulator design
+├── senior-project2/    # Autonomous mobile-manipulator graduation project
+└── README.md           # This project map
 ```
 
----
+## Related repository
 
-## 🧰 Technologies
+The later ROS 2 warehouse-simulation work is maintained separately in
+[mobile_manipulator_ws](https://github.com/ZainAlabidinShbani/mobile_manipulator_ws).
 
-MATLAB · Python · SolidWorks · CoppeliaSim · Gazebo · ROS Noetic · ROS 2 Humble · YOLO (Ultralytics) · Reinforcement Learning (PPO, SAC) · PyBullet · Arduino
+## Authors
 
----
+- Zain Alabidin Shbani
+- Beilassan Hdewa
+- Lana Alwazzeh
 
-## 👤 Authors
+## Notes
 
-**Zain Alabidin Shbani**
-Bachelor's Degree in Robotics and Intelligent Systems Engineering
-
-**Beilassan Hdewa**
-Bachelor's Degree in Robotics and Intelligent Systems Engineering
-
-**Lana Alwazzeh**
-Bachelor's Degree in Robotics and Intelligent Systems Engineering
+This is an academic and research portfolio repository. Results, interfaces,
+and experiment configurations may change as the individual projects evolve.
+Refer to each project's documentation and reports for the authoritative
+technical details.

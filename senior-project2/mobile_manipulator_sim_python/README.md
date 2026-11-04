@@ -1,4 +1,6 @@
-# Senior Project 2 - Autonomous Mobile Manipulator (Python Stack)
+# Senior Project 2: Autonomous Mobile Manipulator (Python Stack)
+
+> ROS-independent experimentation track
 
 This directory contains the standalone Python simulation branch of Senior Project 2, developed as part of my graduation project in Robotics and Intelligent Systems Engineering.
 
@@ -44,7 +46,14 @@ mobile_manipulator_sim_python/
 
 ## Quick start
 
+Create and activate a virtual environment before installing dependencies:
+
 ```bash
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+# source .venv/bin/activate
 pip install -r requirements.txt
 python main.py
 python main.py --advanced
@@ -67,7 +76,7 @@ python main.py --headless
 - Advanced mode (`python main.py --advanced`): animated robot scene, motion indicators, end-effector metrics, and richer debugging instrumentation.
 - Headless mode (`python main.py --headless`): useful for batch runs and fast testing.
 
-## Configuration notes
+## Configuration
 
 Arm degrees of freedom are configurable from `config.py` through:
 
@@ -86,6 +95,6 @@ The kinematics pipeline is built to adapt automatically when these parameters ar
 - CSV logs in `data/` for post-run analysis
 - reproducible state-machine execution traces for reporting
 
-## Practical use in the graduation project
+## Project context
 
 This Python stack was used to iterate quickly on autonomous behavior logic, evaluate perception-control interaction, and validate task-level performance before and alongside ROS-based integration.
