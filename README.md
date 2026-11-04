@@ -1,5 +1,7 @@
 # Mobile Manipulator Simulation — Academic Project Journey
 
+> 🚀 **Continue the academic journey:** The next stage of this work is the **[Mobile Manipulator Warehouse Simulation (ROS 2 Humble)](https://github.com/ZainAlabidinShbani/mobile_manipulator_ws)** repository, which contains the full ROS 2 warehouse simulation with autonomous navigation, manipulation, perception, and pick-and-place capabilities.
+
 This repository documents my academic and research progression in mobile manipulator design, modeling, and control — from coursework foundations to an independently designed graduation project. It contains three projects, presented in chronological and technical progression from foundational to advanced.
 
 ---
